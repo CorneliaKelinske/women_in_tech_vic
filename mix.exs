@@ -9,7 +9,25 @@ defmodule WomenInTechVic.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        dialyzer: :test,
+        credo: :test,
+        check: :test,
+        format: :test,
+        "coveralls.html": :test,
+        "coveralls.json": :test,
+        "coveralls.lcov": :test
+      ],
+      dialyzer: [
+        plt_add_apps: [:ex_unit, :mix],
+        list_unused_filters: true,
+        plt_local_path: "dialyzer",
+        plt_core_path: "dialyzer",
+        ignore_warnings: ".dialyzer_ignore.exs",
+        flags: [:unmatched_returns, :no_improper_lists, :extra_return, :missing_return]
+      ]
     ]
   end
 
@@ -50,7 +68,14 @@ defmodule WomenInTechVic.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+
+      # Tooling
+      {:ex_check, "~> 0.16", only: :test, runtime: false},
+      {:credo, "~> 1.7.7", only: :test, runtime: false},
+      {:dialyxir, "~> 1.4.3", only: :test, runtime: false},
+      {:excoveralls, "~> 0.18.1", only: :test, runtime: false},
+      {:blitz_credo_checks, "~> 0.1", only: :test, runtime: false}
     ]
   end
 
