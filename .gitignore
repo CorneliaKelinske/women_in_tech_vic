@@ -32,3 +32,6 @@ women_in_tech_vic-*.tar
 npm-debug.log
 /assets/node_modules/
 
+.elixir-tools
+
+*.plt
