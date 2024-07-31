@@ -25,13 +25,18 @@
           "lib/",
           "src/",
           "test/",
-          "web/",
-          "apps/*/lib/",
-          "apps/*/src/",
-          "apps/*/test/",
-          "apps/*/web/"
+          "web/"
         ],
-        excluded: [~r"/_build/", ~r"/deps/", ~r"/node_modules/"]
+        excluded: [
+          ~r"/_build/",
+          ~r"/deps/",
+          ~r"/node_modules/",
+          ~r"/core_components",
+          ~r"/women_in_tech_vic_web.ex",
+          ~r"/telemetry.ex",
+          ~r"/conn_case.ex",
+          ~r"/page_controller_test.exs"
+        ]
       },
       #
       # Load and configure plugins here:
@@ -170,7 +175,6 @@
           {BlitzCredoChecks.NoAsyncFalse, []},
           {BlitzCredoChecks.NoDSLParentheses, []},
           {BlitzCredoChecks.NoIsBitstring, []},
-          {BlitzCredoChecks.NoRampantRepos, []},
           {BlitzCredoChecks.SetWarningsAsErrorsInTest, []},
           {BlitzCredoChecks.StrictComparison, []},
           {BlitzCredoChecks.UseStream, []}
@@ -184,6 +188,7 @@
           # Controversial and experimental checks (opt-in, just move the check to `:enabled`
           #   and be sure to use `mix credo --strict` to see low priority checks)
           #
+          {BlitzCredoChecks.NoRampantRepos, []},
           {Credo.Check.Consistency.MultiAliasImportRequireUse, []},
           {Credo.Check.Consistency.UnusedVariableNames, []},
           {Credo.Check.Design.DuplicatedCode, []},
