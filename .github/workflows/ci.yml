@@ -97,17 +97,7 @@ jobs:
       - run: mix coveralls.json
       - name: Upload to codecov.io
         uses: codecov/codecov-action@v1
-
-  auto-merge:
-    name: Auto-merge
-    if: ${{ github.event_name == 'pull_request'}}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ahmadnassri/action-dependabot-auto-merge@v2
-        with:
-          target: minor
-          github-token: ${{ secrets.MYTOKEN}} 
+  
 
 
  
