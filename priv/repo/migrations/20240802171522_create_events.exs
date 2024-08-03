@@ -11,5 +11,7 @@ defmodule WomenInTechVic.Repo.Migrations.CreateEvents do
 
       timestamps(type: :utc_datetime_usec)
     end
+
+    create unique_index(:events, :scheduled_at)
   end
 end
