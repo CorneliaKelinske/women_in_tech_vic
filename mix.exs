@@ -69,6 +69,10 @@ defmodule WomenInTechVic.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
+      {:ecto_shorts, "~>2.4.0"},
+      {:error_message, "~>0.3.2"},
+      {:ex_machina, "~> 2.8.0", only: :test},
+      {:faker, "~> 0.18.0", only: :test},
 
       # Tooling
       {:ex_check, "~> 0.16", only: :test, runtime: false},
