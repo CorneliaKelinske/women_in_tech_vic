@@ -10,6 +10,10 @@ import Config
 config :women_in_tech_vic,
   ecto_repos: [WomenInTechVic.Repo]
 
+config :ecto_shorts,
+  repo: WomenInTechVic.Repo,
+  error_module: EctoShorts.Actions.Error
+
 # Configures the endpoint
 config :women_in_tech_vic, WomenInTechVicWeb.Endpoint,
   url: [host: "localhost"],
