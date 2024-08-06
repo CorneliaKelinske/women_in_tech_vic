@@ -1,4 +1,4 @@
-if Mix.env() === :dev do
+if Mix.env() !== :test do
   alias WomenInTechVic.Content
 
   Content.create_event(%{
