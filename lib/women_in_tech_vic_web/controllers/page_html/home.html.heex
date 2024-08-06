@@ -14,7 +14,11 @@
     </p>
     <div class="w-full max-w-lg p-6 bg-white bg-opacity-25 rounded-lg">
       <h2 class="text-2xl font-semibold mb-4">Next Event</h2>
-      <p class="text-lg">Join us for our next meetup on [Date] at [Location].</p>
+      <%= if @event === "No event scheduled" do %>
+        <p class="text-lg"><%= @event %></p>
+      <% else %>
+        <p class="text-lg"><%= @event.title %></p>
+      <% end %>
     </div>
   </header>
   <footer class="p-4 text-center">
