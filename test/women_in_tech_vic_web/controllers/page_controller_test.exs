@@ -22,5 +22,6 @@ defmodule WomenInTechVicWeb.PageControllerTest do
 
     conn = get(conn, ~p"/")
     assert html_response(conn, 200) =~ "Bi-weekly online meeting"
+    assert html_response(conn, 200) =~ "meet.google.com"
   end
 end
