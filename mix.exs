@@ -73,6 +73,7 @@ defmodule WomenInTechVic.MixProject do
       {:error_message, "~>0.3.2"},
       {:ex_machina, "~> 2.8.0", only: :test},
       {:faker, "~> 0.18.0", only: :test},
+      {:tzdata, "~> 1.1"},
 
       # Tooling
       {:ex_check, "~> 0.16", only: :test, runtime: false},

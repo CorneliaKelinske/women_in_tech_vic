@@ -18,6 +18,9 @@
         <p class="text-lg"><%= @event %></p>
       <% else %>
         <p class="text-lg"><%= @event.title %></p>
+         <p class="text-lg"><%= @event.scheduled_at %></p>
+          <p class="text-lg"><%= @event.address %></p>
+          <p class="text-lg"><%= @event.description %></p>
       <% end %>
     </div>
   </header>
