@@ -6,7 +6,7 @@ defmodule WomenInTechVicWeb.PageController do
 
   def home(conn, _params) do
     online_event =
-      %{online: true, order_by: :scheduled_at, limit: 1}
+      %{online: true, scheduled_at: %{gte: DateTime.utc_now()}, order_by: :scheduled_at, limit: 1}
       |> Content.all_events()
       |> case do
         [] -> "No event scheduled"
