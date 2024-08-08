@@ -20,7 +20,7 @@ if Mix.env() !== :test do
     title: "Bi-weekly online meeting",
     scheduled_at: "2024-08-28T00:00:00Z",
     online: true,
-    address: "httos://meet.google.com/uam-eyys-bxs",
+    address: "https://meet.google.com/uam-eyys-bxs",
     description: "Our bi-weekly online meetup where we can hang out and chat.
                   This meeting is one of the more technical, code-heavy meetings. We'll continue exploring RUST. During the last technical meeting, we did a basic initial exploration using https://exercism.org/tracks/rust.
                   This time, we'll be a bit more hands-on. We are going to use
