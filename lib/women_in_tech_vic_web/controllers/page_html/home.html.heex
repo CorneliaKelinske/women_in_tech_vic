@@ -12,17 +12,25 @@
       This group is for women who are working (or are interested in working) in the tech industry.
       The goal of this group is to create a supportive and welcoming community where we can chat and share our experience with working in workplaces where, as women, we're often a bit of a unicorn.
     </p>
-    <div class="w-full max-w-lg p-6 bg-white bg-opacity-25 rounded-lg">
-      <h2 class="text-2xl font-semibold mb-4">Next Event</h2>
-      <%= if @event === "No event scheduled" do %>
-        <p class="text-lg"><%= @event %></p>
-      <% else %>
-        <p class="text-lg"><%= @event.title %></p>
-         <p class="text-lg"><%= @event.scheduled_at %></p>
-          <p class="text-lg"><%= @event.address %></p>
-          <p class="text-lg"><%= @event.description %></p>
-      <% end %>
-    </div>
+  <div class="w-full max-w-lg p-6 bg-white bg-opacity-25 rounded-lg">
+    <h2 class="text-2xl font-semibold mb-4">Next Event</h2>
+    <%= if @event === "No event scheduled" do %>
+        <p class="text-lg text-center"><%= @event %></p>
+    <% else %>
+        <div class="p-4">
+            <p class="text-3xl font-bold text-center mb-2"><%= @event.title %></p>
+            <p class="text-xl text-center mb-2"><%= @event.scheduled_at %></p>
+            <p class="text-lg text-center mb-4">
+                <a href="#" class="text-purple-700 hover:underline"><%= @event.address %></a>
+            </p>
+        </div>
+        <div class="bg-gray-200 bg-opacity-50 p-4 rounded-lg">
+            <p class="text-sm text-justify"><%= @event.description %></p>
+        </div>
+    <% end %>
+</div>
+
+
   </header>
   <footer class="p-4 text-center">
     <p>&copy; 2024 Women in Tech Victoria</p>

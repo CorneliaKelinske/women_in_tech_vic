@@ -21,7 +21,7 @@ defmodule WomenInTechVic.Content.EventTest do
         title: "Online meeting",
         description: "Another online meeting",
         online: true,
-        address: "meet.google.com/",
+        address: "https://meet.google.com/",
         scheduled_at: DateTime.utc_now()
       }
 

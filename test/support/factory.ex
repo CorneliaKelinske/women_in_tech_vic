@@ -10,7 +10,7 @@ defmodule WomenInTechVic.Support.Factory do
       scheduled_at: DateTime.utc_now(),
       online: true,
       description: Faker.Lorem.paragraph(),
-      address: "meet.google.com/"
+      address: "https://meet.google.com/"
     }
   end
 
