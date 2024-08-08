@@ -57,7 +57,7 @@ defmodule WomenInTechVic.Content.Event do
       validate_format(
         changeset,
         :address,
-        ~r|meet.google.com\/|,
+        ~r|https\:\/\/meet.google.com\/|,
         message: "Valid google meet link required for online meeting"
       )
     end
