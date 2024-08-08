@@ -7,7 +7,7 @@ defmodule WomenInTechVic.Support.Factory do
   def online_event_factory do
     %{
       title: Faker.Company.bs(),
-      scheduled_at: DateTime.utc_now(),
+      scheduled_at: DateTime.add(DateTime.utc_now(), 5, :minute),
       online: true,
       description: Faker.Lorem.paragraph(),
       address: "https://meet.google.com/"
@@ -17,7 +17,7 @@ defmodule WomenInTechVic.Support.Factory do
   def in_person_event_factory do
     %{
       title: Faker.Company.bs(),
-      scheduled_at: DateTime.utc_now(),
+      scheduled_at: DateTime.add(DateTime.utc_now(), 5, :minute),
       online: false,
       description: Faker.Lorem.paragraph(),
       address: "Pub around the Corner"
