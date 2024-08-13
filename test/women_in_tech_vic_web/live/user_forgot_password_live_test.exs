@@ -2,7 +2,7 @@ defmodule WomenInTechVicWeb.UserForgotPasswordLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures
+  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0]
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Repo
@@ -43,7 +43,7 @@ defmodule WomenInTechVicWeb.UserForgotPasswordLiveTest do
 
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
 
-      assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context ==
+      assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context ===
                "reset_password"
     end
 
@@ -57,7 +57,7 @@ defmodule WomenInTechVicWeb.UserForgotPasswordLiveTest do
         |> follow_redirect(conn, "/")
 
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
-      assert Repo.all(Accounts.UserToken) == []
+      assert Repo.all(Accounts.UserToken) === []
     end
   end
 end

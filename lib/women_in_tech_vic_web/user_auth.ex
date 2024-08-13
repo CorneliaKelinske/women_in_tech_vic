@@ -1,4 +1,5 @@
 defmodule WomenInTechVicWeb.UserAuth do
+  @moduledoc false
   use WomenInTechVicWeb, :verified_routes
 
   import Plug.Conn

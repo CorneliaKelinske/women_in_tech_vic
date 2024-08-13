@@ -1,5 +1,6 @@
 defmodule WomenInTechVic.Accounts.UserNotifier do
-  import Swoosh.Email
+  @moduledoc false
+  import Swoosh.Email, only: [new: 0, from: 2, to: 2, subject: 2, text_body: 2]
 
   alias WomenInTechVic.Mailer
 

@@ -3,7 +3,15 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
 
   alias WomenInTechVic.Accounts
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures
+
+  import WomenInTechVic.AccountsFixtures,
+    only: [
+      user_fixture: 0,
+      user_fixture: 1,
+      valid_user_password: 0,
+      unique_user_email: 0,
+      extract_user_token: 1
+    ]
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do
@@ -20,7 +28,7 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
       assert {:error, redirect} = live(conn, ~p"/users/settings")
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
-      assert path == ~p"/users/log_in"
+      assert path === ~p"/users/log_in"
       assert %{"error" => "You must log in to access this page."} = flash
     end
   end
@@ -108,9 +116,9 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
 
       new_password_conn = follow_trigger_action(form, conn)
 
-      assert redirected_to(new_password_conn) == ~p"/users/settings"
+      assert redirected_to(new_password_conn) === ~p"/users/settings"
 
-      assert get_session(new_password_conn, :user_token) != get_session(conn, :user_token)
+      assert get_session(new_password_conn, :user_token) !== get_session(conn, :user_token)
 
       assert Phoenix.Flash.get(new_password_conn.assigns.flash, :info) =~
                "Password updated successfully"
@@ -175,26 +183,26 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
       {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/#{token}")
 
       assert {:live_redirect, %{to: path, flash: flash}} = redirect
-      assert path == ~p"/users/settings"
+      assert path === ~p"/users/settings"
       assert %{"info" => message} = flash
-      assert message == "Email changed successfully."
+      assert message === "Email changed successfully."
       refute Accounts.get_user_by_email(user.email)
       assert Accounts.get_user_by_email(email)
 
       # use confirm token again
       {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/#{token}")
       assert {:live_redirect, %{to: path, flash: flash}} = redirect
-      assert path == ~p"/users/settings"
+      assert path === ~p"/users/settings"
       assert %{"error" => message} = flash
-      assert message == "Email change link is invalid or it has expired."
+      assert message === "Email change link is invalid or it has expired."
     end
 
     test "does not update email with invalid token", %{conn: conn, user: user} do
       {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/oops")
       assert {:live_redirect, %{to: path, flash: flash}} = redirect
-      assert path == ~p"/users/settings"
+      assert path === ~p"/users/settings"
       assert %{"error" => message} = flash
-      assert message == "Email change link is invalid or it has expired."
+      assert message === "Email change link is invalid or it has expired."
       assert Accounts.get_user_by_email(user.email)
     end
 
@@ -202,9 +210,9 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
       conn = build_conn()
       {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/#{token}")
       assert {:redirect, %{to: path, flash: flash}} = redirect
-      assert path == ~p"/users/log_in"
+      assert path === ~p"/users/log_in"
       assert %{"error" => message} = flash
-      assert message == "You must log in to access this page."
+      assert message === "You must log in to access this page."
     end
   end
 end

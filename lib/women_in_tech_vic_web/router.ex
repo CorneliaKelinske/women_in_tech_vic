@@ -1,7 +1,12 @@
 defmodule WomenInTechVicWeb.Router do
   use WomenInTechVicWeb, :router
 
-  import WomenInTechVicWeb.UserAuth
+  import WomenInTechVicWeb.UserAuth,
+    only: [
+      redirect_if_user_is_authenticated: 2,
+      require_authenticated_user: 2,
+      fetch_current_user: 2
+    ]
 
   pipeline :browser do
     plug :accepts, ["html"]

@@ -3,7 +3,15 @@ defmodule WomenInTechVic.AccountsTest do
 
   alias WomenInTechVic.Accounts
 
-  import WomenInTechVic.AccountsFixtures
+  import WomenInTechVic.AccountsFixtures,
+    only: [
+      user_fixture: 0,
+      valid_user_password: 0,
+      extract_user_token: 1,
+      unique_user_email: 0,
+      valid_user_attributes: 1
+    ]
+
   alias WomenInTechVic.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
@@ -87,7 +95,7 @@ defmodule WomenInTechVic.AccountsTest do
     test "registers users with a hashed password" do
       email = unique_user_email()
       {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
-      assert user.email == email
+      assert user.email === email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
       assert is_nil(user.password)
@@ -97,7 +105,7 @@ defmodule WomenInTechVic.AccountsTest do
   describe "change_user_registration/2" do
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:password, :email]
+      assert changeset.required === [:password, :email]
     end
 
     test "allows fields to be set" do
@@ -111,8 +119,8 @@ defmodule WomenInTechVic.AccountsTest do
         )
 
       assert changeset.valid?
-      assert get_change(changeset, :email) == email
-      assert get_change(changeset, :password) == password
+      assert get_change(changeset, :email) === email
+      assert get_change(changeset, :password) === password
       assert is_nil(get_change(changeset, :hashed_password))
     end
   end
@@ -120,7 +128,7 @@ defmodule WomenInTechVic.AccountsTest do
   describe "change_user_email/2" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_email(%User{})
-      assert changeset.required == [:email]
+      assert changeset.required === [:email]
     end
   end
 
@@ -169,8 +177,8 @@ defmodule WomenInTechVic.AccountsTest do
     test "applies the email without persisting it", %{user: user} do
       email = unique_user_email()
       {:ok, user} = Accounts.apply_user_email(user, valid_user_password(), %{email: email})
-      assert user.email == email
-      assert Accounts.get_user!(user.id).email != email
+      assert user.email === email
+      assert Accounts.get_user!(user.id).email !== email
     end
   end
 
@@ -187,9 +195,9 @@ defmodule WomenInTechVic.AccountsTest do
 
       {:ok, token} = Base.url_decode64(token, padding: false)
       assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
-      assert user_token.user_id == user.id
-      assert user_token.sent_to == user.email
-      assert user_token.context == "change:current@example.com"
+      assert user_token.user_id === user.id
+      assert user_token.sent_to === user.email
+      assert user_token.context === "change:current@example.com"
     end
   end
 
@@ -207,31 +215,31 @@ defmodule WomenInTechVic.AccountsTest do
     end
 
     test "updates the email with a valid token", %{user: user, token: token, email: email} do
-      assert Accounts.update_user_email(user, token) == :ok
+      assert Accounts.update_user_email(user, token) === :ok
       changed_user = Repo.get!(User, user.id)
-      assert changed_user.email != user.email
-      assert changed_user.email == email
+      assert changed_user.email !== user.email
+      assert changed_user.email === email
       assert changed_user.confirmed_at
-      assert changed_user.confirmed_at != user.confirmed_at
+      assert changed_user.confirmed_at !== user.confirmed_at
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not update email with invalid token", %{user: user} do
-      assert Accounts.update_user_email(user, "oops") == :error
-      assert Repo.get!(User, user.id).email == user.email
+      assert Accounts.update_user_email(user, "oops") === :error
+      assert Repo.get!(User, user.id).email === user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not update email if user email changed", %{user: user, token: token} do
-      assert Accounts.update_user_email(%{user | email: "current@example.com"}, token) == :error
-      assert Repo.get!(User, user.id).email == user.email
+      assert Accounts.update_user_email(%{user | email: "current@example.com"}, token) === :error
+      assert Repo.get!(User, user.id).email === user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not update email if token expired", %{user: user, token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      assert Accounts.update_user_email(user, token) == :error
-      assert Repo.get!(User, user.id).email == user.email
+      assert Accounts.update_user_email(user, token) === :error
+      assert Repo.get!(User, user.id).email === user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
   end
@@ -239,7 +247,7 @@ defmodule WomenInTechVic.AccountsTest do
   describe "change_user_password/2" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_password(%User{})
-      assert changeset.required == [:password]
+      assert changeset.required === [:password]
     end
 
     test "allows fields to be set" do
@@ -249,7 +257,7 @@ defmodule WomenInTechVic.AccountsTest do
         })
 
       assert changeset.valid?
-      assert get_change(changeset, :password) == "new valid password"
+      assert get_change(changeset, :password) === "new valid password"
       assert is_nil(get_change(changeset, :hashed_password))
     end
   end
@@ -318,7 +326,7 @@ defmodule WomenInTechVic.AccountsTest do
     test "generates a token", %{user: user} do
       token = Accounts.generate_user_session_token(user)
       assert user_token = Repo.get_by(UserToken, token: token)
-      assert user_token.context == "session"
+      assert user_token.context === "session"
 
       # Creating the same token for another user should fail
       assert_raise Ecto.ConstraintError, fn ->
@@ -340,7 +348,7 @@ defmodule WomenInTechVic.AccountsTest do
 
     test "returns user by token", %{user: user, token: token} do
       assert session_user = Accounts.get_user_by_session_token(token)
-      assert session_user.id == user.id
+      assert session_user.id === user.id
     end
 
     test "does not return user for invalid token" do
@@ -357,7 +365,7 @@ defmodule WomenInTechVic.AccountsTest do
     test "deletes the token" do
       user = user_fixture()
       token = Accounts.generate_user_session_token(user)
-      assert Accounts.delete_user_session_token(token) == :ok
+      assert Accounts.delete_user_session_token(token) === :ok
       refute Accounts.get_user_by_session_token(token)
     end
   end
@@ -375,9 +383,9 @@ defmodule WomenInTechVic.AccountsTest do
 
       {:ok, token} = Base.url_decode64(token, padding: false)
       assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
-      assert user_token.user_id == user.id
-      assert user_token.sent_to == user.email
-      assert user_token.context == "confirm"
+      assert user_token.user_id === user.id
+      assert user_token.sent_to === user.email
+      assert user_token.context === "confirm"
     end
   end
 
@@ -396,20 +404,20 @@ defmodule WomenInTechVic.AccountsTest do
     test "confirms the email with a valid token", %{user: user, token: token} do
       assert {:ok, confirmed_user} = Accounts.confirm_user(token)
       assert confirmed_user.confirmed_at
-      assert confirmed_user.confirmed_at != user.confirmed_at
+      assert confirmed_user.confirmed_at !== user.confirmed_at
       assert Repo.get!(User, user.id).confirmed_at
       refute Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not confirm with invalid token", %{user: user} do
-      assert Accounts.confirm_user("oops") == :error
+      assert Accounts.confirm_user("oops") === :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not confirm email if token expired", %{user: user, token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      assert Accounts.confirm_user(token) == :error
+      assert Accounts.confirm_user(token) === :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
     end
@@ -428,9 +436,9 @@ defmodule WomenInTechVic.AccountsTest do
 
       {:ok, token} = Base.url_decode64(token, padding: false)
       assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
-      assert user_token.user_id == user.id
-      assert user_token.sent_to == user.email
-      assert user_token.context == "reset_password"
+      assert user_token.user_id === user.id
+      assert user_token.sent_to === user.email
+      assert user_token.context === "reset_password"
     end
   end
 
