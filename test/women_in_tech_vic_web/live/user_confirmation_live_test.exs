@@ -2,7 +2,7 @@ defmodule WomenInTechVicWeb.UserConfirmationLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures
+  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0, extract_user_token: 1]
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Repo
@@ -38,7 +38,7 @@ defmodule WomenInTechVicWeb.UserConfirmationLiveTest do
 
       assert Accounts.get_user!(user.id).confirmed_at
       refute get_session(conn, :user_token)
-      assert Repo.all(Accounts.UserToken) == []
+      assert Repo.all(Accounts.UserToken) === []
 
       # when not logged in
       {:ok, lv, _html} = live(conn, ~p"/users/confirm/#{token}")

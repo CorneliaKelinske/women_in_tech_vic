@@ -2,7 +2,9 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures
+
+  import WomenInTechVic.AccountsFixtures,
+    only: [user_fixture: 0, user_fixture: 1, unique_user_email: 0, valid_user_attributes: 1]
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
@@ -45,7 +47,7 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) === ~p"/"
 
       # Now do a logged in request and assert on the menu
       conn = get(conn, "/")

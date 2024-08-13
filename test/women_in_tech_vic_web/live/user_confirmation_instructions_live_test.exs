@@ -2,7 +2,7 @@ defmodule WomenInTechVicWeb.UserConfirmationInstructionsLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures
+  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0]
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Repo
@@ -29,7 +29,7 @@ defmodule WomenInTechVicWeb.UserConfirmationInstructionsLiveTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
                "If your email is in our system"
 
-      assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context == "confirm"
+      assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context === "confirm"
     end
 
     test "does not send confirmation token if user is confirmed", %{conn: conn, user: user} do
@@ -61,7 +61,7 @@ defmodule WomenInTechVicWeb.UserConfirmationInstructionsLiveTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
                "If your email is in our system"
 
-      assert Repo.all(Accounts.UserToken) == []
+      assert Repo.all(Accounts.UserToken) === []
     end
   end
 end

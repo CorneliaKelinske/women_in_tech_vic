@@ -2,7 +2,7 @@ defmodule WomenInTechVicWeb.UserResetPasswordLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures
+  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0, extract_user_token: 1]
 
   alias WomenInTechVic.Accounts
 
@@ -27,7 +27,7 @@ defmodule WomenInTechVicWeb.UserResetPasswordLiveTest do
     test "does not render reset password with invalid token", %{conn: conn} do
       {:error, {:redirect, to}} = live(conn, ~p"/users/reset_password/invalid")
 
-      assert to == %{
+      assert to === %{
                flash: %{"error" => "Reset password link is invalid or it has expired."},
                to: ~p"/"
              }

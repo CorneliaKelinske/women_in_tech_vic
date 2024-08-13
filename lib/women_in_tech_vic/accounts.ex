@@ -6,7 +6,7 @@ defmodule WomenInTechVic.Accounts do
   import Ecto.Query, warn: false
   alias WomenInTechVic.Repo
 
-  alias WomenInTechVic.Accounts.{User, UserToken, UserNotifier}
+  alias WomenInTechVic.Accounts.{User, UserNotifier, UserToken}
 
   ## Database getters
 

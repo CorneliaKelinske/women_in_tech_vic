@@ -4,7 +4,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
   alias Phoenix.LiveView
   alias WomenInTechVic.Accounts
   alias WomenInTechVicWeb.UserAuth
-  import WomenInTechVic.AccountsFixtures
+  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0]
 
   @remember_me_cookie "_women_in_tech_vic_web_user_remember_me"
 
@@ -21,8 +21,8 @@ defmodule WomenInTechVicWeb.UserAuthTest do
     test "stores the user token in the session", %{conn: conn, user: user} do
       conn = UserAuth.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
-      assert get_session(conn, :live_socket_id) == "users_sessions:#{Base.url_encode64(token)}"
-      assert redirected_to(conn) == ~p"/"
+      assert get_session(conn, :live_socket_id) === "users_sessions:#{Base.url_encode64(token)}"
+      assert redirected_to(conn) === ~p"/"
       assert Accounts.get_user_by_session_token(token)
     end
 
@@ -33,16 +33,16 @@ defmodule WomenInTechVicWeb.UserAuthTest do
 
     test "redirects to the configured path", %{conn: conn, user: user} do
       conn = conn |> put_session(:user_return_to, "/hello") |> UserAuth.log_in_user(user)
-      assert redirected_to(conn) == "/hello"
+      assert redirected_to(conn) === "/hello"
     end
 
     test "writes a cookie if remember_me is configured", %{conn: conn, user: user} do
       conn = conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
-      assert get_session(conn, :user_token) == conn.cookies[@remember_me_cookie]
+      assert get_session(conn, :user_token) === conn.cookies[@remember_me_cookie]
 
       assert %{value: signed_token, max_age: max_age} = conn.resp_cookies[@remember_me_cookie]
-      assert signed_token != get_session(conn, :user_token)
-      assert max_age == 5_184_000
+      assert signed_token !== get_session(conn, :user_token)
+      assert max_age === 5_184_000
     end
   end
 
@@ -60,7 +60,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
       refute get_session(conn, :user_token)
       refute conn.cookies[@remember_me_cookie]
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) === ~p"/"
       refute Accounts.get_user_by_session_token(user_token)
     end
 
@@ -79,7 +79,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
       conn = conn |> fetch_cookies() |> UserAuth.log_out_user()
       refute get_session(conn, :user_token)
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) === ~p"/"
     end
   end
 
@@ -87,7 +87,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
     test "authenticates user from session", %{conn: conn, user: user} do
       user_token = Accounts.generate_user_session_token(user)
       conn = conn |> put_session(:user_token, user_token) |> UserAuth.fetch_current_user([])
-      assert conn.assigns.current_user.id == user.id
+      assert conn.assigns.current_user.id === user.id
     end
 
     test "authenticates user from cookies", %{conn: conn, user: user} do
@@ -102,10 +102,10 @@ defmodule WomenInTechVicWeb.UserAuthTest do
         |> put_req_cookie(@remember_me_cookie, signed_token)
         |> UserAuth.fetch_current_user([])
 
-      assert conn.assigns.current_user.id == user.id
-      assert get_session(conn, :user_token) == user_token
+      assert conn.assigns.current_user.id === user.id
+      assert get_session(conn, :user_token) === user_token
 
-      assert get_session(conn, :live_socket_id) ==
+      assert get_session(conn, :live_socket_id) ===
                "users_sessions:#{Base.url_encode64(user_token)}"
     end
 
@@ -125,7 +125,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
       {:cont, updated_socket} =
         UserAuth.on_mount(:mount_current_user, %{}, session, %LiveView.Socket{})
 
-      assert updated_socket.assigns.current_user.id == user.id
+      assert updated_socket.assigns.current_user.id === user.id
     end
 
     test "assigns nil to current_user assign if there isn't a valid user_token", %{conn: conn} do
@@ -135,7 +135,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
       {:cont, updated_socket} =
         UserAuth.on_mount(:mount_current_user, %{}, session, %LiveView.Socket{})
 
-      assert updated_socket.assigns.current_user == nil
+      assert updated_socket.assigns.current_user === nil
     end
 
     test "assigns nil to current_user assign if there isn't a user_token", %{conn: conn} do
@@ -144,7 +144,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
       {:cont, updated_socket} =
         UserAuth.on_mount(:mount_current_user, %{}, session, %LiveView.Socket{})
 
-      assert updated_socket.assigns.current_user == nil
+      assert updated_socket.assigns.current_user === nil
     end
   end
 
@@ -156,7 +156,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
       {:cont, updated_socket} =
         UserAuth.on_mount(:ensure_authenticated, %{}, session, %LiveView.Socket{})
 
-      assert updated_socket.assigns.current_user.id == user.id
+      assert updated_socket.assigns.current_user.id === user.id
     end
 
     test "redirects to login page if there isn't a valid user_token", %{conn: conn} do
@@ -169,7 +169,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
       }
 
       {:halt, updated_socket} = UserAuth.on_mount(:ensure_authenticated, %{}, session, socket)
-      assert updated_socket.assigns.current_user == nil
+      assert updated_socket.assigns.current_user === nil
     end
 
     test "redirects to login page if there isn't a user_token", %{conn: conn} do
@@ -181,7 +181,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
       }
 
       {:halt, updated_socket} = UserAuth.on_mount(:ensure_authenticated, %{}, session, socket)
-      assert updated_socket.assigns.current_user == nil
+      assert updated_socket.assigns.current_user === nil
     end
   end
 
@@ -216,7 +216,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
     test "redirects if user is authenticated", %{conn: conn, user: user} do
       conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_user_is_authenticated([])
       assert conn.halted
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) === ~p"/"
     end
 
     test "does not redirect if user is not authenticated", %{conn: conn} do
@@ -231,9 +231,9 @@ defmodule WomenInTechVicWeb.UserAuthTest do
       conn = conn |> fetch_flash() |> UserAuth.require_authenticated_user([])
       assert conn.halted
 
-      assert redirected_to(conn) == ~p"/users/log_in"
+      assert redirected_to(conn) === ~p"/users/log_in"
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) ===
                "You must log in to access this page."
     end
 
@@ -244,7 +244,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
         |> UserAuth.require_authenticated_user([])
 
       assert halted_conn.halted
-      assert get_session(halted_conn, :user_return_to) == "/foo"
+      assert get_session(halted_conn, :user_return_to) === "/foo"
 
       halted_conn =
         %{conn | path_info: ["foo"], query_string: "bar=baz"}
@@ -252,7 +252,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
         |> UserAuth.require_authenticated_user([])
 
       assert halted_conn.halted
-      assert get_session(halted_conn, :user_return_to) == "/foo?bar=baz"
+      assert get_session(halted_conn, :user_return_to) === "/foo?bar=baz"
 
       halted_conn =
         %{conn | path_info: ["foo"], query_string: "bar", method: "POST"}

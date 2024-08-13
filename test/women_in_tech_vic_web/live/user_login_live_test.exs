@@ -2,7 +2,7 @@ defmodule WomenInTechVicWeb.UserLoginLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures
+  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 1, user_fixture: 0]
 
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do
@@ -36,7 +36,7 @@ defmodule WomenInTechVicWeb.UserLoginLiveTest do
 
       conn = submit_form(form, conn)
 
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) === ~p"/"
     end
 
     test "redirects to login page with a flash error if there are no valid credentials", %{
@@ -51,9 +51,9 @@ defmodule WomenInTechVicWeb.UserLoginLiveTest do
 
       conn = submit_form(form, conn)
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) === "Invalid email or password"
 
-      assert redirected_to(conn) == "/users/log_in"
+      assert redirected_to(conn) === "/users/log_in"
     end
   end
 
