@@ -3,21 +3,20 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
 
   alias WomenInTechVic.Accounts
   import Phoenix.LiveViewTest
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
 
-  import WomenInTechVic.AccountsFixtures,
-    only: [
-      user_fixture: 0,
-      user_fixture: 1,
-      valid_user_password: 0,
-      unique_user_email: 0,
-      extract_user_token: 1
-    ]
+  alias WomenInTechVic.Support.AccountsFixtures
+
+  @valid_password AccountsFixtures.valid_user_password()
+  @unique_user_email AccountsFixtures.unique_user_email()
+
+  setup [:user]
 
   describe "Settings page" do
-    test "renders settings page", %{conn: conn} do
+    test "renders settings page", %{conn: conn, user: user} do
       {:ok, _lv, html} =
         conn
-        |> log_in_user(user_fixture())
+        |> log_in_user(user)
         |> live(~p"/users/settings")
 
       assert html =~ "Change Email"
@@ -34,22 +33,19 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
   end
 
   describe "update email form" do
-    setup %{conn: conn} do
-      password = valid_user_password()
-      user = user_fixture(%{password: password})
-      %{conn: log_in_user(conn, user), user: user, password: password}
+    setup %{conn: conn, user: user} do
+      %{password: @valid_password}
+      %{conn: log_in_user(conn, user), user: user, password: @valid_password}
     end
 
     test "updates the user email", %{conn: conn, password: password, user: user} do
-      new_email = unique_user_email()
-
       {:ok, lv, _html} = live(conn, ~p"/users/settings")
 
       result =
         lv
         |> form("#email_form", %{
           "current_password" => password,
-          "user" => %{"email" => new_email}
+          "user" => %{"email" => @unique_user_email}
         })
         |> render_submit()
 
@@ -92,13 +88,12 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
 
   describe "update password form" do
     setup %{conn: conn} do
-      password = valid_user_password()
-      user = user_fixture(%{password: password})
-      %{conn: log_in_user(conn, user), user: user, password: password}
+      user = AccountsFixtures.user_fixture(%{password: @valid_password})
+      %{conn: log_in_user(conn, user), user: user, password: @valid_password}
     end
 
     test "updates the user password", %{conn: conn, user: user, password: password} do
-      new_password = valid_user_password()
+      new_password = AccountsFixtures.valid_user_password()
 
       {:ok, lv, _html} = live(conn, ~p"/users/settings")
 
@@ -167,16 +162,17 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
   end
 
   describe "confirm email" do
-    setup %{conn: conn} do
-      user = user_fixture()
-      email = unique_user_email()
-
+    setup %{conn: conn, user: user} do
       token =
-        extract_user_token(fn url ->
-          Accounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
+        AccountsFixtures.extract_user_token(fn url ->
+          Accounts.deliver_user_update_email_instructions(
+            %{user | email: @unique_user_email},
+            user.email,
+            url
+          )
         end)
 
-      %{conn: log_in_user(conn, user), token: token, email: email, user: user}
+      %{conn: log_in_user(conn, user), token: token, email: @unique_user_email, user: user}
     end
 
     test "updates the user email once", %{conn: conn, user: user, token: token, email: email} do

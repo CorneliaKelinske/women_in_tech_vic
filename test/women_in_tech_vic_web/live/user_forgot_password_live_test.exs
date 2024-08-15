@@ -2,10 +2,12 @@ defmodule WomenInTechVicWeb.UserForgotPasswordLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Repo
+
+  setup [:user]
 
   describe "Forgot password page" do
     test "renders email page", %{conn: conn} do
@@ -16,10 +18,10 @@ defmodule WomenInTechVicWeb.UserForgotPasswordLiveTest do
       assert has_element?(lv, ~s|a[href="#{~p"/users/log_in"}"]|, "Log in")
     end
 
-    test "redirects if already logged in", %{conn: conn} do
+    test "redirects if already logged in", %{conn: conn, user: user} do
       result =
         conn
-        |> log_in_user(user_fixture())
+        |> log_in_user(user)
         |> live(~p"/users/reset_password")
         |> follow_redirect(conn, ~p"/")
 
@@ -28,10 +30,6 @@ defmodule WomenInTechVicWeb.UserForgotPasswordLiveTest do
   end
 
   describe "Reset link" do
-    setup do
-      %{user: user_fixture()}
-    end
-
     test "sends a new reset password token", %{conn: conn, user: user} do
       {:ok, lv, _html} = live(conn, ~p"/users/reset_password")
 

@@ -2,14 +2,13 @@ defmodule WomenInTechVicWeb.UserConfirmationLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0, extract_user_token: 1]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Repo
+  alias WomenInTechVic.Support.AccountsFixtures
 
-  setup do
-    %{user: user_fixture()}
-  end
+  setup [:user]
 
   describe "Confirm user" do
     test "renders confirmation page", %{conn: conn} do
@@ -19,7 +18,7 @@ defmodule WomenInTechVicWeb.UserConfirmationLiveTest do
 
     test "confirms the given token once", %{conn: conn, user: user} do
       token =
-        extract_user_token(fn url ->
+        AccountsFixtures.extract_user_token(fn url ->
           Accounts.deliver_user_confirmation_instructions(user, url)
         end)
 

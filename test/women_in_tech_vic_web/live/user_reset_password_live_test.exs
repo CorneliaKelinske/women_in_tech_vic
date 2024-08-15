@@ -2,19 +2,20 @@ defmodule WomenInTechVicWeb.UserResetPasswordLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0, extract_user_token: 1]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
 
   alias WomenInTechVic.Accounts
+  alias WomenInTechVic.Support.AccountsFixtures
 
-  setup do
-    user = user_fixture()
+  setup [:user]
 
+  setup(%{user: user}) do
     token =
-      extract_user_token(fn url ->
+      AccountsFixtures.extract_user_token(fn url ->
         Accounts.deliver_user_reset_password_instructions(user, url)
       end)
 
-    %{token: token, user: user}
+    %{token: token}
   end
 
   describe "Reset password page" do

@@ -2,9 +2,13 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
 
-  import WomenInTechVic.AccountsFixtures,
-    only: [user_fixture: 0, user_fixture: 1, unique_user_email: 0, valid_user_attributes: 1]
+  alias WomenInTechVic.Support.AccountsFixtures
+
+  @unique_user_email AccountsFixtures.unique_user_email()
+
+  setup [:user]
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
@@ -14,10 +18,10 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
       assert html =~ "Log in"
     end
 
-    test "redirects if already logged in", %{conn: conn} do
+    test "redirects if already logged in", %{conn: conn, user: user} do
       result =
         conn
-        |> log_in_user(user_fixture())
+        |> log_in_user(user)
         |> live(~p"/users/register")
         |> follow_redirect(conn, "/")
 
@@ -42,8 +46,11 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
     test "creates account and logs the user in", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
-      email = unique_user_email()
-      form = form(lv, "#registration_form", user: valid_user_attributes(email: email))
+      email = @unique_user_email
+
+      form =
+        form(lv, "#registration_form", user: AccountsFixtures.valid_user_attributes(email: email))
+
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
@@ -60,7 +67,7 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
     test "renders errors for duplicated email", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
-      user = user_fixture(%{email: "test@email.com"})
+      user = AccountsFixtures.user_fixture(%{email: "test@email.com"})
 
       result =
         lv

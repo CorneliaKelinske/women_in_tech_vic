@@ -1,4 +1,4 @@
-defmodule WomenInTechVic.AccountsFixtures do
+defmodule WomenInTechVic.Support.AccountsFixtures do
   @moduledoc """
   This module defines test helpers for creating
   entities via the `WomenInTechVic.Accounts` context.

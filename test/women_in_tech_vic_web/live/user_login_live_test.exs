@@ -2,7 +2,10 @@ defmodule WomenInTechVicWeb.UserLoginLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 1, user_fixture: 0]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
+  alias WomenInTechVic.Support.AccountsFixtures
+
+  setup [:user]
 
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do
@@ -13,10 +16,10 @@ defmodule WomenInTechVicWeb.UserLoginLiveTest do
       assert html =~ "Forgot your password?"
     end
 
-    test "redirects if already logged in", %{conn: conn} do
+    test "redirects if already logged in", %{conn: conn, user: user} do
       result =
         conn
-        |> log_in_user(user_fixture())
+        |> log_in_user(user)
         |> live(~p"/users/log_in")
         |> follow_redirect(conn, "/")
 
@@ -27,7 +30,7 @@ defmodule WomenInTechVicWeb.UserLoginLiveTest do
   describe "user login" do
     test "redirects if user login with valid credentials", %{conn: conn} do
       password = "123456789abcd"
-      user = user_fixture(%{password: password})
+      user = AccountsFixtures.user_fixture(%{password: password})
 
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
 

@@ -1,26 +1,24 @@
 defmodule WomenInTechVic.AccountsTest do
   use WomenInTechVic.DataCase
 
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1]
+
   alias WomenInTechVic.Accounts
-
-  import WomenInTechVic.AccountsFixtures,
-    only: [
-      user_fixture: 0,
-      valid_user_password: 0,
-      extract_user_token: 1,
-      unique_user_email: 0,
-      valid_user_attributes: 1
-    ]
-
   alias WomenInTechVic.Accounts.{User, UserToken}
+  alias WomenInTechVic.Support.AccountsFixtures
+
+  @valid_password AccountsFixtures.valid_user_password()
+  @unique_user_email AccountsFixtures.unique_user_email()
+
+  setup [:user, :user_2]
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
       refute Accounts.get_user_by_email("unknown@example.com")
     end
 
-    test "returns the user if the email exists" do
-      %{id: id} = user = user_fixture()
+    test "returns the user if the email exists", %{user: user} do
+      id = user.id
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
     end
   end
@@ -30,16 +28,15 @@ defmodule WomenInTechVic.AccountsTest do
       refute Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!")
     end
 
-    test "does not return the user if the password is not valid" do
-      user = user_fixture()
+    test "does not return the user if the password is not valid", %{user: user} do
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 
-    test "returns the user if the email and password are valid" do
-      %{id: id} = user = user_fixture()
+    test "returns the user if the email and password are valid", %{user: user} do
+      id = user.id
 
       assert %User{id: ^id} =
-               Accounts.get_user_by_email_and_password(user.email, valid_user_password())
+               Accounts.get_user_by_email_and_password(user.email, @valid_password)
     end
   end
 
@@ -50,8 +47,8 @@ defmodule WomenInTechVic.AccountsTest do
       end
     end
 
-    test "returns the user with the given id" do
-      %{id: id} = user = user_fixture()
+    test "returns the user with the given id", %{user: user} do
+      id = user.id
       assert %User{id: ^id} = Accounts.get_user!(user.id)
     end
   end
@@ -82,8 +79,8 @@ defmodule WomenInTechVic.AccountsTest do
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
-    test "validates email uniqueness" do
-      %{email: email} = user_fixture()
+    test "validates email uniqueness", %{user: user} do
+      email = user.email
       {:error, changeset} = Accounts.register_user(%{email: email})
       assert "has already been taken" in errors_on(changeset).email
 
@@ -93,8 +90,8 @@ defmodule WomenInTechVic.AccountsTest do
     end
 
     test "registers users with a hashed password" do
-      email = unique_user_email()
-      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
+      email = @unique_user_email
+      {:ok, user} = Accounts.register_user(AccountsFixtures.valid_user_attributes(email: email))
       assert user.email === email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -109,13 +106,13 @@ defmodule WomenInTechVic.AccountsTest do
     end
 
     test "allows fields to be set" do
-      email = unique_user_email()
-      password = valid_user_password()
+      email = @unique_user_email
+      password = @valid_password
 
       changeset =
         Accounts.change_user_registration(
           %User{},
-          valid_user_attributes(email: email, password: password)
+          AccountsFixtures.valid_user_attributes(email: email, password: password)
         )
 
       assert changeset.valid?
@@ -133,18 +130,14 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "apply_user_email/3" do
-    setup do
-      %{user: user_fixture()}
-    end
-
     test "requires email to change", %{user: user} do
-      {:error, changeset} = Accounts.apply_user_email(user, valid_user_password(), %{})
+      {:error, changeset} = Accounts.apply_user_email(user, @valid_password, %{})
       assert %{email: ["did not change"]} = errors_on(changeset)
     end
 
     test "validates email", %{user: user} do
       {:error, changeset} =
-        Accounts.apply_user_email(user, valid_user_password(), %{email: "not valid"})
+        Accounts.apply_user_email(user, @valid_password, %{email: "not valid"})
 
       assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
     end
@@ -153,14 +146,14 @@ defmodule WomenInTechVic.AccountsTest do
       too_long = String.duplicate("db", 100)
 
       {:error, changeset} =
-        Accounts.apply_user_email(user, valid_user_password(), %{email: too_long})
+        Accounts.apply_user_email(user, @valid_password, %{email: too_long})
 
       assert "should be at most 160 character(s)" in errors_on(changeset).email
     end
 
-    test "validates email uniqueness", %{user: user} do
-      %{email: email} = user_fixture()
-      password = valid_user_password()
+    test "validates email uniqueness", %{user: user, user_2: user_2} do
+      email = user_2.email
+      password = user.password
 
       {:error, changeset} = Accounts.apply_user_email(user, password, %{email: email})
 
@@ -169,27 +162,23 @@ defmodule WomenInTechVic.AccountsTest do
 
     test "validates current password", %{user: user} do
       {:error, changeset} =
-        Accounts.apply_user_email(user, "invalid", %{email: unique_user_email()})
+        Accounts.apply_user_email(user, "invalid", %{email: @unique_user_email})
 
       assert %{current_password: ["is not valid"]} = errors_on(changeset)
     end
 
     test "applies the email without persisting it", %{user: user} do
-      email = unique_user_email()
-      {:ok, user} = Accounts.apply_user_email(user, valid_user_password(), %{email: email})
+      email = @unique_user_email
+      {:ok, user} = Accounts.apply_user_email(user, @valid_password, %{email: email})
       assert user.email === email
       assert Accounts.get_user!(user.id).email !== email
     end
   end
 
   describe "deliver_user_update_email_instructions/3" do
-    setup do
-      %{user: user_fixture()}
-    end
-
     test "sends token through notification", %{user: user} do
       token =
-        extract_user_token(fn url ->
+        AccountsFixtures.extract_user_token(fn url ->
           Accounts.deliver_user_update_email_instructions(user, "current@example.com", url)
         end)
 
@@ -202,16 +191,15 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "update_user_email/2" do
-    setup do
-      user = user_fixture()
-      email = unique_user_email()
+    setup(%{user: user}) do
+      email = @unique_user_email
 
       token =
-        extract_user_token(fn url ->
+        AccountsFixtures.extract_user_token(fn url ->
           Accounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
         end)
 
-      %{user: user, token: token, email: email}
+      %{token: token, email: email}
     end
 
     test "updates the email with a valid token", %{user: user, token: token, email: email} do
@@ -263,13 +251,9 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "update_user_password/3" do
-    setup do
-      %{user: user_fixture()}
-    end
-
     test "validates password", %{user: user} do
       {:error, changeset} =
-        Accounts.update_user_password(user, valid_user_password(), %{
+        Accounts.update_user_password(user, @valid_password, %{
           password: "not valid",
           password_confirmation: "another"
         })
@@ -284,21 +268,21 @@ defmodule WomenInTechVic.AccountsTest do
       too_long = String.duplicate("db", 100)
 
       {:error, changeset} =
-        Accounts.update_user_password(user, valid_user_password(), %{password: too_long})
+        Accounts.update_user_password(user, @valid_password, %{password: too_long})
 
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
     test "validates current password", %{user: user} do
       {:error, changeset} =
-        Accounts.update_user_password(user, "invalid", %{password: valid_user_password()})
+        Accounts.update_user_password(user, "invalid", %{password: @valid_password})
 
       assert %{current_password: ["is not valid"]} = errors_on(changeset)
     end
 
     test "updates the password", %{user: user} do
       {:ok, user} =
-        Accounts.update_user_password(user, valid_user_password(), %{
+        Accounts.update_user_password(user, @valid_password, %{
           password: "new valid password"
         })
 
@@ -310,7 +294,7 @@ defmodule WomenInTechVic.AccountsTest do
       _ = Accounts.generate_user_session_token(user)
 
       {:ok, _} =
-        Accounts.update_user_password(user, valid_user_password(), %{
+        Accounts.update_user_password(user, @valid_password, %{
           password: "new valid password"
         })
 
@@ -319,11 +303,7 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "generate_user_session_token/1" do
-    setup do
-      %{user: user_fixture()}
-    end
-
-    test "generates a token", %{user: user} do
+    test "generates a token", %{user: user, user_2: user_2} do
       token = Accounts.generate_user_session_token(user)
       assert user_token = Repo.get_by(UserToken, token: token)
       assert user_token.context === "session"
@@ -332,7 +312,7 @@ defmodule WomenInTechVic.AccountsTest do
       assert_raise Ecto.ConstraintError, fn ->
         Repo.insert!(%UserToken{
           token: user_token.token,
-          user_id: user_fixture().id,
+          user_id: user_2.id,
           context: "session"
         })
       end
@@ -340,10 +320,9 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "get_user_by_session_token/1" do
-    setup do
-      user = user_fixture()
+    setup(%{user: user}) do
       token = Accounts.generate_user_session_token(user)
-      %{user: user, token: token}
+      %{token: token}
     end
 
     test "returns user by token", %{user: user, token: token} do
@@ -362,8 +341,7 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "delete_user_session_token/1" do
-    test "deletes the token" do
-      user = user_fixture()
+    test "deletes the token", %{user: user} do
       token = Accounts.generate_user_session_token(user)
       assert Accounts.delete_user_session_token(token) === :ok
       refute Accounts.get_user_by_session_token(token)
@@ -371,13 +349,9 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "deliver_user_confirmation_instructions/2" do
-    setup do
-      %{user: user_fixture()}
-    end
-
     test "sends token through notification", %{user: user} do
       token =
-        extract_user_token(fn url ->
+        AccountsFixtures.extract_user_token(fn url ->
           Accounts.deliver_user_confirmation_instructions(user, url)
         end)
 
@@ -390,15 +364,13 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "confirm_user/1" do
-    setup do
-      user = user_fixture()
-
+    setup(%{user: user}) do
       token =
-        extract_user_token(fn url ->
+        AccountsFixtures.extract_user_token(fn url ->
           Accounts.deliver_user_confirmation_instructions(user, url)
         end)
 
-      %{user: user, token: token}
+      %{token: token}
     end
 
     test "confirms the email with a valid token", %{user: user, token: token} do
@@ -424,13 +396,9 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "deliver_user_reset_password_instructions/2" do
-    setup do
-      %{user: user_fixture()}
-    end
-
     test "sends token through notification", %{user: user} do
       token =
-        extract_user_token(fn url ->
+        AccountsFixtures.extract_user_token(fn url ->
           Accounts.deliver_user_reset_password_instructions(user, url)
         end)
 
@@ -443,15 +411,13 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "get_user_by_reset_password_token/1" do
-    setup do
-      user = user_fixture()
-
+    setup(%{user: user}) do
       token =
-        extract_user_token(fn url ->
+        AccountsFixtures.extract_user_token(fn url ->
           Accounts.deliver_user_reset_password_instructions(user, url)
         end)
 
-      %{user: user, token: token}
+      %{token: token}
     end
 
     test "returns the user with valid token", %{user: %{id: id}, token: token} do
@@ -472,10 +438,6 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "reset_user_password/2" do
-    setup do
-      %{user: user_fixture()}
-    end
-
     test "validates password", %{user: user} do
       {:error, changeset} =
         Accounts.reset_user_password(user, %{

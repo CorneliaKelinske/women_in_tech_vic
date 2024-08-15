@@ -2,14 +2,12 @@ defmodule WomenInTechVicWeb.UserConfirmationInstructionsLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Repo
 
-  setup do
-    %{user: user_fixture()}
-  end
+  setup [:user]
 
   describe "Resend confirmation" do
     test "renders the resend confirmation page", %{conn: conn} do
