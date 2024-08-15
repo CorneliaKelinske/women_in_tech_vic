@@ -1,17 +1,17 @@
 defmodule WomenInTechVicWeb.UserSessionControllerTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
-  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0, valid_user_password: 0]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
+  alias WomenInTechVic.Support.AccountsFixtures
 
-  setup do
-    %{user: user_fixture()}
-  end
+  @valid_password AccountsFixtures.valid_user_password()
+  setup [:user]
 
   describe "POST /users/log_in" do
     test "logs the user in", %{conn: conn, user: user} do
       conn =
         post(conn, ~p"/users/log_in", %{
-          "user" => %{"email" => user.email, "password" => valid_user_password()}
+          "user" => %{"email" => user.email, "password" => @valid_password}
         })
 
       assert get_session(conn, :user_token)
@@ -30,7 +30,7 @@ defmodule WomenInTechVicWeb.UserSessionControllerTest do
         post(conn, ~p"/users/log_in", %{
           "user" => %{
             "email" => user.email,
-            "password" => valid_user_password(),
+            "password" => @valid_password,
             "remember_me" => "true"
           }
         })
@@ -46,7 +46,7 @@ defmodule WomenInTechVicWeb.UserSessionControllerTest do
         |> post(~p"/users/log_in", %{
           "user" => %{
             "email" => user.email,
-            "password" => valid_user_password()
+            "password" => @valid_password
           }
         })
 
@@ -61,7 +61,7 @@ defmodule WomenInTechVicWeb.UserSessionControllerTest do
           "_action" => "registered",
           "user" => %{
             "email" => user.email,
-            "password" => valid_user_password()
+            "password" => @valid_password
           }
         })
 
@@ -76,7 +76,7 @@ defmodule WomenInTechVicWeb.UserSessionControllerTest do
           "_action" => "password_updated",
           "user" => %{
             "email" => user.email,
-            "password" => valid_user_password()
+            "password" => @valid_password
           }
         })
 

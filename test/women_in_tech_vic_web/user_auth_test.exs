@@ -4,17 +4,18 @@ defmodule WomenInTechVicWeb.UserAuthTest do
   alias Phoenix.LiveView
   alias WomenInTechVic.Accounts
   alias WomenInTechVicWeb.UserAuth
-  import WomenInTechVic.AccountsFixtures, only: [user_fixture: 0]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
 
   @remember_me_cookie "_women_in_tech_vic_web_user_remember_me"
 
+  setup [:user]
   setup %{conn: conn} do
     conn =
       conn
       |> Map.replace!(:secret_key_base, WomenInTechVicWeb.Endpoint.config(:secret_key_base))
       |> init_test_session(%{})
 
-    %{user: user_fixture(), conn: conn}
+    %{conn: conn}
   end
 
   describe "log_in_user/3" do
