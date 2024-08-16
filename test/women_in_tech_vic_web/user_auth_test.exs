@@ -9,6 +9,7 @@ defmodule WomenInTechVicWeb.UserAuthTest do
   @remember_me_cookie "_women_in_tech_vic_web_user_remember_me"
 
   setup [:user]
+
   setup %{conn: conn} do
     conn =
       conn
