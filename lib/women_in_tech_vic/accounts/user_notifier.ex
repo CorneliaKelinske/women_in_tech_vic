@@ -2,7 +2,10 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
   @moduledoc false
   import Swoosh.Email, only: [new: 0, from: 2, to: 2, subject: 2, text_body: 2]
 
+  alias WomenInTechVic.Accounts.User
   alias WomenInTechVic.Mailer
+
+  @type swoosh_return :: {:ok, Swoosh.Email.t()} | {:error, any()}
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
@@ -21,6 +24,7 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
   @doc """
   Deliver instructions to confirm account.
   """
+  @spec deliver_confirmation_instructions(User.t(), String.t()) :: swoosh_return()
   def deliver_confirmation_instructions(user, url) do
     deliver(user.email, "Confirmation instructions", """
 
@@ -41,6 +45,7 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
   @doc """
   Deliver instructions to reset a user password.
   """
+  @spec deliver_reset_password_instructions(User.t(), String.t()) :: swoosh_return()
   def deliver_reset_password_instructions(user, url) do
     deliver(user.email, "Reset password instructions", """
 
@@ -61,6 +66,7 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
   @doc """
   Deliver instructions to update a user email.
   """
+  @spec deliver_update_email_instructions(User.t(), String.t()) :: swoosh_return()
   def deliver_update_email_instructions(user, url) do
     deliver(user.email, "Update email instructions", """
 
