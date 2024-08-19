@@ -8,7 +8,10 @@ defmodule WomenInTechVic.Accounts.UserToken do
           id: pos_integer() | nil,
           token: binary() | nil,
           context: String.t() | nil,
-          sent_to: String.t() | nil
+          sent_to: String.t() | nil,
+          inserted_at: DateTime.t() | nil,
+          user_id: pos_integer() | nil,
+          user: User.t() | Ecto.Association.NotLoaded.t()
         }
 
   @hash_algorithm :sha256
@@ -25,7 +28,7 @@ defmodule WomenInTechVic.Accounts.UserToken do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
-    belongs_to :user, WomenInTechVic.Accounts.User
+    belongs_to :user, User
 
     timestamps(updated_at: false)
   end

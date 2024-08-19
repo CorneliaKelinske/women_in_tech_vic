@@ -13,6 +13,7 @@ defmodule WomenInTechVic.Repo.Migrations.AddNameFieldsToUsers do
     end
 
     create unique_index(:users, [:username])
+    create unique_index(:users, [:first_name, :last_name])
 
     alter table(:users_tokens) do
       modify :context, :text, null: false

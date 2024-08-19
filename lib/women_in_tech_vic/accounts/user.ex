@@ -3,22 +3,43 @@ defmodule WomenInTechVic.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias WomenInTechVic.Accounts.UserToken
+
   @type t :: %__MODULE__{
           id: pos_integer() | nil,
+          first_name: String.t() | nil,
+          last_name: String.t() | nil,
+          username: String.t() | nil,
+          role: role() | nil,
           email: String.t() | nil,
           password: String.t() | nil,
           hashed_password: String.t() | nil,
           confirmed_at: NaiveDateTime | nil,
           updated_at: DateTime.t() | nil,
-          inserted_at: DateTime.t() | nil
+          inserted_at: DateTime.t() | nil,
+          user_tokens: [UserToken.t()] | Ecto.Association.NotLoaded.t()
         }
+  @type role :: :admin | :member
+
+  @roles [:admin, :member]
+
+  @required [:email, :role, :first_name, :last_name, :username]
+  @cast [:password | @validate_required]
+
+
 
   schema "users" do
+    field :first_name, :string
+    field :last_name, :string
+    field :username, :string
+    field :role, Ecto.Enum, values: @roles, default: :member
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :naive_datetime
+
+    has_many :user_tokens, UserToken
 
     timestamps()
   end
@@ -49,17 +70,19 @@ defmodule WomenInTechVic.Accounts.User do
   @spec registration_changeset(t(), map()) :: Ecto.Changeset.t()
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, @cast)
     |> validate_email(opts)
     |> validate_password(opts)
   end
 
   defp validate_email(changeset, opts) do
     changeset
-    |> validate_required([:email])
+    |> validate_required(@required)
     |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
     |> validate_length(:email, max: 160)
     |> maybe_validate_unique_email(opts)
+    |> unique_constraint(:username)
+    |> unique_constraint([:first_name, :last_name])
   end
 
   defp validate_password(changeset, opts) do
