@@ -11,9 +11,9 @@ defmodule WomenInTechVic.Support.AccountsFixtures do
     Enum.into(attrs, %{
       email: unique_user_email(),
       password: valid_user_password(),
-      first_name: Faker.Person.first_name <> "#{System.unique_integer()}",
-      last_name: Faker.Person.last_name <> "#{System.unique_integer()}",
-      username: Faker.Pokemon.name  <> "#{System.unique_integer()}"
+      first_name: Faker.Person.first_name() <> "#{System.unique_integer()}",
+      last_name: Faker.Person.last_name() <> "#{System.unique_integer()}",
+      username: Faker.Pokemon.name() <> "#{System.unique_integer()}"
     })
   end
 
