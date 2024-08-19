@@ -23,7 +23,7 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
         conn
         |> log_in_user(user)
         |> live(~p"/users/register")
-        |> follow_redirect(conn, "/")
+        |> follow_redirect(conn, "/events")
 
       assert {:ok, _conn} = result
     end
@@ -54,10 +54,10 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
-      assert redirected_to(conn) === ~p"/"
+      assert redirected_to(conn) === ~p"/events"
 
       # Now do a logged in request and assert on the menu
-      conn = get(conn, "/")
+      conn = get(conn, "/events")
       response = html_response(conn, 200)
       assert response =~ email
       assert response =~ "Settings"

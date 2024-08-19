@@ -1,10 +1,10 @@
 defmodule WomenInTechVicWeb.UserSettingsLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
-  alias WomenInTechVic.Accounts
   import Phoenix.LiveViewTest
   import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
 
+  alias WomenInTechVic.Accounts
   alias WomenInTechVic.Support.AccountsFixtures
 
   @valid_password AccountsFixtures.valid_user_password()
