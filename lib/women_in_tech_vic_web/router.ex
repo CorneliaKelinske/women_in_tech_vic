@@ -24,8 +24,6 @@ defmodule WomenInTechVicWeb.Router do
 
   scope "/", WomenInTechVicWeb do
     pipe_through :browser
-
-    get "/", PageController, :home
   end
 
   # Other scopes may use custom stacks.
@@ -54,6 +52,7 @@ defmodule WomenInTechVicWeb.Router do
 
   scope "/", WomenInTechVicWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
+    get "/", PageController, :home
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{WomenInTechVicWeb.UserAuth, :redirect_if_user_is_authenticated}] do
@@ -73,6 +72,7 @@ defmodule WomenInTechVicWeb.Router do
       on_mount: [{WomenInTechVicWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/events", EventLive.Index, :index
     end
   end
 

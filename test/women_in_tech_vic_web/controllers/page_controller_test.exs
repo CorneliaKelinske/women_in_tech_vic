@@ -2,11 +2,25 @@ defmodule WomenInTechVicWeb.PageControllerTest do
   use WomenInTechVicWeb.ConnCase
 
   import WomenInTechVic.Support.Factory, only: [insert: 1, build: 2]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
   alias WomenInTechVic.Content.Event
+  alias WomenInTechVic.Support.AccountsFixtures
+
+  @valid_password AccountsFixtures.valid_user_password()
+  setup [:user]
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")
     assert html_response(conn, 200) =~ ">Welcome to Women in Tech Victoria</h1>\n"
+  end
+
+  test "redirects logged in users", %{conn: conn, user: user} do
+    conn =
+      post(conn, ~p"/users/log_in", %{
+        "user" => %{"email" => user.email, "password" => @valid_password}
+      })
+
+    assert redirected_to(conn) === ~p"/events"
   end
 
   test "shows message when no meeting has been scheduled", %{conn: conn} do
