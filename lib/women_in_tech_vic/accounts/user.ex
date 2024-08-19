@@ -23,8 +23,8 @@ defmodule WomenInTechVic.Accounts.User do
 
   @roles [:admin, :member]
 
-  @required [:email, :role, :first_name, :last_name, :username]
-  @cast [:password | @validate_required]
+  @required [:email, :first_name, :last_name, :username]
+  @cast [:password, :role | @required]
 
 
 
