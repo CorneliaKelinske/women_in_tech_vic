@@ -122,6 +122,34 @@ defmodule WomenInTechVic.AccountsTest do
     end
   end
 
+  describe "find_user/1" do
+    test "finds user by username", %{user: user} do
+      username = user.username
+      assert {:ok, %User{username: ^username}} = Accounts.find_user(%{username: username})
+    end
+
+    test "returns error if no user is found", %{user: user} do
+      assert {:error, %ErrorMessage{code: :not_found, message: "no records found"}} =
+               Accounts.find_user(%{id: user.id + 11})
+    end
+  end
+
+  describe "all users/2" do
+    test "returns a list of  all users" do
+      assert [%User{}, %User{}] = Accounts.all_users(%{})
+    end
+
+    test "returns empty list when no user found", %{user: user} do
+      assert [] = Accounts.all_users(%{id: user.id + 10})
+    end
+  end
+
+  describe "delete user/1" do
+    test "deletes a user", %{user: user} do
+      assert {:ok, %User{}} = Accounts.delete_user(user)
+    end
+  end
+
   describe "change_user_email/2" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_email(%User{})

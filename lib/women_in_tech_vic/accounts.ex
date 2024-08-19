@@ -4,9 +4,12 @@ defmodule WomenInTechVic.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias WomenInTechVic.Repo
 
+  alias EctoShorts.Actions
+  alias WomenInTechVic.Repo
   alias WomenInTechVic.Accounts.{User, UserNotifier, UserToken}
+
+  @type change_res(type) :: ErrorMessage.t_res(type) | {:error, Ecto.Changeset.t()}
 
   ## Database getters
 
@@ -77,6 +80,7 @@ defmodule WomenInTechVic.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
+
   @spec register_user(map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def register_user(attrs) do
     %User{}
@@ -97,6 +101,26 @@ defmodule WomenInTechVic.Accounts do
   @spec change_user_registration(User.t(), map()) :: Ecto.Changeset.t()
   def change_user_registration(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
+  end
+
+  ## User functions using Ecto.Shorts
+
+  @doc false
+  @spec find_user(map) :: ErrorMessage.t_res(User.t())
+  def find_user(params) do
+    Actions.find(User, params)
+  end
+
+  @doc false
+  @spec all_users(map()) :: [User.t()]
+  def all_users(params) do
+    Actions.all(User, params)
+  end
+
+  @doc false
+  @spec delete_user(User.t()) :: change_res(User.t())
+  def delete_user(user) do
+    Actions.delete(user)
   end
 
   ## Settings
