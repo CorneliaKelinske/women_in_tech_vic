@@ -26,8 +26,6 @@ defmodule WomenInTechVic.Accounts.User do
   @required [:email, :first_name, :last_name, :username]
   @cast [:password, :role | @required]
 
-
-
   schema "users" do
     field :first_name, :string
     field :last_name, :string
