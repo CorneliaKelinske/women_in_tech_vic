@@ -3,8 +3,9 @@ defmodule WomenInTechVic.EventLive.IndexTest do
 
   import Phoenix.LiveViewTest
   import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
+  import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1]
 
-  setup [:user]
+  setup [:user, :online_event]
 
   describe "Index page" do
     test "renders settings page", %{conn: conn, user: user} do
@@ -14,6 +15,7 @@ defmodule WomenInTechVic.EventLive.IndexTest do
         |> live(~p"/events")
 
       assert html =~ "Upcoming Events"
+      assert html =~ "meet.google"
     end
 
     test "redirects if user is not logged in", %{conn: conn} do
