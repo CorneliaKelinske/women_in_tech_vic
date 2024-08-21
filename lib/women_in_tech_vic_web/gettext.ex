@@ -5,7 +5,7 @@ defmodule WomenInTechVicWeb.Gettext do
   By using [Gettext](https://hexdocs.pm/gettext),
   your module gains a set of macros for translations, for example:
 
-      import WomenInTechVicWeb.Gettext
+      use Gettext, backend: WomenInTechVicWeb.Gettext
 
       # Simple translation
       gettext("Here is the string to translate")
@@ -20,5 +20,5 @@ defmodule WomenInTechVicWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :women_in_tech_vic
+  use Gettext.Backend, otp_app: :women_in_tech_vic
 end

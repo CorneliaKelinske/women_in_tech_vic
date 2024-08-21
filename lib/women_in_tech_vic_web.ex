@@ -43,7 +43,7 @@ defmodule WomenInTechVicWeb do
         layouts: [html: WomenInTechVicWeb.Layouts]
 
       import Plug.Conn
-      import WomenInTechVicWeb.Gettext
+      use Gettext, backend: WomenInTechVicWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -85,7 +85,7 @@ defmodule WomenInTechVicWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import WomenInTechVicWeb.CoreComponents
-      import WomenInTechVicWeb.Gettext
+      use Gettext, backend: WomenInTechVicWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

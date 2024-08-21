@@ -17,7 +17,7 @@ defmodule WomenInTechVicWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import WomenInTechVicWeb.Gettext
+  use Gettext, backend: WomenInTechVicWeb.Gettext
 
   @doc """
   Renders a modal.
