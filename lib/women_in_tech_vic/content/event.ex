@@ -60,6 +60,8 @@ defmodule WomenInTechVic.Content.Event do
         ~r|https\:\/\/meet.google.com\/|,
         message: "Valid google meet link required for online meeting"
       )
+    else
+      changeset
     end
   end
 
