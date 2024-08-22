@@ -14,4 +14,12 @@ defmodule WomenInTechVic.Utils do
   def format_timestamp(timestamp) do
     Calendar.strftime(timestamp, "%a, %d %B %Y %I:%M %p, %Z")
   end
+
+  @doc "converts UTC timestamp into Weekday, Date, Time, Timezone format in Pacific Time"
+  @spec timestamp_to_formatted_pacific(DateTime.t()) :: String.t()
+  def timestamp_to_formatted_pacific(timestamp) do
+    timestamp
+    |> utc_timestamp_to_pacific!()
+    |> format_timestamp()
+  end
 end

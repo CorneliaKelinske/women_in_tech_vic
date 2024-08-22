@@ -31,12 +31,6 @@ defmodule WomenInTechVicWeb.EventLive.Index do
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do
     event
     |> Map.from_struct()
-    |> Map.put(:scheduled_at, format_scheduled_at(scheduled_at))
-  end
-
-  defp format_scheduled_at(scheduled_at) do
-    scheduled_at
-    |> Utils.utc_timestamp_to_pacific!()
-    |> Utils.format_timestamp()
+    |> Map.put(:scheduled_at, Utils.timestamp_to_formatted_pacific(scheduled_at))
   end
 end
