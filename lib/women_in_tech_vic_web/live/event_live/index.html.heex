@@ -8,14 +8,25 @@
         <p class="text-3xl font-bold text-center mb-2"><%= event.title %></p>
         <p class="text-xl text-center mb-2"><%= event.scheduled_at %></p>
         <p class="text-lg text-center mb-4">
-          <.link
-            href={event.address}
-            class="text-purple-700 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <%= event.address %>
-          </.link>
+          <%= if event.online do %>
+            <.link
+              href={event.address}
+              class="text-purple-700 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <%= event.address %>
+            </.link>
+          <% else %>
+            <.link
+              href={"https://www.google.com/maps/search/?api=1&query=#{URI.encode(event.address)}"}
+              class="text-purple-700 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <%= event.address %>
+            </.link>
+          <% end %>
         </p>
       </div>
       <div class="bg-gray-200 bg-opacity-50 p-4 rounded-b-lg">
