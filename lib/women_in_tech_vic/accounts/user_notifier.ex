@@ -12,7 +12,7 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"WomenInTechVic", "contact@example.com"})
+      |> from({"WomenInTechVic", "donotreply@witv.com"})
       |> subject(subject)
       |> text_body(body)
 
