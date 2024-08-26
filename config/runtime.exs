@@ -100,7 +100,7 @@ if config_env() == :prod do
 
   config :swoosh, local: false
 
-  config :the_little_thinkers_space, TheLittleThinkersSpace.Mailer,
+  config :women_in_tech_vic, WomenInTechVic.Mailer,
     adapter: Swoosh.Adapters.Mailgun,
     api_key: System.get_env("MAILGUN_API_KEY"),
     domain: System.get_env("MAILGUN_DOMAIN")
