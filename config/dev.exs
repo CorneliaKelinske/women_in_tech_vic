@@ -62,7 +62,7 @@ config :women_in_tech_vic, WomenInTechVicWeb.Endpoint,
     ]
   ]
 
-#Config the mailer
+# Config the mailer
 config :women_in_tech_vic, WomenInTechVic.Mailer, adapter: Swoosh.Adapters.Local
 
 # Enable dev routes for dashboard and mailbox

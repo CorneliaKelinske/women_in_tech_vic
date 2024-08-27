@@ -13,23 +13,7 @@
       <%= if @event === "No event scheduled" do %>
         <p class="text-lg text-center p-6"><%= @event %></p>
       <% else %>
-        <div class="p-6">
-          <p class="text-3xl font-bold text-center mb-2"><%= @event.title %></p>
-          <p class="text-xl text-center mb-2"><%= @event.scheduled_at %></p>
-          <p class="text-lg text-center mb-4">
-            <.link
-              href={@event.address}
-              class="text-purple-700 hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <%= @event.address %>
-            </.link>
-          </p>
-        </div>
-        <div class="bg-gray-200 bg-opacity-50 p-4 rounded-b-lg">
-          <p class="text-sm text-justify"><%= @event.description %></p>
-        </div>
+        <.event_display event={@event} />
       <% end %>
     </div>
   </header>
