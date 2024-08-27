@@ -24,7 +24,6 @@ config :women_in_tech_vic, WomenInTechVicWeb.Endpoint,
   pubsub_server: WomenInTechVic.PubSub,
   live_view: [signing_salt: "vg+iBix0"]
 
-
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.14.41",
