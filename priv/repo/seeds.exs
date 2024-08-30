@@ -21,7 +21,8 @@ if Mix.env() !== :test do
     scheduled_at: "2024-08-28T00:00:00Z",
     online: true,
     address: "https://meet.google.com/uam-eyys-bxs",
-    description: "Our bi-weekly online meetup where we can hang out and chat.
+    description:
+      "Our bi-weekly online meetup where we can hang out and chat.
     This meeting is one of the more technical, code-heavy meetings. We are going to use
     https://github.com/rust-lang/rustlings. To make this work on your computer, you will need a code editor
     (e.g., VS code) . The Rustlings repo linked above has excellent instructions for what to do to get set up.
@@ -46,7 +47,8 @@ if Mix.env() !== :test do
     scheduled_at: "2024-09-11T00:00:00Z",
     online: true,
     address: "https://meet.google.com/uam-eyys-bxs",
-    description: "Our bi-weekly online meetup where we can hang out and chat.
+    description:
+      "Our bi-weekly online meetup where we can hang out and chat.
     This meeting is one of the more technical, code-heavy meetings. We are going to use
     https://github.com/rust-lang/rustlings. To make this work on your computer, you will need a code editor
     (e.g., VS code) . The Rustlings repo linked above has excellent instructions for what to do to get set up.
