@@ -85,6 +85,7 @@ defmodule WomenInTechVicWeb.Router do
       on_mount: [{WomenInTechVicWeb.UserAuth, :mount_current_user}] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
+      live "/contact", ContactLive, :new
     end
   end
 end
