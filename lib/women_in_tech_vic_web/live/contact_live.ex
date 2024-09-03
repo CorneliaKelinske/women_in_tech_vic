@@ -1,8 +1,10 @@
 defmodule WomenInTechVicWeb.ContactLive do
   use WomenInTechVicWeb, :live_view
   alias WomenInTechVic.Accounts.User
+  alias WomenInTechVic.Email.{Builder, Contact}
+  alias WomenInTechVic.Mailer
 
-  @form_params %{"email" => nil, "name" => nil, "subject" => nil, "message" => nil}
+  @form_params %{"from_email" => nil, "name" => nil, "subject" => nil, "message" => nil}
 
   def render(assigns) do
     ~H"""
@@ -12,9 +14,15 @@ defmodule WomenInTechVicWeb.ContactLive do
           Contact the Admin
         </.header>
 
-        <.simple_form for={@form} id="contact-form" phx-submit="submit">
+        <.simple_form for={@form} id="contact_form" phx-submit="submit">
           <.input field={@form[:name]} type="text" placeholder="Your name" label="Name" required />
-          <.input field={@form[:email]} type="email" placeholder="Your email" label="Email" required />
+          <.input
+            field={@form[:from_email]}
+            type="email"
+            placeholder="Your email"
+            label="Email"
+            required
+          />
           <.input
             field={@form[:subject]}
             type="text"
@@ -45,13 +53,30 @@ defmodule WomenInTechVicWeb.ContactLive do
   def mount(_params, _session, socket) do
     params =
       case socket.assigns.current_user do
-        %User{email: email, first_name: first_name, last_name: last_name} -> Map.merge(@form_params, %{"email" => email, "name" => "#{first_name} #{last_name}"})
-        _ -> @form_params
+        %User{email: email, first_name: first_name, last_name: last_name} ->
+          Map.merge(@form_params, %{"from_email" => email, "name" => "#{first_name} #{last_name}"})
+
+        _ ->
+          @form_params
       end
-    {:ok, assign(socket, form: to_form(params))}
+
+    {:ok, assign(socket, form: to_form(params, as: :email))}
   end
 
-  def handle_event("submit", _params, socket) do
-    {:noreply, socket}
+  def handle_event("submit", params, socket) do
+    with %Ecto.Changeset{valid?: true, changes: changes} <- Contact.changeset(params),
+         %Swoosh.Email{} = message <- Builder.create_email(changes),
+         {:ok, _} <- Mailer.deliver(message) do
+      info = "Your message has been sent successfully"
+
+      {:noreply,
+       socket
+       |> put_flash(:info, info)
+       |> redirect(to: ~p"/contact")}
+    else
+      _ ->
+        error = "Something went wrong"
+        {:noreply, put_flash(socket, :error, error)}
+    end
   end
 end
