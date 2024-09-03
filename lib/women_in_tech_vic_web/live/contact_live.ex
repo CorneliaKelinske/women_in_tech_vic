@@ -60,7 +60,7 @@ defmodule WomenInTechVicWeb.ContactLive do
           @form_params
       end
 
-    {:ok, assign(socket, form: to_form(params, as: :email))}
+    {:ok, assign(socket, form: to_form(params))}
   end
 
   def handle_event("submit", params, socket) do
