@@ -63,7 +63,7 @@ defmodule WomenInTechVic.MixProject do
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2.3", runtime: Mix.env() == :dev},
-      {:swoosh, "~> 1.3"},
+      {:swoosh, "~> 1.16.12"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
@@ -75,6 +75,7 @@ defmodule WomenInTechVic.MixProject do
       {:ex_machina, "~> 2.8.0", only: :test},
       {:faker, "~> 0.18.0", only: :test},
       {:tzdata, "~> 1.1"},
+      {:ex_robo_cop, "~> 0.1.4"},
 
       # Tooling
       {:ex_check, "~> 0.16", only: :test, runtime: false},

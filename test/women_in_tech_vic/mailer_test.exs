@@ -12,10 +12,8 @@ defmodule WomenInTechVic.MailerTest do
   }
 
   test "deliver/1 delivers an email from a user to a mailbox" do
-
-    email =  Builder.create_email(@valid_params)
+    email = Builder.create_email(@valid_params)
     assert {:ok, %{}} = Mailer.deliver(email)
     assert_email_sent(email)
-
   end
 end

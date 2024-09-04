@@ -3,7 +3,7 @@ defmodule WomenInTechVicWeb.ContactLiveTest do
 
   import Phoenix.LiveViewTest
   import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
-  import Swoosh.TestAssertions, only: [assert_email_sent: 0]
+  import Swoosh.TestAssertions, only: [assert_no_email_sent: 0]
 
   @valid_params %{
     from_email: "tester@test.com",
@@ -22,11 +22,14 @@ defmodule WomenInTechVicWeb.ContactLiveTest do
       assert html =~ "Your email"
     end
 
-    test "successfully sends contact form on submit", %{conn: conn} do
+    test "does not send contact form on submit when incorrect captcha is provided", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/contact")
 
-      render_submit(lv, :submit, @valid_params)
-      assert_email_sent()
+      params = Map.merge(@valid_params, %{not_a_robot: "wrong answer"})
+      html = render_submit(lv, :submit, params)
+      assert html =~ "Your answer did not match the captcha. Please try again"
+
+      assert_no_email_sent()
     end
 
     test "autofills email for logged in user", %{conn: conn, user: user} do
