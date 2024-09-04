@@ -4,7 +4,13 @@ defmodule WomenInTechVicWeb.ContactLive do
   alias WomenInTechVic.Email.{Builder, Contact}
   alias WomenInTechVic.Mailer
 
-  @form_params %{"from_email" => nil, "name" => nil, "subject" => nil, "message" => nil}
+  @form_params %{
+    "from_email" => nil,
+    "name" => nil,
+    "subject" => nil,
+    "message" => nil,
+    "not_a_robot" => nil
+  }
 
   def render(assigns) do
     ~H"""
@@ -38,6 +44,20 @@ defmodule WomenInTechVicWeb.ContactLive do
             required
           />
 
+          <.input
+            field={@form[:not_a_robot]}
+            type="text"
+            placeholder="Please enter the letters shown below"
+            label="I am not a Robot!"
+            required
+          />
+
+          <img
+            src={"data:image/png;base64," <> @captcha_image}
+            alt="CAPTCHA"
+            class="mt-2 block w-full rounded-lg"
+          />
+
           <.button
             phx-disable-with="Sending..."
             class="w-full bg-purple-700 text-white font-semibold py-3 rounded-lg hover:bg-purple-600"
@@ -51,21 +71,37 @@ defmodule WomenInTechVicWeb.ContactLive do
   end
 
   def mount(_params, _session, socket) do
-    params =
-      case socket.assigns.current_user do
-        %User{email: email, first_name: first_name, last_name: last_name} ->
-          Map.merge(@form_params, %{"from_email" => email, "name" => "#{first_name} #{last_name}"})
+    with {captcha_text, captcha_image} <- ExRoboCop.create_captcha() do
+      form_id = ExRoboCop.create_form_id(captcha_text)
 
-        _ ->
-          @form_params
-      end
+      params =
+        case socket.assigns.current_user do
+          %User{email: email, first_name: first_name, last_name: last_name} ->
+            Map.merge(@form_params, %{
+              "from_email" => email,
+              "name" => "#{first_name} #{last_name}"
+            })
 
-    {:ok, assign(socket, form: to_form(params))}
+          _ ->
+            @form_params
+        end
+
+      socket =
+        socket
+        |> assign(form: to_form(params))
+        |> assign(captcha_image: captcha_image)
+        |> assign(form_id: form_id)
+
+      {:ok, socket}
+    end
   end
 
-  def handle_event("submit", params, socket) do
-    with %Ecto.Changeset{valid?: true, changes: changes} <- Contact.changeset(params),
-         %Swoosh.Email{} = message <- Builder.create_email(changes),
+  def handle_event("submit", %{"not_a_robot" => not_a_robot} = params, socket) do
+    changeset = Contact.changeset(params)
+
+    with {:ok, content} <- Ecto.Changeset.apply_action(changeset, :insert),
+         :ok <- ExRoboCop.not_a_robot?({not_a_robot, socket.assigns.form_id}),
+         %Swoosh.Email{} = message <- Builder.create_email(content),
          {:ok, _} <- Mailer.deliver(message) do
       info = "Your message has been sent successfully"
 
@@ -74,9 +110,29 @@ defmodule WomenInTechVicWeb.ContactLive do
        |> put_flash(:info, info)
        |> redirect(to: ~p"/contact")}
     else
-      _ ->
-        error = "Something went wrong"
-        {:noreply, put_flash(socket, :error, error)}
+      {:error, :wrong_captcha} = error ->
+        with {captcha_text, captcha_image} <- ExRoboCop.create_captcha() do
+          form_id = ExRoboCop.create_form_id(captcha_text)
+
+          socket =
+            socket
+            |> put_flash(:error, build_error_message(error))
+            |> assign(captcha_image: captcha_image)
+            |> assign(form_id: form_id)
+
+          {:noreply, socket}
+        end
+
+      error ->
+        {:noreply, put_flash(socket, :error, build_error_message(error))}
     end
   end
+
+  defp build_error_message({:error, :wrong_captcha}),
+    do: "Your answer did not match the captcha. Please try again!"
+
+  defp build_error_message({:error, %Ecto.Changeset{errors: [message: {message, _}]}}),
+    do: message
+
+  defp build_error_message(_), do: "Something went wrong"
 end

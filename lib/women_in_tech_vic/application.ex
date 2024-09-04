@@ -17,9 +17,9 @@ defmodule WomenInTechVic.Application do
       # Start Finch
       {Finch, name: WomenInTechVic.Finch},
       # Start the Endpoint (http/https)
-      WomenInTechVicWeb.Endpoint
+      WomenInTechVicWeb.Endpoint,
       # Start a worker by calling: WomenInTechVic.Worker.start_link(arg)
-      # {WomenInTechVic.Worker, arg}
+      ExRoboCop.start()
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
