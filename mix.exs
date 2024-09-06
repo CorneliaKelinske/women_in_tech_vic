@@ -75,7 +75,7 @@ defmodule WomenInTechVic.MixProject do
       {:ex_machina, "~> 2.8.0", only: :test},
       {:faker, "~> 0.18.0", only: :test},
       {:tzdata, "~> 1.1"},
-      {:ex_robo_cop, "~> 0.1.4"},
+      {:ex_robo_cop, git: "https://github.com/CorneliaKelinske/ex_robo_cop"},
 
       # Tooling
       {:ex_check, "~> 0.16", only: :test, runtime: false},
