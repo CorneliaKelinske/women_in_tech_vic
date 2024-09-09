@@ -36,7 +36,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
     ~H"""
     <.link
       href={@event.address}
-      class="text-purple-700 hover:underline"
+      class="text-purple-700 hover:underline hover:text-blue-800"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -49,7 +49,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
     ~H"""
     <.link
       href={"https://www.google.com/maps/search/?api=1&query=#{URI.encode(@event.address)}"}
-      class="text-purple-700 hover:underline"
+      class="text-purple-700 hover:underline hover:text-blue-800"
       target="_blank"
       rel="noopener noreferrer"
     >
