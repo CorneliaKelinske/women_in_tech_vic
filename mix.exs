@@ -8,7 +8,7 @@ defmodule WomenInTechVic.MixProject do
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      aliases: aliases(),
+      aliases: aliases(Mix.env()),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
@@ -92,14 +92,22 @@ defmodule WomenInTechVic.MixProject do
   #     $ mix setup
   #
   # See the documentation for `Mix` for more info on aliases.
-  defp aliases do
+  defp aliases(env) do
     [
       setup: ["deps.get", "ecto.setup", "assets.setup"],
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.setup": ecto_setup(env),
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]
+  end
+
+  defp ecto_setup(:dev) do
+    ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"]
+  end
+
+  defp ecto_setup(_) do
+    ["ecto.create", "ecto.migrate"]
   end
 end
