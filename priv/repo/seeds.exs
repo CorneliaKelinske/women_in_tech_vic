@@ -1,6 +1,6 @@
-if Mix.env() !== :test do
   alias WomenInTechVic.Content
 
+  IO.puts("Seeding data")
   Content.create_event(%{
     title: "Bi-weekly online meeting",
     scheduled_at: "2024-08-14T00:00:00Z",
@@ -76,4 +76,4 @@ if Mix.env() !== :test do
     If you missed the last meeting, don't worry! The progress we make in each meeting will be committed to this repo: https://github.com/CorneliaKelinske/rustlings_meetup"
   })
 
-end
+
