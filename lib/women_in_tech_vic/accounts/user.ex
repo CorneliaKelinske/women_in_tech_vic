@@ -42,6 +42,16 @@ defmodule WomenInTechVic.Accounts.User do
     timestamps()
   end
 
+  @doc "This is the changeset used in Accounts.update_user/2"
+  @spec changeset(t(), map()) :: Ecto.Changeset.t(t)
+  def changeset(%__MODULE__{} = user, params \\ %{}) do
+    user
+    |> cast(params, @cast)
+    |> validate_required(@required)
+    |> unique_constraint(:username)
+    |> unique_constraint([:first_name, :last_name])
+  end
+
   @doc """
   A user changeset for registration.
 
