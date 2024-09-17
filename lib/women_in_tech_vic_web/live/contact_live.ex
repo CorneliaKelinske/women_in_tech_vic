@@ -71,29 +71,24 @@ defmodule WomenInTechVicWeb.ContactLive do
   end
 
   def mount(_params, _session, socket) do
-    with {captcha_text, captcha_image} <- ExRoboCop.create_captcha() do
-      form_id = ExRoboCop.create_form_id(captcha_text)
+    params =
+      case socket.assigns.current_user do
+        %User{email: email, first_name: first_name, last_name: last_name} ->
+          Map.merge(@form_params, %{
+            "from_email" => email,
+            "name" => "#{first_name} #{last_name}"
+          })
 
-      params =
-        case socket.assigns.current_user do
-          %User{email: email, first_name: first_name, last_name: last_name} ->
-            Map.merge(@form_params, %{
-              "from_email" => email,
-              "name" => "#{first_name} #{last_name}"
-            })
+        _ ->
+          @form_params
+      end
 
-          _ ->
-            @form_params
-        end
+    socket =
+      socket
+      |> assign(form: to_form(params))
+      |> assign_captcha_image_and_form_id()
 
-      socket =
-        socket
-        |> assign(form: to_form(params))
-        |> assign(captcha_image: captcha_image)
-        |> assign(form_id: form_id)
-
-      {:ok, socket}
-    end
+    {:ok, socket}
   end
 
   def handle_event("submit", %{"not_a_robot" => not_a_robot} = params, socket) do
@@ -111,17 +106,12 @@ defmodule WomenInTechVicWeb.ContactLive do
        |> redirect(to: ~p"/contact")}
     else
       {:error, :wrong_captcha} = error ->
-        with {captcha_text, captcha_image} <- ExRoboCop.create_captcha() do
-          form_id = ExRoboCop.create_form_id(captcha_text)
+        socket =
+          socket
+          |> put_flash(:error, build_error_message(error))
+          |> assign_captcha_image_and_form_id()
 
-          socket =
-            socket
-            |> put_flash(:error, build_error_message(error))
-            |> assign(captcha_image: captcha_image)
-            |> assign(form_id: form_id)
-
-          {:noreply, socket}
-        end
+        {:noreply, socket}
 
       error ->
         {:noreply, put_flash(socket, :error, build_error_message(error))}
@@ -135,4 +125,10 @@ defmodule WomenInTechVicWeb.ContactLive do
     do: message
 
   defp build_error_message(_), do: "Something went wrong"
+
+  defp assign_captcha_image_and_form_id(socket) do
+    {captcha_text, captcha_image} = ExRoboCop.create_captcha()
+    form_id = ExRoboCop.create_form_id(captcha_text)
+    assign(socket, captcha_image: captcha_image, form_id: form_id)
+  end
 end
