@@ -7,6 +7,8 @@ defmodule WomenInTechVic.Content.Event do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias WomenInTechVic.Accounts.User
+
   @type t :: %__MODULE__{
           id: pos_integer() | nil,
           title: String.t(),
@@ -14,11 +16,13 @@ defmodule WomenInTechVic.Content.Event do
           online: boolean(),
           address: String.t(),
           description: String.t(),
+          user_id: pos_integer(),
+          user: User.t() | Ecto.Association.NotLoaded.t(),
           updated_at: DateTime.t() | nil,
           inserted_at: DateTime.t() | nil
         }
 
-  @required [:title, :scheduled_at, :online, :address, :description]
+  @required [:title, :scheduled_at, :online, :address, :description, :user_id]
   @enforce_keys @required
 
   schema "events" do
@@ -27,6 +31,8 @@ defmodule WomenInTechVic.Content.Event do
     field :online, :boolean
     field :address, :string
     field :description, :string
+
+    belongs_to :user, User
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -48,6 +54,7 @@ defmodule WomenInTechVic.Content.Event do
     |> validate_required(@required)
     |> maybe_validate_online_address()
     |> unique_constraint(:scheduled_at)
+    |> foreign_key_constraint(:user_id)
   end
 
   defp maybe_validate_online_address(%Ecto.Changeset{valid?: true} = changeset) do

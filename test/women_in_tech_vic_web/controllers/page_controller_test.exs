@@ -28,9 +28,10 @@ defmodule WomenInTechVicWeb.PageControllerTest do
     assert html_response(conn, 200) =~ "No event scheduled"
   end
 
-  test "shows event title when meeting has been scheduled", %{conn: conn} do
+  test "shows event title when meeting has been scheduled", %{conn: conn, user: user} do
     :online_event
     |> build(title: "Bi-weekly online meeting")
+    |> Map.put(:user_id, user.id)
     |> then(&struct!(Event, &1))
     |> insert()
 

@@ -11,20 +11,22 @@ defmodule WomenInTechVic.Support.ContentTestSetup do
   import WomenInTechVic.Support.Factory, only: [insert: 1, build: 1]
   alias WomenInTechVic.Content.Event
 
-  def online_event(_) do
+  def online_event(%{user: user}) do
     online_event =
       :online_event
       |> build()
+      |> Map.put(:user_id, user.id)
       |> then(&struct!(Event, &1))
       |> insert()
 
     %{online_event: online_event}
   end
 
-  def in_person_event(_) do
+  def in_person_event(%{user: user}) do
     in_person_event =
       :in_person_event
       |> build()
+      |> Map.put(:user_id, user.id)
       |> then(&struct!(Event, &1))
       |> insert()
 

@@ -4,6 +4,7 @@ defmodule WomenInTechVic.Accounts.User do
   import Ecto.Changeset
 
   alias WomenInTechVic.Accounts.UserToken
+  alias WomenInTechVic.Content.Event
 
   @type t :: %__MODULE__{
           id: pos_integer() | nil,
@@ -17,7 +18,8 @@ defmodule WomenInTechVic.Accounts.User do
           confirmed_at: NaiveDateTime | nil,
           updated_at: DateTime.t() | nil,
           inserted_at: DateTime.t() | nil,
-          user_tokens: [UserToken.t()] | Ecto.Association.NotLoaded.t()
+          user_tokens: [UserToken.t()] | Ecto.Association.NotLoaded.t(),
+          events: [Event.t()] | Ecto.Association.NotLoaded.t()
         }
   @type role :: :admin | :member
 
@@ -38,6 +40,7 @@ defmodule WomenInTechVic.Accounts.User do
     field :confirmed_at, :naive_datetime
 
     has_many :user_tokens, UserToken
+    has_many :events, Event
 
     timestamps()
   end
