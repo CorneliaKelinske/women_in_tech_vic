@@ -3,15 +3,19 @@ defmodule WomenInTechVic.ContentTest do
 
   import WomenInTechVic.Support.Factory, only: [build: 1]
   import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
 
   alias WomenInTechVic.Content
   alias WomenInTechVic.Content.Event
 
-  setup [:online_event]
+  setup [:user, :online_event]
 
   describe "create_event/1" do
-    test "successfully creates event when given correct params but does not create 2 events at the same date" do
-      event_params = build(:online_event)
+    test "successfully creates event when given correct params but does not create 2 events at the same date", %{user: user} do
+      event_params =
+        :online_event
+        |> build()
+        |> Map.put(:user_id, user.id)
       assert {:ok, %Event{online: true}} = Content.create_event(event_params)
       assert {:error, %Ecto.Changeset{errors: errors}} = Content.create_event(event_params)
 

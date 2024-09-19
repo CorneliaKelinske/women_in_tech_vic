@@ -1,8 +1,23 @@
+alias WomenInTechVic.Accounts
 alias WomenInTechVic.Content
+
+
+IO.puts("Seeding a user")
+Accounts.register_user(%{
+  first_name: "Cornelia",
+  last_name: "Kelinske",
+  username: "connie",
+  role: :admin,
+  email: "corneliakelinske@gmail.com",
+  password: "Password1234"
+})
+
+user = Accounts.get_user_by_email("corneliakelinske@gmail.com")
 
 IO.puts("Seeding data")
 
 Content.create_event(%{
+  user_id: user.id,
   title: "Bi-weekly online meeting",
   scheduled_at: "2024-08-14T00:00:00Z",
   online: true,
@@ -18,6 +33,7 @@ Content.create_event(%{
 })
 
 Content.create_event(%{
+  user_id: user.id,
   title: "Bi-weekly online meeting",
   scheduled_at: "2024-09-25T00:00:00Z",
   online: true,
@@ -34,6 +50,7 @@ Content.create_event(%{
 })
 
 Content.create_event(%{
+  user_id: user.id,
   title: "Nachos and Beer",
   scheduled_at: "2024-10-20T00:00:00Z",
   online: false,
@@ -45,6 +62,7 @@ Content.create_event(%{
 })
 
 Content.create_event(%{
+  user_id: user.id,
   title: "Bi-weekly online meeting",
   scheduled_at: "2024-10-09T00:00:00Z",
   online: true,
@@ -61,6 +79,7 @@ Content.create_event(%{
 })
 
 Content.create_event(%{
+  user_id: user.id,
   title: "Bi-weekly online meeting",
   scheduled_at: "2024-10-23T00:00:00Z",
   online: true,
