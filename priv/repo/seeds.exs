@@ -1,8 +1,8 @@
 alias WomenInTechVic.Accounts
 alias WomenInTechVic.Content
 
-
 IO.puts("Seeding a user")
+
 Accounts.register_user(%{
   first_name: "Cornelia",
   last_name: "Kelinske",

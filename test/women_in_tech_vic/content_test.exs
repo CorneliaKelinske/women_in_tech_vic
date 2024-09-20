@@ -11,11 +11,13 @@ defmodule WomenInTechVic.ContentTest do
   setup [:user, :online_event]
 
   describe "create_event/1" do
-    test "successfully creates event when given correct params but does not create 2 events at the same date", %{user: user} do
+    test "successfully creates event when given correct params but does not create 2 events at the same date",
+         %{user: user} do
       event_params =
         :online_event
         |> build()
         |> Map.put(:user_id, user.id)
+
       assert {:ok, %Event{online: true}} = Content.create_event(event_params)
       assert {:error, %Ecto.Changeset{errors: errors}} = Content.create_event(event_params)
 
