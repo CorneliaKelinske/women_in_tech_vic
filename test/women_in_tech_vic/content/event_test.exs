@@ -17,7 +17,6 @@ defmodule WomenInTechVic.Content.EventTest do
                address: {"can't be blank", [validation: :required]},
                description: {"can't be blank", [validation: :required]},
                user_id: {"can't be blank", [validation: :required]}
-
              ] = errors
     end
 
