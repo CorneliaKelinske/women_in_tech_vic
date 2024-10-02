@@ -19,7 +19,8 @@ defmodule WomenInTechVic.Accounts.User do
           updated_at: DateTime.t() | nil,
           inserted_at: DateTime.t() | nil,
           user_tokens: [UserToken.t()] | Ecto.Association.NotLoaded.t(),
-          events: [Event.t()] | Ecto.Association.NotLoaded.t()
+          events: [Event.t()] | Ecto.Association.NotLoaded.t(),
+          attending_events: [Event.t()] | Ecto.Association.NotLoaded.t()
         }
   @type role :: :admin | :member
 
@@ -41,6 +42,8 @@ defmodule WomenInTechVic.Accounts.User do
 
     has_many :user_tokens, UserToken
     has_many :events, Event
+
+    many_to_many :attending_events, Event, join_through: "events_users", on_replace: :delete
 
     timestamps()
   end
