@@ -18,6 +18,7 @@ defmodule WomenInTechVic.Content.Event do
           description: String.t(),
           user_id: pos_integer(),
           user: User.t() | Ecto.Association.NotLoaded.t(),
+          attendees: [User.t()] | Ecto.Association.NotLoaded.t(),
           updated_at: DateTime.t() | nil,
           inserted_at: DateTime.t() | nil
         }
@@ -33,6 +34,7 @@ defmodule WomenInTechVic.Content.Event do
     field :description, :string
 
     belongs_to :user, User
+    many_to_many :attendees, User, join_through: "events_users"
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -53,6 +55,7 @@ defmodule WomenInTechVic.Content.Event do
     |> cast(params, @required)
     |> validate_required(@required)
     |> maybe_validate_online_address()
+    |> EctoShorts.CommonChanges.preload_change_assoc(:attendees)
     |> unique_constraint(:scheduled_at)
     |> foreign_key_constraint(:user_id)
   end
