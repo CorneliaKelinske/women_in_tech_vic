@@ -27,7 +27,8 @@ defmodule WomenInTechVic.Content.EventTest do
         online: true,
         address: "https://meet.google.com/",
         scheduled_at: DateTime.utc_now(),
-        user_id: user.id
+        user_id: user.id,
+        attendees: [user]
       }
 
       assert %Ecto.Changeset{valid?: true} = Event.create_changeset(params)
