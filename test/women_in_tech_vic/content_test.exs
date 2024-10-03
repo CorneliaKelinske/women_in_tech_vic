@@ -3,7 +3,7 @@ defmodule WomenInTechVic.ContentTest do
 
   import WomenInTechVic.Support.Factory, only: [build: 1]
   import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1]
-  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1]
 
   alias WomenInTechVic.Accounts.User
   alias WomenInTechVic.Content
@@ -17,7 +17,7 @@ defmodule WomenInTechVic.ContentTest do
       event_params =
         :online_event
         |> build()
-        |> Map.put(:user_id, user.id)
+        |> Map.merge(%{user_id: user.id, attendees: [user]})
 
       assert {:ok, %Event{online: true}} = Content.create_event(event_params)
       assert {:error, %Ecto.Changeset{errors: errors}} = Content.create_event(event_params)
@@ -70,15 +70,6 @@ defmodule WomenInTechVic.ContentTest do
                Content.update_event(online_event, update_params)
     end
 
-    test "updates list of attendees when passed in", %{online_event: online_event, user: user} do
-      event_id = online_event.id
-      update_params = %{attendees: [user]}
-      user_id = user.id
-
-      assert {:ok, %Event{online: true, id: ^event_id, attendees: [%User{id: ^user_id}]}} =
-               Content.update_event(event_id, update_params)
-    end
-
     test "returns error when event does not exist", %{online_event: online_event} do
       event_id = online_event.id
       update_params = %{title: "new title"}
@@ -95,6 +86,23 @@ defmodule WomenInTechVic.ContentTest do
 
       assert {:error, %Ecto.Changeset{valid?: false}} =
                Content.update_event(event_id, update_params)
+    end
+  end
+
+  describe "update attendance/2" do
+    setup [:user_2]
+
+    test "adds users to attendees list or removes them if they are on the existing list", %{
+      online_event: online_event,
+      user: user,
+      user_2: user_2
+    } do
+      assert {:ok, %Event{attendees: [^user]}} = Content.update_attendance(online_event, user)
+
+      assert {:ok, %Event{attendees: [%User{}, %User{}]}} =
+               Content.update_attendance(online_event, user_2)
+
+      assert {:ok, %Event{attendees: [^user_2]}} = Content.update_attendance(online_event, user)
     end
   end
 

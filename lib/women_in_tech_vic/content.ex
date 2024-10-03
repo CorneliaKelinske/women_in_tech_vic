@@ -4,7 +4,9 @@ defmodule WomenInTechVic.Content do
   """
 
   alias EctoShorts.Actions
+  alias WomenInTechVic.Accounts.User
   alias WomenInTechVic.Content.Event
+  alias WomenInTechVic.Repo
 
   @type change_res(type) :: ErrorMessage.t_res(type) | {:error, Ecto.Changeset.t()}
 
@@ -33,6 +35,21 @@ defmodule WomenInTechVic.Content do
   @spec update_event(Event.t(), map()) :: change_res(Event.t())
   def update_event(id_or_schema, params) do
     Actions.update(Event, id_or_schema, params)
+  end
+
+  @spec update_attendance(Event.t(), User.t()) :: change_res(Event.t())
+  def update_attendance(event, %User{} = attendee) do
+    %Event{attendees: attendees} = event = Repo.preload(event, :attendees)
+
+    updated_attendees =
+      case Enum.find_index(attendees, &(&1.id === attendee.id)) do
+        nil -> [attendee | attendees]
+        index -> List.delete_at(attendees, index)
+      end
+
+    event
+    |> Event.update_changeset(%{attendees: updated_attendees})
+    |> Repo.update()
   end
 
   @doc false

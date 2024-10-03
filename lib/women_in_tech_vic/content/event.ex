@@ -34,7 +34,7 @@ defmodule WomenInTechVic.Content.Event do
     field :description, :string
 
     belongs_to :user, User
-    many_to_many :attendees, User, join_through: "events_users"
+    many_to_many :attendees, User, join_through: "events_users", on_replace: :delete
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -55,9 +55,14 @@ defmodule WomenInTechVic.Content.Event do
     |> cast(params, @required)
     |> validate_required(@required)
     |> maybe_validate_online_address()
-    |> EctoShorts.CommonChanges.preload_change_assoc(:attendees)
     |> unique_constraint(:scheduled_at)
     |> foreign_key_constraint(:user_id)
+  end
+
+  def update_changeset(event, %{attendees: attendees} = params) do
+    event
+    |> changeset(params)
+    |> put_assoc(:attendees, attendees)
   end
 
   defp maybe_validate_online_address(%Ecto.Changeset{valid?: true} = changeset) do

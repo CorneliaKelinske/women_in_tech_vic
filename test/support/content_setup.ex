@@ -15,7 +15,7 @@ defmodule WomenInTechVic.Support.ContentTestSetup do
     online_event =
       :online_event
       |> build()
-      |> Map.put(:user_id, user.id)
+      |> Map.merge(%{user_id: user.id})
       |> then(&struct!(Event, &1))
       |> insert()
 
@@ -26,7 +26,7 @@ defmodule WomenInTechVic.Support.ContentTestSetup do
     in_person_event =
       :in_person_event
       |> build()
-      |> Map.put(:user_id, user.id)
+      |> Map.merge(%{user_id: user.id})
       |> then(&struct!(Event, &1))
       |> insert()
 
