@@ -3,7 +3,9 @@ defmodule WomenInTechVicWeb.CustomComponents do
 
   use Phoenix.Component
 
+  attr :user, :map, required: true
   attr :event, :map, required: true
+  attr :show_attendees, :boolean, default: false
 
   @doc """
   Renders an event.
@@ -15,7 +17,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
   """
   def event_display(assigns) do
     ~H"""
-    <div class="p-6">
+    <div class="p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
       <p class="text-3xl font-bold text-center mb-2"><%= @event.title %></p>
       <p class="text-xl text-center mb-2"><%= @event.scheduled_at %></p>
       <p class="text-lg text-center mb-4">
@@ -25,9 +27,22 @@ defmodule WomenInTechVicWeb.CustomComponents do
           <.in_person_event_address event={@event} />
         <% end %>
       </p>
-    </div>
-    <div class="bg-gray-200 bg-opacity-50 p-4 rounded-b-lg">
-      <p class="text-sm text-justify"><%= @event.description %></p>
+      <!-- Description with light grey background -->
+      <div>
+        <p class="text-sm text-justify"><%= @event.description %></p>
+      </div>
+      <%= if @show_attendees do %>
+        <div class="mt-4 flex justify-center">
+          <button
+            phx-click="rsvp"
+            phx-value-event_id={@event.id}
+            phx-value-user_id={@user.id}
+            class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
+          >
+            RSVP
+          </button>
+        </div>
+      <% end %>
     </div>
     """
   end

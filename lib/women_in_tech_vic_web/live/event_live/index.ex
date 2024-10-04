@@ -3,6 +3,8 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
   import WomenInTechVicWeb.CustomComponents, only: [event_display: 1]
 
+  alias WomenInTechVic.Accounts
+  alias WomenInTechVic.Accounts.User
   alias WomenInTechVic.{Content, Utils}
   alias WomenInTechVic.Content.Event
 
@@ -14,6 +16,17 @@ defmodule WomenInTechVicWeb.EventLive.Index do
      socket
      |> assign_title(@title)
      |> assign_events()}
+  end
+
+  @impl true
+  def handle_event("rsvp", %{"event_id" => event_id, "user_id" => user_id}, socket) do
+    with {:ok, %Event{} = event} <- Content.find_event(%{id: String.to_integer(event_id)}),
+         {:ok, %User{} = user} <- Accounts.find_user(%{id: String.to_integer(user_id)}),
+         {:ok, %Event{}} <- Content.update_attendance(event, user) do
+      {:noreply, assign_events(socket)}
+    else
+      _ -> {:noreply, socket}
+    end
   end
 
   defp assign_title(socket, title), do: assign(socket, title: title)

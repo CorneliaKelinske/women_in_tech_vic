@@ -3,6 +3,11 @@
   <%= if @events === "No event scheduled" do %>
     <p class="text-lg text-center p-6"><%= @events %></p>
   <% else %>
-    <.event_display :for={event <- @events} event={event} />
+    <.event_display
+      :for={event <- @events}
+      event={event}
+      show_attendees={true}
+      user={@current_user}
+    />
   <% end %>
 </div>
