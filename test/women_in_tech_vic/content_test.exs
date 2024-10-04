@@ -45,7 +45,13 @@ defmodule WomenInTechVic.ContentTest do
   describe "all events/2" do
     test "returns a list of  all events", %{online_event: online_event} do
       event_id = online_event.id
-      assert [%Event{id: ^event_id, online: true}] = Content.all_events(%{})
+      assert [%Event{id: ^event_id, online: true, attendees: []}] = Content.all_events(%{})
+    end
+
+    test "preloads attendees if any", %{online_event: online_event, user: user} do
+      event_id = online_event.id
+      assert {:ok, %Event{attendees: [^user]}} = Content.update_attendance(online_event, user)
+      assert [%Event{id: ^event_id, online: true, attendees: [^user]}] = Content.all_events(%{})
     end
 
     test "returns empty list when no event found" do

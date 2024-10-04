@@ -27,6 +27,7 @@ defmodule WomenInTechVic.Content do
   @doc false
   @spec all_events(map()) :: [Event.t()]
   def all_events(params) do
+    params = Map.put(params, :preload, [:attendees])
     Actions.all(Event, params)
   end
 
