@@ -50,7 +50,10 @@ defmodule WomenInTechVic.ContentTest do
 
     test "preloads attendees if any", %{online_event: online_event, user: user} do
       event_id = online_event.id
-      assert {:ok, %Event{attendees: [^user]}} = Content.update_attendance(online_event, user)
+
+      assert {:ok, %Event{attendees: [^user]}} =
+               Content.update_attendance(%{event_id: event_id, user_id: user.id})
+
       assert [%Event{id: ^event_id, online: true, attendees: [^user]}] = Content.all_events(%{})
     end
 
@@ -103,12 +106,14 @@ defmodule WomenInTechVic.ContentTest do
       user: user,
       user_2: user_2
     } do
-      assert {:ok, %Event{attendees: [^user]}} = Content.update_attendance(online_event, user)
+      assert {:ok, %Event{attendees: [^user]}} =
+               Content.update_attendance(%{event_id: online_event.id, user_id: user.id})
 
       assert {:ok, %Event{attendees: [%User{}, %User{}]}} =
-               Content.update_attendance(online_event, user_2)
+               Content.update_attendance(%{event_id: online_event.id, user_id: user_2.id})
 
-      assert {:ok, %Event{attendees: [^user_2]}} = Content.update_attendance(online_event, user)
+      assert {:ok, %Event{attendees: [^user_2]}} =
+               Content.update_attendance(%{event_id: online_event.id, user_id: user.id})
     end
   end
 
