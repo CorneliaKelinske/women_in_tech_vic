@@ -3,8 +3,6 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
   import WomenInTechVicWeb.CustomComponents, only: [event_display: 1]
 
-  alias WomenInTechVic.Accounts
-  alias WomenInTechVic.Accounts.User
   alias WomenInTechVic.{Content, Utils}
   alias WomenInTechVic.Content.Event
 
@@ -20,12 +18,17 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
   @impl true
   def handle_event("rsvp", %{"event_id" => event_id, "user_id" => user_id}, socket) do
-    with {:ok, %Event{} = event} <- Content.find_event(%{id: String.to_integer(event_id)}),
-         {:ok, %User{} = user} <- Accounts.find_user(%{id: String.to_integer(user_id)}),
-         {:ok, %Event{}} <- Content.update_attendance(event, user) do
-      {:noreply, assign_events(socket)}
-    else
-      _ -> {:noreply, socket}
+    case Content.update_attendance(%{
+           event_id: String.to_integer(event_id),
+           user_id: String.to_integer(user_id)
+         }) do
+      {:ok, %Event{}} ->
+        {:noreply, assign_events(socket)}
+
+      _ ->
+        # coveralls-ignore-start
+        {:noreply, socket}
+        # coveralls-ignore-stop
     end
   end
 

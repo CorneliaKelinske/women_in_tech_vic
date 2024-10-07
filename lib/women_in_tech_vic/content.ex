@@ -4,6 +4,7 @@ defmodule WomenInTechVic.Content do
   """
 
   alias EctoShorts.Actions
+  alias WomenInTechVic.Accounts
   alias WomenInTechVic.Accounts.User
   alias WomenInTechVic.Content.Event
   alias WomenInTechVic.Repo
@@ -38,19 +39,22 @@ defmodule WomenInTechVic.Content do
     Actions.update(Event, id_or_schema, params)
   end
 
-  @spec update_attendance(Event.t(), User.t()) :: change_res(Event.t())
-  def update_attendance(event, %User{} = attendee) do
-    %Event{attendees: attendees} = event = Repo.preload(event, :attendees)
+  @spec update_attendance(map()) :: change_res(Event.t())
+  def update_attendance(%{event_id: event_id, user_id: user_id}) do
+    with {:ok, %Event{} = event} <- find_event(%{id: event_id}),
+         {:ok, %User{} = attendee} <- Accounts.find_user(%{id: user_id}) do
+      %Event{attendees: attendees} = event = Repo.preload(event, :attendees)
 
-    updated_attendees =
-      case Enum.find_index(attendees, &(&1.id === attendee.id)) do
-        nil -> [attendee | attendees]
-        index -> List.delete_at(attendees, index)
-      end
+      updated_attendees =
+        case Enum.find_index(attendees, &(&1.id === attendee.id)) do
+          nil -> [attendee | attendees]
+          index -> List.delete_at(attendees, index)
+        end
 
-    event
-    |> Event.update_changeset(%{attendees: updated_attendees})
-    |> Repo.update()
+      event
+      |> Event.update_changeset(%{attendees: updated_attendees})
+      |> Repo.update()
+    end
   end
 
   @doc false
