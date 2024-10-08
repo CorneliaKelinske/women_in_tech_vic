@@ -2,6 +2,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
   @moduledoc "Custom components for the Women in Tech website"
 
   use Phoenix.Component
+  use WomenInTechVicWeb, :live_view
 
   attr :user, :map, required: true
   attr :event, :map, required: true
@@ -33,14 +34,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
       </div>
       <%= if @show_attendees do %>
         <div class="mt-4 flex justify-center">
-          <button
-            phx-click="rsvp"
-            phx-value-event_id={@event.id}
-            phx-value-user_id={@user.id}
-            class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
-          >
-            RSVP
-          </button>
+          <.link navigate={~p"/events/#{@event}"}> See details </.link>
         </div>
       <% end %>
     </div>

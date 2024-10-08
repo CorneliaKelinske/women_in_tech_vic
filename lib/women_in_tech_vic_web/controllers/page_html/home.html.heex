@@ -22,7 +22,7 @@
       <%= if @event === "No event scheduled" do %>
         <p class="text-lg text-center p-6"><%= @event %></p>
       <% else %>
-        <.event_display event={@event} />
+        <.event_display event={@event} user={@current_user} />
       <% end %>
     </div>
   </header>
