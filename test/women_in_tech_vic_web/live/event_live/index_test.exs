@@ -15,7 +15,8 @@ defmodule WomenInTechVic.EventLive.IndexTest do
         |> live(~p"/events")
 
       assert html =~ "Upcoming Events"
-      assert html =~ "meet.google"
+      refute html =~ "meet.google.com"
+      assert html =~ "See details"
     end
 
     test "redirects if user is not logged in", %{conn: conn} do
