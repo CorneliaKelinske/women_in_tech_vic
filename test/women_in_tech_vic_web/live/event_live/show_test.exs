@@ -3,12 +3,12 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
 
   import Phoenix.LiveViewTest
   import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
-  import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1]
+  import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1, in_person_event: 1]
 
   alias WomenInTechVic.Content
   alias WomenInTechVic.Content.Event
 
-  setup [:user, :online_event]
+  setup [:user, :online_event, :in_person_event]
 
   describe "Show page" do
     test "renders a page with event info", %{conn: conn, user: user, online_event: online_event} do
@@ -18,6 +18,21 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
         |> live(~p"/events/#{online_event}")
 
       assert html =~ "meet.google"
+      refute html =~ "Show details"
+    end
+
+    test "renders a page with event info for in person meetings", %{
+      conn: conn,
+      user: user,
+      in_person_event: in_person_event
+    } do
+      {:ok, _lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/events/#{in_person_event}")
+
+      assert html =~ "Pub around the Corner"
+      refute html =~ "Show details"
     end
 
     test "adds a user to the list of event attendees when RSVP button is clicked", %{
@@ -26,7 +41,9 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
       online_event: online_event
     } do
       online_event_id = online_event.id
-      assert [%Event{id: ^online_event_id, online: true, attendees: []}] = Content.all_events(%{})
+
+      assert {:ok, %Event{id: ^online_event_id, online: true, attendees: []}} =
+               Content.find_event(id: online_event.id, preload: :attendees)
 
       {:ok, lv, html} =
         conn
@@ -42,8 +59,8 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
                "user_id" => to_string(user.id)
              })
 
-      assert [%Event{id: ^online_event_id, online: true, attendees: [^user]}] =
-               Content.all_events(%{})
+      assert {:ok, %Event{id: ^online_event_id, online: true, attendees: [^user]}} =
+               Content.find_event(id: online_event.id, preload: :attendees)
     end
 
     test "redirects if user is not logged in", %{conn: conn, online_event: online_event} do
