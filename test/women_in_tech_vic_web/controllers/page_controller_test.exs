@@ -28,7 +28,10 @@ defmodule WomenInTechVicWeb.PageControllerTest do
     assert html_response(conn, 200) =~ "No event scheduled"
   end
 
-  test "shows event title when meeting has been scheduled", %{conn: conn, user: user} do
+  test "shows event title when meeting has been scheduled, but not the address", %{
+    conn: conn,
+    user: user
+  } do
     :online_event
     |> build(title: "Bi-weekly online meeting")
     |> Map.put(:user_id, user.id)
@@ -37,6 +40,7 @@ defmodule WomenInTechVicWeb.PageControllerTest do
 
     conn = get(conn, ~p"/")
     assert html_response(conn, 200) =~ "Bi-weekly online meeting"
-    assert html_response(conn, 200) =~ "meet.google.com"
+    refute html_response(conn, 200) =~ "meet.google.com"
+    assert html_response(conn, 200) =~ "See details"
   end
 end

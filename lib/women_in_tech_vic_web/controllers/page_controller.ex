@@ -19,8 +19,6 @@ defmodule WomenInTechVicWeb.PageController do
   end
 
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do
-    event
-    |> Map.from_struct()
-    |> Map.put(:scheduled_at, Utils.timestamp_to_formatted_pacific(scheduled_at))
+    Map.put(event, :scheduled_at, Utils.timestamp_to_formatted_pacific(scheduled_at))
   end
 end
