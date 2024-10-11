@@ -41,7 +41,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
             navigate={~p"/events/#{@event}"}
             class="text-gray-600 font-semibold hover:text-gray-500"
           >
-             See details 
+            See details
           </.link>
         </div>
       <% end %>

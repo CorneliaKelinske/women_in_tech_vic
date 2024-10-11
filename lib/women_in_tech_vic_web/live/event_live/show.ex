@@ -18,7 +18,8 @@ defmodule WomenInTechVicWeb.EventLive.Show do
         {:noreply,
          socket
          |> assign_event(event)
-         |> assign(:attendees, attendees)}
+         |> assign(:attendees, attendees)
+         |> assign_button_text(socket.assigns.current_user, attendees)}
 
       _ ->
         {:noreply,
@@ -38,7 +39,8 @@ defmodule WomenInTechVicWeb.EventLive.Show do
         {:noreply,
          socket
          |> assign_event(event)
-         |> assign(:attendees, attendees)}
+         |> assign(:attendees, attendees)
+         |> assign_button_text(socket.assigns.current_user, attendees)}
 
       # coveralls-ignore-start
       _ ->
@@ -53,5 +55,13 @@ defmodule WomenInTechVicWeb.EventLive.Show do
 
   defp assign_event(socket, event) do
     assign(socket, :event, prep_event_for_display(event))
+  end
+
+  defp assign_button_text(socket, user, attendees) do
+    if user in attendees do
+      assign(socket, :button_text, "I changed my mind")
+    else
+      assign(socket, :button_text, "I will be there")
+    end
   end
 end
