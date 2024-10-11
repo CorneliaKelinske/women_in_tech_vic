@@ -55,12 +55,43 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
       assert lv
              |> element("button[phx-click=\"rsvp\"]")
              |> render_click(%{
-               "event_id" => to_string(online_event.id),
+               "event_id" => to_string(online_event_id),
                "user_id" => to_string(user.id)
              })
 
       assert {:ok, %Event{id: ^online_event_id, online: true, attendees: [^user]}} =
                Content.find_event(id: online_event.id, preload: :attendees)
+    end
+
+    test "shows different buttons for users that are attending vs not attending", %{
+      conn: conn,
+      user: user,
+      online_event: online_event
+    } do
+      online_event_id = online_event.id
+
+      {:ok, lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/events/#{online_event}")
+
+      assert html =~ "I will be there"
+      refute html =~ "I changed my mind"
+
+      assert lv
+             |> element("button[phx-click=\"rsvp\"]")
+             |> render_click(%{
+               "event_id" => to_string(online_event_id),
+               "user_id" => to_string(user.id)
+             })
+
+      {:ok, _lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/events/#{online_event}")
+
+      refute html =~ "I will be there"
+      assert html =~ "I changed my mind"
     end
 
     test "redirects if user is not logged in", %{conn: conn, online_event: online_event} do
