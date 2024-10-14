@@ -32,12 +32,13 @@ defmodule WomenInTechVicWeb.UserRegistrationLive do
             Oops, something went wrong! Please check the errors below.
           </.error>
 
-          <.input field={@form[:email]} type="email" label="Email" required />
+          <.input field={@form[:email]} type="email" label="Email" required phx-debounce={500}/>
           <.input
             field={@form[:password]}
             type="password"
             label="Password"
             required
+            phx-debounce
             class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
           <.input
