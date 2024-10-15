@@ -49,6 +49,11 @@ defmodule WomenInTechVicWeb.EventLive.Show do
     end
   end
 
+  @impl true
+  def handle_event("all_events", _params, socket) do
+    {:noreply, push_navigate(socket, to: ~p"/events")}
+  end
+
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do
     Map.put(event, :scheduled_at, Utils.timestamp_to_formatted_pacific(scheduled_at))
   end
