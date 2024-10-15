@@ -78,12 +78,12 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
       assert html =~ "I will be there"
       refute html =~ "I changed my mind"
 
-      assert lv
-             |> element("button[phx-click=\"rsvp\"]")
-             |> render_click(%{
-               "event_id" => to_string(online_event_id),
-               "user_id" => to_string(user.id)
-             })
+      lv
+      |> element("button[phx-click=\"rsvp\"]")
+      |> render_click(%{
+        "event_id" => to_string(online_event_id),
+        "user_id" => to_string(user.id)
+      })
 
       {:ok, _lv, html} =
         conn
@@ -92,6 +92,26 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
 
       refute html =~ "I will be there"
       assert html =~ "I changed my mind"
+    end
+
+    test "clicking All events button leads back to events index page", %{
+      conn: conn,
+      user: user,
+      online_event: online_event
+    } do
+      {:ok, lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/events/#{online_event}")
+
+      assert html =~ "All events"
+
+      lv
+      |> element("button[phx-click=\"all_events\"]")
+      |> render_click()
+
+      assert_redirect(lv, ~p"/events")
+
     end
 
     test "redirects if user is not logged in", %{conn: conn, online_event: online_event} do

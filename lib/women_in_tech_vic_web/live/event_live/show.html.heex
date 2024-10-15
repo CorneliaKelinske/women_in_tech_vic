@@ -3,16 +3,6 @@
   <div>
     <.event_display user={@current_user} event={@event} show_address={true} link_details={false} />
   </div>
-  <!-- RSVP Button -->
-  <button
-    phx-click="rsvp"
-    phx-value-event_id={@event.id}
-    phx-value-user_id={@current_user.id}
-    class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
-  >
-    <%= @button_text %>
-  </button>
-
   <div class="w-1/2 p-6 mt-4 mx-auto rounded-lg shadow-md border border-gray-300 bg-gradient-to-r from-blue-200 via-gray-100 to-blue-300">
     <p class="text-2xl font-bold text-center mb-4">Who will be there?</p>
     <%= if Enum.empty?(@attendees) do %>
@@ -24,5 +14,24 @@
         <% end %>
       </ul>
     <% end %>
+  </div>
+  <!-- Button Section: RSVP and All Events -->
+  <div class="mt-4 flex justify-between">
+    <!-- RSVP Button -->
+    <button
+      phx-click="rsvp"
+      phx-value-event_id={@event.id}
+      phx-value-user_id={@current_user.id}
+      class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
+    >
+      <%= @button_text %>
+    </button>
+    <!-- All Events Button (aligned to the right) -->
+    <button
+      phx-click="all_events"
+      class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
+    >
+      All events
+    </button>
   </div>
 </div>
