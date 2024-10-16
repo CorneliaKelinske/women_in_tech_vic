@@ -11,3 +11,31 @@
     />
   <% end %>
 </div>
+
+<div :if={@current_user.role === :admin} class="mt-4">
+  <button
+    phx-click={show_modal("new-event-modal")}
+    class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
+  >
+    Create Event
+  </button>
+</div>
+
+<.modal id="new-event-modal">
+  <.header>Create event</.header>
+  <.simple_form for={@new_event_form} id="event-form" phx-submit="save-event">
+    <.input field={@new_event_form[:title]} type="text" label="Title" phx-debounce />
+    <.input
+      field={@new_event_form[:scheduled_at]}
+      type="datetime-local"
+      label="Scheduled at"
+      phx-debounce
+    />
+    <.input field={@new_event_form[:online]} type="checkbox" label="Online" phx-debounce />
+    <.input field={@new_event_form[:address]} type="text" label="Address" phx-debounce />
+    <.input field={@new_event_form[:description]} type="text" label="Description" phx-debounce />
+    <:actions>
+      <.button phx-disable-with="Saving..." class="w-full">Save</.button>
+    </:actions>
+  </.simple_form>
+</.modal>

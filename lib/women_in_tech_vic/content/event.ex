@@ -8,15 +8,16 @@ defmodule WomenInTechVic.Content.Event do
   import Ecto.Changeset
 
   alias WomenInTechVic.Accounts.User
+  alias WomenInTechVic.Repo
 
   @type t :: %__MODULE__{
           id: pos_integer() | nil,
-          title: String.t(),
-          scheduled_at: DateTime.t(),
-          online: boolean(),
-          address: String.t(),
-          description: String.t(),
-          user_id: pos_integer(),
+          title: String.t() | nil,
+          scheduled_at: DateTime.t() | nil,
+          online: boolean() | nil,
+          address: String.t() | nil,
+          description: String.t() | nil,
+          user_id: pos_integer() | nil,
           user: User.t() | Ecto.Association.NotLoaded.t(),
           attendees: [User.t()] | Ecto.Association.NotLoaded.t(),
           updated_at: DateTime.t() | nil,
@@ -24,7 +25,6 @@ defmodule WomenInTechVic.Content.Event do
         }
 
   @required [:title, :scheduled_at, :online, :address, :description, :user_id]
-  @enforce_keys @required
 
   schema "events" do
     field :title, :string
@@ -42,7 +42,7 @@ defmodule WomenInTechVic.Content.Event do
   @doc false
   @spec create_changeset(map) :: Ecto.Changeset.t()
   def create_changeset(attrs) do
-    @enforce_keys
+    @required
     |> Map.new(&{&1, nil})
     |> then(&struct!(__MODULE__, &1))
     |> changeset(attrs)
@@ -55,6 +55,7 @@ defmodule WomenInTechVic.Content.Event do
     |> cast(params, @required)
     |> validate_required(@required)
     |> maybe_validate_online_address()
+    |> validate_user_role()
     |> unique_constraint(:scheduled_at)
     |> foreign_key_constraint(:user_id)
   end
@@ -81,4 +82,15 @@ defmodule WomenInTechVic.Content.Event do
   end
 
   defp maybe_validate_online_address(changeset), do: changeset
+
+  defp validate_user_role(%Ecto.Changeset{valid?: true} = changeset) do
+    user_id = fetch_field!(changeset, :user_id)
+
+    case Repo.get(User, user_id) do
+      %User{role: :admin} -> changeset
+      _ -> add_error(changeset, :user_id, "You're not authorized to create events")
+    end
+  end
+
+  defp validate_user_role(changeset), do: changeset
 end

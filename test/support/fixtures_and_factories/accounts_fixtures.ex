@@ -26,6 +26,16 @@ defmodule WomenInTechVic.Support.AccountsFixtures do
     user
   end
 
+  def admin_user_fixture(attrs \\ %{}) do
+    {:ok, admin_user} =
+      attrs
+      |> valid_user_attributes()
+      |> Map.put(:role, :admin)
+      |> WomenInTechVic.Accounts.register_user()
+
+    admin_user
+  end
+
   def extract_user_token(fun) do
     {:ok, captured_email} = fun.(&"[TOKEN]#{&1}[TOKEN]")
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
