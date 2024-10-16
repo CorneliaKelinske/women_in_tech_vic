@@ -62,4 +62,11 @@ defmodule WomenInTechVic.Content do
   def delete_event(event) do
     Actions.delete(event)
   end
+
+  @doc "creates an Event changeset with nil values"
+  @spec event_changeset(Event.t(), map()) :: Ecto.Changeset.t()
+  @spec event_changeset(Event.t()) :: Ecto.Changeset.t()
+  def event_changeset(event, params \\ %{}) do
+    Event.changeset(event, params)
+  end
 end

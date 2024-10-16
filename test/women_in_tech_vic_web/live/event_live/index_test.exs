@@ -2,10 +2,10 @@ defmodule WomenInTechVic.EventLive.IndexTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1]
   import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1]
 
-  setup [:user, :online_event]
+  setup [:user, :user_2, :online_event]
 
   describe "Index page" do
     test "renders page listing all events", %{conn: conn, user: user} do
@@ -17,6 +17,17 @@ defmodule WomenInTechVic.EventLive.IndexTest do
       assert html =~ "Upcoming Events"
       refute html =~ "meet.google.com"
       assert html =~ "See details"
+      assert html =~ "Create Event"
+    end
+
+    test "does not show the Create Event button to non-admin users", %{conn: conn, user_2: user_2} do
+      {:ok, _lv, html} =
+        conn
+        |> log_in_user(user_2)
+        |> live(~p"/events")
+
+      assert html =~ "Upcoming Events"
+      refute html =~ "Create Event"
     end
 
     test "redirects if user is not logged in", %{conn: conn} do

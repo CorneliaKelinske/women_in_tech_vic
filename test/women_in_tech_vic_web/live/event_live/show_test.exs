@@ -111,7 +111,6 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
       |> render_click()
 
       assert_redirect(lv, ~p"/events")
-
     end
 
     test "redirects if user is not logged in", %{conn: conn, online_event: online_event} do

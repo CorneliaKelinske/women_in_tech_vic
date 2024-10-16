@@ -5,6 +5,7 @@ defmodule WomenInTechVic.ContentTest do
   import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1]
   import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1]
 
+  alias WomenInTechVic.Accounts
   alias WomenInTechVic.Accounts.User
   alias WomenInTechVic.Content
   alias WomenInTechVic.Content.Event
@@ -27,6 +28,19 @@ defmodule WomenInTechVic.ContentTest do
                  {"has already been taken",
                   [constraint: :unique, constraint_name: "events_scheduled_at_index"]}
              ] = errors
+    end
+
+    test "does not allow a non_admin user to create an event", %{user: user} do
+      assert {:ok, %User{role: :member} = user} = Accounts.update_user(user, %{role: :member})
+
+      event_params =
+        :online_event
+        |> build()
+        |> Map.merge(%{user_id: user.id, attendees: [user]})
+
+      assert {:error, %Ecto.Changeset{errors: errors}} = Content.create_event(event_params)
+
+      assert [user_id: {"You're not authorized to create events", _}] = errors
     end
   end
 
@@ -120,6 +134,22 @@ defmodule WomenInTechVic.ContentTest do
   describe "delete event/1" do
     test "deletes an event", %{online_event: online_event} do
       assert {:ok, %Event{}} = Content.delete_event(online_event)
+    end
+  end
+
+  describe "event_changeset/2" do
+    test "returns an Event changeset " do
+      assert %Ecto.Changeset{valid?: false} = Content.event_changeset(%Event{})
+    end
+
+    test "can be used to build changesets with input params" do
+      params = build(:online_event)
+
+      assert %Ecto.Changeset{
+               action: nil,
+               changes: %{address: "https://meet.google.com/", online: true},
+               valid?: false
+             } = Content.event_changeset(%Event{}, params)
     end
   end
 end

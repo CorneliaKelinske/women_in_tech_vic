@@ -10,8 +10,9 @@ defmodule WomenInTechVic.Support.AccountsTestSetup do
 
   alias WomenInTechVic.Support.AccountsFixtures
 
+  # This is an admin user
   def user(_) do
-    user = AccountsFixtures.user_fixture()
+    user = AccountsFixtures.admin_user_fixture()
 
     %{user: user}
   end
