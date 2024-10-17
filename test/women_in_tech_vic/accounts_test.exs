@@ -146,21 +146,21 @@ defmodule WomenInTechVic.AccountsTest do
 
   describe "update_user/2" do
     test "updates a user when valid params are passed in", %{user: user} do
-      assert %User{role: :member} = user
+      assert %User{role: :admin} = user
       username = user.username
       id = user.id
 
-      assert {:ok, %User{id: ^id, username: ^username, role: :admin}} =
-               Accounts.update_user(user, %{role: :admin})
+      assert {:ok, %User{id: ^id, username: ^username, role: :member}} =
+               Accounts.update_user(user, %{role: :member})
     end
 
     test "updates a user by ID when valid params are passed in", %{user: user} do
-      assert %User{role: :member} = user
+      assert %User{role: :admin} = user
       username = user.username
       id = user.id
 
-      assert {:ok, %User{id: ^id, username: ^username, role: :admin}} =
-               Accounts.update_user(id, %{role: :admin})
+      assert {:ok, %User{id: ^id, username: ^username, role: :member}} =
+               Accounts.update_user(id, %{role: :member})
     end
 
     test "does not allow updating email address or password", %{user: user} do
