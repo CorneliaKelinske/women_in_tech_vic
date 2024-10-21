@@ -20,18 +20,28 @@ defmodule WomenInTechVicWeb.EventLive.Index do
   # coveralls-ignore-start
   @impl true
   def handle_event("save-event", %{"event" => event_params}, socket) do
-    event_params = Map.put(event_params, "user_id", socket.assigns.current_user.id)
+      scheduled_at =
+        event_params
+        |> Map.fetch!("scheduled_at")
+        |> Utils.pacific_input_to_utc_timestamp()
 
-    case Content.create_event(event_params) do
-      {:ok, %Event{}} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Created event")
-         |> push_navigate(to: ~p"/events")}
+      event_params =
+        Map.merge(event_params, %{
+          "scheduled_at" => scheduled_at,
+          "user_id" => socket.assigns.current_user.id
+        })
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign_event_form(socket, changeset)}
-    end
+      case Content.create_event(event_params) do
+        {:ok, %Event{}} ->
+          {:noreply,
+           socket
+           |> put_flash(:info, "Created event")
+           |> push_navigate(to: ~p"/events")}
+
+        {:error, %Ecto.Changeset{} = changeset} ->
+          {:noreply, assign_event_form(socket, changeset)}
+      end
+
   end
 
   # coveralls-ignore-stop

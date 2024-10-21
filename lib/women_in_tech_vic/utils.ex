@@ -3,10 +3,13 @@ defmodule WomenInTechVic.Utils do
   Holds helper functions that can be used across the project
   """
 
+  @pacific "America/Vancouver"
+  @timezone_db Tzdata.TimeZoneDatabase
+
   @doc false
   @spec utc_timestamp_to_pacific!(DateTime.t()) :: DateTime.t()
   def utc_timestamp_to_pacific!(timestamp) do
-    DateTime.shift_zone!(timestamp, "America/Vancouver", Tzdata.TimeZoneDatabase)
+    DateTime.shift_zone!(timestamp, @pacific, @timezone_db)
   end
 
   @doc "formats a given timestamp into a Weekday, Date, Time, Timezone format"
@@ -21,5 +24,14 @@ defmodule WomenInTechVic.Utils do
     timestamp
     |> utc_timestamp_to_pacific!()
     |> format_timestamp()
+  end
+
+  @doc "converts a time and date in PT send via a form input into an UTC Timestamp"
+  @spec pacific_input_to_utc_timestamp(String.t()) :: DateTime.t()
+  def pacific_input_to_utc_timestamp(pacific_input) do
+    (pacific_input <> ":00")
+    |> NaiveDateTime.from_iso8601!()
+    |> DateTime.from_naive!(@pacific, @timezone_db)
+    |> DateTime.shift_zone!("Etc/UTC")
   end
 end

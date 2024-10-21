@@ -20,4 +20,10 @@ defmodule WomenInTechVic.UtilsTest do
                Utils.format_timestamp(Utils.utc_timestamp_to_pacific!(@timestamp))
     end
   end
+
+  describe "pacific_input_to_utc_timestamp/1" do
+    test "turns a pacific time form input into a utc_timestamp" do
+      assert ~U[2024-10-22 20:41:00Z] === Utils.pacific_input_to_utc_timestamp("2024-10-22T13:41")
+    end
+  end
 end
