@@ -30,10 +30,16 @@
       type="datetime-local"
       label="Scheduled at"
       phx-debounce
+      required
     />
     <.input field={@new_event_form[:online]} type="checkbox" label="Online" phx-debounce />
     <.input field={@new_event_form[:address]} type="text" label="Address" phx-debounce />
-    <.input field={@new_event_form[:description]} type="textarea" label="Description" phx-debounce />
+    <.input
+      field={@new_event_form[:description]}
+      type="textarea"
+      label="Description"
+      phx-debounce
+    />
     <:actions>
       <.button phx-disable-with="Saving..." class="w-full">Save</.button>
     </:actions>
