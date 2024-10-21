@@ -27,11 +27,11 @@ defmodule WomenInTechVic.Utils do
   end
 
   @doc "converts a time and date in PT send via a form input into an UTC Timestamp"
-  @spec pacific_input_to_utc_timestamp(String.t()) :: DateTime.t()
-  def pacific_input_to_utc_timestamp(pacific_input) do
+  @spec pacific_input_to_utc_timestamp(String.t(), String.t()) :: DateTime.t()
+  def pacific_input_to_utc_timestamp(pacific_input, timezone) do
     (pacific_input <> ":00")
     |> NaiveDateTime.from_iso8601!()
-    |> DateTime.from_naive!(@pacific, @timezone_db)
+    |> DateTime.from_naive!(timezone, @timezone_db)
     |> DateTime.shift_zone!("Etc/UTC")
   end
 end

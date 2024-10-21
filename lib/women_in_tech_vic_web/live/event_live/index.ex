@@ -10,9 +10,11 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    timezone = get_connect_params(socket)["timezone"]
     {:ok,
      socket
      |> assign_title(@title)
+     |> assign_timezone(timezone)
      |> assign_event_form(Content.event_changeset(%Event{}))
      |> assign_events()}
   end
@@ -20,33 +22,35 @@ defmodule WomenInTechVicWeb.EventLive.Index do
   # coveralls-ignore-start
   @impl true
   def handle_event("save-event", %{"event" => event_params}, socket) do
-      scheduled_at =
-        event_params
-        |> Map.fetch!("scheduled_at")
-        |> Utils.pacific_input_to_utc_timestamp()
 
-      event_params =
-        Map.merge(event_params, %{
-          "scheduled_at" => scheduled_at,
-          "user_id" => socket.assigns.current_user.id
-        })
+    scheduled_at =
+      event_params
+      |> Map.fetch!("scheduled_at")
+      |> Utils.pacific_input_to_utc_timestamp(socket.assigns.timezone)
 
-      case Content.create_event(event_params) do
-        {:ok, %Event{}} ->
-          {:noreply,
-           socket
-           |> put_flash(:info, "Created event")
-           |> push_navigate(to: ~p"/events")}
+    event_params =
+      Map.merge(event_params, %{
+        "scheduled_at" => scheduled_at,
+        "user_id" => socket.assigns.current_user.id
+      })
 
-        {:error, %Ecto.Changeset{} = changeset} ->
-          {:noreply, assign_event_form(socket, changeset)}
-      end
+    case Content.create_event(event_params) do
+      {:ok, %Event{}} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Created event")
+         |> push_navigate(to: ~p"/events")}
 
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign_event_form(socket, changeset)}
+    end
   end
 
   # coveralls-ignore-stop
 
   defp assign_title(socket, title), do: assign(socket, title: title)
+
+  defp assign_timezone(socket, timezone), do: assign(socket, timezone: timezone)
 
   defp assign_events(socket) do
     events =
