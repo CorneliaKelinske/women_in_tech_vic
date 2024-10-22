@@ -57,6 +57,15 @@ defmodule WomenInTechVic.Content do
     end
   end
 
+  @doc "called in the event handlers; checking that user is allowed to delete the event"
+  @spec delete_event_by_admin(pos_integer(), User.t()) :: change_res(Event.t())
+  def delete_event_by_admin(event_id, %User{role: :admin}) do
+    Actions.delete(Event, event_id)
+  end
+
+  def delete_event_by_admin(_event, _user),
+    do: {:error, ErrorMessage.unauthorized("Not authorized to delete this event")}
+
   @doc false
   @spec delete_event(Event.t()) :: change_res(Event.t())
   def delete_event(event) do

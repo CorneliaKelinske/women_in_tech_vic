@@ -131,6 +131,26 @@ defmodule WomenInTechVic.ContentTest do
     end
   end
 
+  describe "delete_event_by_admin/2" do
+    setup [:user_2]
+
+    test "lets admin delete ane event", %{user: user, online_event: online_event} do
+      assert {:ok, %Event{}} = Content.delete_event_by_admin(online_event.id, user)
+    end
+
+    test "does not allow other users to delete an event", %{
+      online_event: online_event,
+      user_2: user_2
+    } do
+      assert {:error,
+              %ErrorMessage{
+                code: :unauthorized,
+                message: "Not authorized to delete this event",
+                details: nil
+              }} === Content.delete_event_by_admin(online_event.id, user_2)
+    end
+  end
+
   describe "delete event/1" do
     test "deletes an event", %{online_event: online_event} do
       assert {:ok, %Event{}} = Content.delete_event(online_event)

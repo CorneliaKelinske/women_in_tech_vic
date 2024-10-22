@@ -11,6 +11,7 @@ defmodule WomenInTechVicWeb.EventLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     timezone = get_connect_params(socket)["timezone"]
+
     {:ok,
      socket
      |> assign_title(@title)
@@ -22,7 +23,6 @@ defmodule WomenInTechVicWeb.EventLive.Index do
   # coveralls-ignore-start
   @impl true
   def handle_event("save-event", %{"event" => event_params}, socket) do
-
     scheduled_at =
       event_params
       |> Map.fetch!("scheduled_at")
@@ -43,6 +43,19 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_event_form(socket, changeset)}
+    end
+  end
+
+  @impl true
+  def handle_event("delete_event", %{"id" => event_id}, socket) do
+    case Content.delete_event_by_admin(event_id, socket.assigns.current_user) do
+      {:ok, %Event{}} ->
+        {:noreply, assign_events(socket)}
+
+      _ ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Could not delete event")}
     end
   end
 
