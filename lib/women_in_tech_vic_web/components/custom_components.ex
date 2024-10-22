@@ -19,7 +19,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
   """
   def event_display(assigns) do
     ~H"""
-    <div class="p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
+    <div class="relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
       <p class="text-3xl font-bold text-center mb-2"><%= @event.title %></p>
       <p class="text-xl text-center mb-2"><%= @event.scheduled_at %></p>
       <%= if @show_address do %>
@@ -45,6 +45,16 @@ defmodule WomenInTechVicWeb.CustomComponents do
           </.link>
         </div>
       <% end %>
+      <%!-- button for logged in users only --%>
+      <button
+        :if={@user}
+        class="absolute bottom-4 right-4 text-gray-700 hover:text-red-800 cursor-pointer"
+        phx-click="delete_event"
+        phx-value-id={@event.id}
+      >
+        <%!-- only shows for user who created the event or admin--%>
+        <.icon :if={@user.role === :admin} name="hero-trash" class="h-5 w-5" />
+      </button>
     </div>
     """
   end

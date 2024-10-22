@@ -54,6 +54,19 @@ defmodule WomenInTechVicWeb.EventLive.Show do
     {:noreply, push_navigate(socket, to: ~p"/events")}
   end
 
+  @impl true
+  def handle_event("delete_event", %{"id" => event_id}, socket) do
+    case Content.delete_event_by_admin(event_id, socket.assigns.current_user) do
+      {:ok, %Event{}} ->
+        {:noreply, push_navigate(socket, to: ~p"/events")}
+
+      _ ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Could not delete event")}
+    end
+  end
+
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do
     Map.put(event, :scheduled_at, Utils.timestamp_to_formatted_pacific(scheduled_at))
   end
