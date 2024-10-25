@@ -94,7 +94,7 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
       assert html =~ "I changed my mind"
     end
 
-    test "clicking All events button leads back to events index page", %{
+    test "clicking All events link leads back to events index page", %{
       conn: conn,
       user: user,
       online_event: online_event
@@ -104,10 +104,10 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
         |> log_in_user(user)
         |> live(~p"/events/#{online_event}")
 
-      assert html =~ "All events"
+      assert html =~ "All Events"
 
       lv
-      |> element("button[phx-click=\"all_events\"]")
+      |> element(".text-gray-800", "All Events")
       |> render_click()
 
       assert_redirect(lv, ~p"/events")
@@ -157,7 +157,7 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
       assert {:ok, ^online_event} = Content.find_event(%{id: online_event.id})
     end
 
-    test "shows delete button to admin and admin can delete events", %{
+    test "shows delete and edit button to admin and admin can delete events", %{
       conn: conn,
       user: user,
       online_event: online_event
@@ -171,6 +171,7 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
 
       assert html =~ "meet.google"
       assert html =~ "hero-trash"
+      assert html =~ "Edit"
 
       lv
       |> element("button[phx-click=delete_event][phx-value-id='#{online_event.id}']")
@@ -185,7 +186,7 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
              } = Content.find_event(%{id: online_event.id})
     end
 
-    test "does not show the delete button to non-admin users", %{
+    test "does not show the delete and edit button to non-admin users", %{
       conn: conn,
       user_2: user_2,
       online_event: online_event
@@ -197,6 +198,7 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
 
       assert html =~ "meet.google"
       refute html =~ "hero-trash"
+      refute html =~ "Edit"
     end
   end
 end

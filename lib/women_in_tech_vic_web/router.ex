@@ -74,6 +74,7 @@ defmodule WomenInTechVicWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/events", EventLive.Index, :index
       live "/events/:id", EventLive.Show, :show
+      live "/events/:id/edit", EventLive.Edit
     end
   end
 
