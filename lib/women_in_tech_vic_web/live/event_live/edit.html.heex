@@ -1,0 +1,31 @@
+<div class="mb-8">
+  <div class="mb-4">
+    <.link
+      navigate={~p"/events"}
+      class="text-gray-800 hover:text-gray-700 font-semibold uppercase flex items-center space-x-1"
+    >
+      <.icon name="hero-chevron-double-left" class="h-5 w-5" />
+      <span>All Events</span>
+    </.link>
+  </div>
+
+  <div class="group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
+    <.header><%= @title %></.header>
+    <.simple_form for={@form} id="event-form" phx-submit="save-event">
+      <.input field={@form[:title]} type="text" label="Title" phx-debounce />
+      <.input
+        field={@form[:scheduled_at]}
+        type="datetime-local"
+        label="Scheduled at (Pacific Time)"
+        phx-debounce
+        required
+      />
+      <.input field={@form[:online]} type="checkbox" label="Online" phx-debounce />
+      <.input field={@form[:address]} type="text" label="Address" phx-debounce />
+      <.input field={@form[:description]} type="textarea" label="Description" phx-debounce />
+      <:actions>
+        <.button phx-disable-with="Saving..." class="w-full">Save</.button>
+      </:actions>
+    </.simple_form>
+  </div>
+</div>

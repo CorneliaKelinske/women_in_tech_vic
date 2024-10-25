@@ -50,11 +50,6 @@ defmodule WomenInTechVicWeb.EventLive.Show do
   end
 
   @impl true
-  def handle_event("all_events", _params, socket) do
-    {:noreply, push_navigate(socket, to: ~p"/events")}
-  end
-
-  @impl true
   def handle_event("delete_event", %{"id" => event_id}, socket) do
     case Content.delete_event_by_admin(event_id, socket.assigns.current_user) do
       {:ok, %Event{}} ->
