@@ -175,6 +175,23 @@ defmodule WomenInTechVicWeb.UserAuth do
     end
   end
 
+  def on_mount(:admin, _params, session, socket) do
+    socket = mount_current_user(socket, session)
+
+    case get_in(socket.assigns, [:current_user, Access.key(:role, nil)]) do
+      :admin ->
+        {:cont, socket}
+
+      _ ->
+        socket =
+          socket
+          |> Phoenix.LiveView.put_flash(:error, "Access denied.")
+          |> Phoenix.LiveView.redirect(to: ~p"/")
+
+        {:halt, socket}
+    end
+  end
+
   defp mount_current_user(socket, session) do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do

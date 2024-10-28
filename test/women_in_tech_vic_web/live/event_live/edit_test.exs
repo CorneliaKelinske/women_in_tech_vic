@@ -47,25 +47,15 @@ defmodule WomenInTechVicWeb.EventLive.EditTest do
       assert %{"error" => "You must log in to access this page."} = flash
     end
 
-    test "non_admin user would not be able to edit an event", %{
-      conn: conn,
-      user_2: user_2,
-      online_event: online_event
-    } do
-      {:ok, lv, html} =
-        conn
-        |> log_in_user(user_2)
-        |> live(~p"/events/#{online_event}/edit")
+    test "redirects non-admin users", %{conn: conn, online_event: online_event, user_2: user_2} do
+      assert {:error, redirect} =
+               conn
+               |> log_in_user(user_2)
+               |> live(~p"/events/#{online_event}/edit")
 
-      assert html =~ "Edit Event"
-
-      assert {:ok, ^online_event} = Content.find_event(%{id: online_event.id})
-
-      assert lv
-             |> form("#event-form", event: %{"title" => "updated title"})
-             |> render_submit() =~ "Could not edit event"
-
-      assert {:ok, ^online_event} = Content.find_event(%{id: online_event.id})
+      assert {:redirect, %{to: path, flash: flash}} = redirect
+      assert path === ~p"/"
+      assert %{"error" => "Access denied."} = flash
     end
 
     test "admin user can edit an event", %{
