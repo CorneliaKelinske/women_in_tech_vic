@@ -74,6 +74,13 @@ defmodule WomenInTechVicWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
       live "/events", EventLive.Index, :index
       live "/events/:id", EventLive.Show, :show
+    end
+  end
+
+  scope "/", WomenInTechVicWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :admin, on_mount: {WomenInTechVicWeb.UserAuth, :admin} do
       live "/events/:id/edit", EventLive.Edit
     end
   end

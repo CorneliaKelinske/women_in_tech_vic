@@ -36,8 +36,8 @@ defmodule WomenInTechVicWeb.EventLive.Edit do
       |> Map.fetch!("scheduled_at")
       |> Utils.pacific_input_to_utc_timestamp(socket.assigns.timezone)
 
-   # FOR LATER: once more than one user can create events, this logic of moving the current user id
-   # and checking via changeset will have to be revisited.
+    # FOR LATER: once more than one user can create events, this logic of moving the current user id
+    # and checking via changeset will have to be revisited.
     event_params =
       Map.merge(event_params, %{
         "scheduled_at" => scheduled_at,
@@ -53,10 +53,9 @@ defmodule WomenInTechVicWeb.EventLive.Edit do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply,
-            socket
-            |> put_flash(:error, "Could not edit event")
-            |> assign_form(changeset)
-          }
+         socket
+         |> put_flash(:error, "Could not edit event")
+         |> assign_form(changeset)}
     end
   end
 
