@@ -82,6 +82,7 @@ defmodule WomenInTechVicWeb.Router do
 
     live_session :admin, on_mount: {WomenInTechVicWeb.UserAuth, :admin} do
       live "/events/:id/edit", EventLive.Edit
+      live "/users", UserLive.Index
     end
   end
 
