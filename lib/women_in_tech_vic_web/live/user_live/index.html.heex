@@ -1,0 +1,11 @@
+<h1 class="font-bold text-2xl text-gray-900 mb-8"><%= @title %></h1>
+<div class="bg-pink-200 rounded p-4">
+  <.table id="users" rows={@users}>
+    <:col :let={user} label="id"><%= user.id %></:col>
+    <:col :let={user} label="username"><%= user.username %></:col>
+    <:col :let={user} label="first_name"><%= user.first_name %></:col>
+    <:col :let={user} label="last_name"><%= user.last_name %></:col>
+    <:col :let={user} label="email"><%= user.email %></:col>
+    <:col :let={user} label="role"><%= user.role %></:col>
+  </.table>
+</div>
