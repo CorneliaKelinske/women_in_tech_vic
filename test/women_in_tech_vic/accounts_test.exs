@@ -174,7 +174,19 @@ defmodule WomenInTechVic.AccountsTest do
 
   describe "delete user/1" do
     test "deletes a user", %{user: user} do
+      assert {:ok, user} = Accounts.find_user(%{id: user.id})
       assert {:ok, %User{}} = Accounts.delete_user(user)
+
+      assert {:error, %ErrorMessage{code: :not_found, message: "no records found"}} =
+               Accounts.find_user(%{id: user.id})
+    end
+
+    test "deletes a user by user id", %{user: user} do
+      assert {:ok, user} = Accounts.find_user(%{id: user.id})
+      assert {:ok, %User{}} = Accounts.delete_user(user.id)
+
+      assert {:error, %ErrorMessage{code: :not_found, message: "no records found"}} =
+               Accounts.find_user(%{id: user.id})
     end
   end
 

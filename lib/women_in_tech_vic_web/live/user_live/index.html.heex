@@ -2,10 +2,19 @@
 <div class="bg-pink-200 rounded p-4">
   <.table id="users" rows={@users}>
     <:col :let={user} label="id"><%= user.id %></:col>
-    <:col :let={user} label="username"><%= user.username %></:col>
-    <:col :let={user} label="first_name"><%= user.first_name %></:col>
-    <:col :let={user} label="last_name"><%= user.last_name %></:col>
-    <:col :let={user} label="email"><%= user.email %></:col>
-    <:col :let={user} label="role"><%= user.role %></:col>
+    <:col :let={user} label="Username"><%= user.username %></:col>
+    <:col :let={user} label="First name"><%= user.first_name %></:col>
+    <:col :let={user} label="Last name"><%= user.last_name %></:col>
+    <:col :let={user} label="Email"><%= user.email %></:col>
+    <:col :let={user} label="Role"><%= user.role %></:col>
+    <:col :let={user} label="">
+      <button
+        class="text-gray-700 hover:text-red-800 cursor-pointer"
+        phx-click="delete-user"
+        phx-value-id={user.id}
+      >
+        <.icon name="hero-trash" class="h-4 w-4 align-baseline" />
+      </button>
+    </:col>
   </.table>
 </div>
