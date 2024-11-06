@@ -53,9 +53,7 @@ defmodule WomenInTechVicWeb.EventLive.Index do
         {:noreply, assign_events(socket)}
 
       _ ->
-        {:noreply,
-         socket
-         |> put_flash(:error, "Could not delete event")}
+        {:noreply, put_flash(socket, :error, "Could not delete event")}
     end
   end
 

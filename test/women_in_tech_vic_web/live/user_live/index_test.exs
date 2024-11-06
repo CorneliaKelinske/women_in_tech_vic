@@ -4,6 +4,8 @@ defmodule WomenInTechVicWeb.UserLive.IndexTest do
   import Phoenix.LiveViewTest
   import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1]
 
+  alias WomenInTechVic.Accounts
+
   setup [:user, :user_2]
 
   describe "Index page" do
@@ -16,6 +18,31 @@ defmodule WomenInTechVicWeb.UserLive.IndexTest do
       assert html =~ "All Users"
       assert html =~ "#{user.username}"
       assert html =~ "#{user_2.username}"
+      assert html =~ "hero-trash"
+    end
+
+    test "admin user can delete users", %{conn: conn, user: user, user_2: user_2} do
+      {:ok, lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/users")
+
+      assert html =~ "All Users"
+      assert html =~ "#{user.username}"
+      assert html =~ "#{user_2.username}"
+      assert html =~ "hero-trash"
+
+      lv
+      |> element("button[phx-click=delete-user][phx-value-id='#{user_2.id}']")
+      |> render_click()
+
+      assert {
+               :error,
+               %ErrorMessage{
+                 code: :not_found,
+                 message: "no records found"
+               }
+             } = Accounts.find_user(%{id: user_2.id})
     end
 
     test "redirects if user is not logged in", %{conn: conn} do

@@ -130,7 +130,11 @@ defmodule WomenInTechVic.Accounts do
   end
 
   @doc false
-  @spec delete_user(User.t()) :: change_res(User.t())
+  @spec delete_user(User.t() | pos_integer()) :: change_res(User.t())
+  def delete_user(user_id) when is_integer(user_id) do
+    Actions.delete(User, user_id)
+  end
+
   def delete_user(user) do
     Actions.delete(user)
   end
