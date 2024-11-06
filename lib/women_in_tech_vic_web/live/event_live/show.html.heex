@@ -30,6 +30,7 @@
     <button
       phx-click="rsvp"
       phx-value-event_id={@event.id}
+      phx-value-user_id={@current_user.id}
       class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
     >
       <%= @button_text %>
