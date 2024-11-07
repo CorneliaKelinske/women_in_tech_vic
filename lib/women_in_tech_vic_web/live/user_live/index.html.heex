@@ -1,20 +1,58 @@
 <h1 class="font-bold text-2xl text-gray-900 mb-8"><%= @title %></h1>
-<div class="bg-pink-200 rounded p-4">
-  <.table id="users" rows={@users}>
-    <:col :let={user} label="id"><%= user.id %></:col>
-    <:col :let={user} label="Username"><%= user.username %></:col>
-    <:col :let={user} label="First name"><%= user.first_name %></:col>
-    <:col :let={user} label="Last name"><%= user.last_name %></:col>
-    <:col :let={user} label="Email"><%= user.email %></:col>
-    <:col :let={user} label="Role"><%= user.role %></:col>
-    <:col :let={user} label="">
-      <button
-        class="text-gray-700 hover:text-red-800 cursor-pointer"
-        phx-click="delete-user"
-        phx-value-id={user.id}
-      >
-        <.icon name="hero-trash" class="h-4 w-4 align-baseline" />
-      </button>
-    </:col>
-  </.table>
-</div>
+
+<.table id="users" rows={@users}>
+  <:col :let={user} label="id"><%= user.id %></:col>
+  <:col :let={user} label="Username"><%= user.username %></:col>
+  <:col :let={user} label="First name"><%= user.first_name %></:col>
+  <:col :let={user} label="Last name"><%= user.last_name %></:col>
+  <:col :let={user} label="Email"><%= user.email %></:col>
+  <:col :let={user} label="Role"><%= user.role %></:col>
+
+  <:col :let={user} label="">
+    <button
+      class="text-gray-700 hover:text-blue-800 cursor-pointer"
+      phx-click="open-role-modal"
+      phx-value-id={user.id}
+    >
+      Update Role
+    </button>
+  </:col>
+  <:col :let={user} label="">
+    <button
+      class="text-gray-700 hover:text-red-800 cursor-pointer"
+      phx-click="delete-user"
+      phx-value-id={user.id}
+    >
+      <.icon name="hero-trash" class="h-4 w-4 align-baseline" />
+    </button>
+  </:col>
+</.table>
+
+<%= if @show_modal do %>
+  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white p-6 rounded shadow-md max-w-md w-full">
+      <h2 class="text-xl font-bold mb-4">Update User Role</h2>
+      <form phx-submit="save-role">
+        <!-- Hidden input to include the user ID -->
+        <input type="hidden" name="user_id" value={@selected_user.id} />
+
+        <select
+          class="w-full p-2 border rounded mb-4"
+          name="role"
+          phx-value-id={@selected_user.id}
+        >
+          <option value="admin" selected={@selected_user.role == "admin"}>Admin</option>
+          <option value="member" selected={@selected_user.role == "member"}>Member</option>
+        </select>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+        <button
+          type="button"
+          class="ml-2 bg-gray-300 text-gray-800 px-4 py-2 rounded"
+          phx-click="close-modal"
+        >
+          Cancel
+        </button>
+      </form>
+    </div>
+  </div>
+<% end %>

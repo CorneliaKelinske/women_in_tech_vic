@@ -172,6 +172,22 @@ defmodule WomenInTechVic.AccountsTest do
     end
   end
 
+  describe "update_user_role/2" do
+    test "updates a user role when valid params are passed in", %{user: user} do
+      assert %User{role: :admin} = user
+      username = user.username
+      id = user.id
+
+      assert {:ok, %User{id: ^id, username: ^username, role: :member}} =
+               Accounts.update_user_role(id, :member)
+    end
+
+    test "returns error message tuple if invalid params are passed in", %{user: user} do
+      assert {:error, %ErrorMessage{code: :not_found}} =
+               Accounts.update_user_role(user.id + 12, :member)
+    end
+  end
+
   describe "delete user/1" do
     test "deletes a user", %{user: user} do
       assert {:ok, user} = Accounts.find_user(%{id: user.id})
