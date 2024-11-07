@@ -11,7 +11,8 @@ defmodule WomenInTechVicWeb.UserLive.Index do
     {:ok,
      socket
      |> assign_title(@title)
-     |> assign_users()}
+     |> assign_users()
+     |> assign(show_modal: false)}
   end
 
   @impl true
@@ -22,10 +23,50 @@ defmodule WomenInTechVicWeb.UserLive.Index do
     end
   end
 
+  # coveralls-ignore-start
+  @impl true
+  def handle_event("open-role-modal", %{"id" => user_id}, socket) do
+    case Accounts.find_user(%{id: String.to_integer(user_id)}) do
+      {:ok, %User{} = user} ->
+        {:noreply,
+         socket
+         |> assign(show_modal: true)
+         |> assign(selected_user: user)}
+
+      _ ->
+        {:noreply, put_flash(socket, :error, "User not found")}
+    end
+  end
+
+  @impl true
+  def handle_event("close-modal", _, socket) do
+    {:noreply, assign(socket, show_modal: false)}
+  end
+
+  @impl true
+  def handle_event("save-role", %{"role" => role, "user_id" => user_id}, socket) do
+    case Accounts.update_user_role(String.to_integer(user_id), role) do
+      {:ok, %User{}} ->
+        {:noreply,
+         socket
+         |> assign(show_modal: false)
+         |> assign_users()
+         |> put_flash(:info, "User role updated successfully")}
+
+      _ ->
+        {:noreply,
+         socket
+         |> assign(show_modal: false)
+         |> put_flash(:error, "Could not update user role")}
+    end
+  end
+
+  # coveralls-ignore-stop
+
   defp assign_title(socket, title), do: assign(socket, title: title)
 
   defp assign_users(socket) do
-    users = Accounts.all_users(%{})
+    users = Accounts.all_users(%{order_by: :username}) |> IO.inspect(label: "69", limit: :infinity, charlists: false)
     assign(socket, users: users)
   end
 end

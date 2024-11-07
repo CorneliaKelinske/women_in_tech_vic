@@ -125,8 +125,17 @@ defmodule WomenInTechVic.Accounts do
     {:error, ErrorMessage.bad_request("Cannot update email or password")}
   end
 
+  @doc false
+  @spec update_user(pos_integer(), map()) :: change_res(User.t())
+  @spec update_user(User.t(), map()) :: change_res(User.t())
   def update_user(user_or_id, params) do
     Actions.update(User, user_or_id, params)
+  end
+
+  @doc false
+  @spec update_user_role(pos_integer(), User.role()) :: change_res(User.t())
+  def update_user_role(user_id, role) do
+    Actions.update(User, user_id, %{role: role})
   end
 
   @doc false
