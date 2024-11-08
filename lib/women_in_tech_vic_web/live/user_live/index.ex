@@ -66,7 +66,7 @@ defmodule WomenInTechVicWeb.UserLive.Index do
   defp assign_title(socket, title), do: assign(socket, title: title)
 
   defp assign_users(socket) do
-    users = Accounts.all_users(%{order_by: :username}) |> IO.inspect(label: "69", limit: :infinity, charlists: false)
+    users = Accounts.all_users(%{order_by: :username})
     assign(socket, users: users)
   end
 end
