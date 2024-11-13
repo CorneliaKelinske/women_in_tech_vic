@@ -1,7 +1,6 @@
 {
     "skip_files": [
-      "test/support/*",
-      "lib/scripts/drop.ex",
+      "test/support/*",   
       "lib/women_in_tech_vic_web/components/core_components.ex"     
     ],
     "terminal_options": {
