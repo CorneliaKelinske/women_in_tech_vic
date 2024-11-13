@@ -32,7 +32,7 @@
       phx-click="delete-user"
       phx-value-id={user.id}
     >
-      <.icon name="hero-trash" class="h-4 w-4 align-baseline" />
+      <.icon :if={user.role !== :admin} name="hero-trash" class="h-4 w-4 align-baseline" />
     </button>
   </:col>
 </.table>
