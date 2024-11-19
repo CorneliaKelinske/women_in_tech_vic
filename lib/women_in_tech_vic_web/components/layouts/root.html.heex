@@ -12,49 +12,80 @@
     </script>
   </head>
   <body class="bg-gray-900 min-h-screen overflow-y-scroll">
-  <nav class="top-0 left-0 right-0 w-full z-10 bg-gradient-to-br from-pink-400 to-pink-800">
-    <div class="relative flex h-16 items-center justify-between px-4 w-full r-0">
-
-      <span class="text-gray-900 md:text-lg uppercase font-sans font-semibold">Women in Tech Victoria </span>
-
-      <!-- Centered links for larger screens -->
+    <nav class="top-0 left-0 right-0 w-full z-10 bg-gradient-to-br from-pink-400 to-pink-800">
+      <div class="relative flex h-16 items-center justify-between px-4 w-full r-0">
+        <span class="text-gray-900 md:text-lg uppercase font-sans font-semibold">
+          Women in Tech Victoria
+        </span>
+        <!-- Centered links for larger screens -->
+        <div class="hidden sm:flex flex-1 items-center justify-start ml-8 space-x-4 text-lg font-sans uppercase text-white">
+          <%= if @current_user do %>
+            <.link href={~p"/users/settings"} class="hover:text-gray-700">Settings</.link>
+            <.link href={~p"/users/log_out"} method="delete" class="hover:text-gray-700">
+              Log out
+            </.link>
+          <% else %>
+            <.link href={~p"/users/register"} class="hover:text-gray-700">Register</.link>
+            <.link href={~p"/users/log_in"} class="hover:text-gray-700">Log in</.link>
+          <% end %>
+          <.link href={~p"/contact"} class="hover:text-gray-700">Contact</.link>
+        </div>
+        <!-- Mobile menu button - Right side -->
+        <div class="flex items-center sm:hidden">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center rounded-md p-2 text-white hover:text-gray-700"
+            aria-controls="mobile-menu"
+            aria-expanded="false"
+            onclick="toggleMenu()"
+          >
+            <span class="sr-only">Open main menu</span>
+            <!-- Icon when menu is closed -->
+            <svg
+              id="menu-icon"
+              class="block h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+            <!-- Icon when menu is open -->
+            <svg
+              id="close-icon"
+              class="hidden h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <!-- Mobile dropdown menu -->
       <div
-        class="hidden sm:flex flex-1 items-center justify-start ml-8 space-x-4 text-lg font-sans uppercase text-white">
-        <a href="#" class="hover:text-gray-700">Register</a>
-        <a href="#" class="hover:text-gray-700">Log in</a>
-        <a href="#" class="hover:text-gray-700">Contact</a>
+        id="mobile-menu"
+        class="sm:hidden hidden space-y-1 px-2 pb-3 pt-2 text-lg font-sans uppercase text-gray-400"
+      >
+        <%= if @current_user do %>
+          <.link href={~p"/users/settings"} class="block hover:text-gray-700">Settings</.link>
+          <.link href={~p"/users/log_out"} class="block hover:text-gray-700">Log out</.link>
+        <% else %>
+          <.link href={~p"/users/register"} class="block hover:text-gray-700">Register</.link>
+          <.link href={~p"/users/log_in"} class="block hover:text-gray-700">Log in</.link>
+        <% end %>
+        <.link href={~p"/contact"} class="block hover:text-gray-700">Contact</.link>
       </div>
-
-      <!-- Mobile menu button - Right side -->
-      <div class="flex items-center sm:hidden">
-        <button type="button"
-          class="inline-flex items-center justify-center rounded-md p-2 text-white hover:text-gray-700"
-          aria-controls="mobile-menu" aria-expanded="false" onclick="toggleMenu()">
-          <span class="sr-only">Open main menu</span>
-
-          <!-- Icon when menu is closed -->
-          <svg id="menu-icon" class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-
-          <!-- Icon when menu is open -->
-          <svg id="close-icon" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile dropdown menu -->
-    <div id="mobile-menu" class="sm:hidden hidden space-y-1 px-2 pb-3 pt-2 text-lg font-sans uppercase text-gray-400">
-
-      <a href="#" class="block hover:text-gray-700">Register</a>
-      <a href="#" class="block hover:text-gray-700">Log in</a>
-      <a href="#" class="block hover:text-gray-700">Contact</a>
-    </div>
-  </nav>
+    </nav>
 
     <%= @inner_content %>
   </body>
