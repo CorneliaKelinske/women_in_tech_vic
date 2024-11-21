@@ -16,7 +16,12 @@ module.exports = {
     extend: {
       colors: {
         brand: "#FD4F00",
-      }
+      },
+      backgroundImage: {
+        'keys': "url('/images/keys.jpg')",
+        'pc': "url('/images/pc.jpg')"  
+      },
+      
     },
   },
   plugins: [
