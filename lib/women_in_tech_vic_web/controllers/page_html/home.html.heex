@@ -10,63 +10,52 @@
     Welcome to Women in Tech Victoria!
   </div>
 </section>
-<section class="grid grid-cols-1 lg:grid-cols-2">
-  <!-- First Row on Large: Text without Background First, then Image -->
-  <div class="relative flex items-center justify-center p-10 lg:text-2xl font-sans text-gray-200  lg:text-gray-400  text-center h-full aspect-square bg-pc bg-cover bg-center lg:bg-none lg:order-1">
-    <!-- Mobile Background with Overlay -->
-    <span class="z-10">
-      This group is for women who are working (or are interested in working) in the tech industry.
-      The goal of this group is to create a supportive and welcoming community where we can chat and share our
-      experience with working in workplaces where, as women, we're often a bit of a unicorn. We adopt the
-      <a
-        href="https://www.contributor-covenant.org"
-        target="_blank"
-        class="hover:underline hover:text-blue-800 text-pink-300 lg:text-pink-800"
-      >
+<section class="grid grid-cols-1 lg:grid-cols-2 w-full">
+  <!-- First Section -->
+  <div class="relative flex items-center justify-center p-10 lg:text-2xl font-sans text-gray-200 lg:text-gray-400 text-center h-full bg-pc bg-cover bg-center lg:bg-none lg:order-first">
+    <span class="z-10 max-w-full">
+      This group is for women who are working (or are interested in working) in the tech industry. 
+      The goal of this group is to create a supportive and welcoming community where we can chat 
+      and share our experience with working in workplaces where, as women, we're often a bit of a unicorn. 
+      We adopt the 
+      <a href="https://www.contributor-covenant.org" 
+         target="_blank" 
+         class="hover:underline hover:text-blue-800 text-pink-300 lg:text-pink-800">
         Contributor Covenant
-      </a>
+      </a> 
       and the standards set forth therein.
     </span>
     <div class="absolute inset-0 bg-gray-900 opacity-40 lg:hidden"></div>
   </div>
-  <!-- Image Element Only Visible on Large Screens -->
-  <div class="hidden lg:flex justify-center items-center order-last lg:order-2 aspect-square">
+  <div class="hidden lg:flex justify-center items-center aspect-square">
     <img src="images/pc.jpg" alt="Image 1" class="object-cover w-full h-full" />
   </div>
 </section>
 
-<section class="grid grid-cols-1 lg:grid-cols-2">
-  <!-- Second Row on Large: Text without Background First, then Image -->
-  <div class="relative flex items-center justify-center p-5 font-sans text-gray-900  lg:text-gray-400 text-center h-full aspect-square bg-cover bg-center bg-keys lg:bg-none lg:order-last">
-    <!-- Mobile Background with Overlay -->
-    <div class="z-10 bg-gray-200 rounded p-4 lg:bg-none lg:bg-transparent">
+<section class="grid grid-cols-1 lg:grid-cols-2 w-full">
+  <!-- Second Section -->
+  <div class="relative flex items-center justify-center p-5 font-sans text-gray-900 lg:text-gray-400 text-center h-full bg-keys bg-cover bg-center lg:bg-none lg:order-last">
+    <div class="z-10 bg-gray-200 rounded p-4 max-w-full lg:bg-none lg:bg-transparent">
       <h2 class="text-xl lg:text-2xl pb-4">Next Event</h2>
-
       <div>Bi-weekly online meeting</div>
-
-        <div>Tue, 19 November 2024 05:00 PM, PST</div>
-
-       <div> Our bi-weekly online meetup where we can hang out and chat. This meeting is a more technical,
-        hands-on
-        coding meeting. We'll continue exploring RUST. For this, we use https://github.com/rust-lang/rustlings. To
-        make this work on your computer, you will need a code editor (e.g., VS code) . The Rustlings repo linked
-        above
-        has excellent instructions for what to do to get set up. Follow those, and you are good to go! Let me
-        (Cornelia) know if you need help with the installation or have any questions or concerns. If this seems
-        intimidating, don't worry! We can help you get set up during the meet-up, plus we'll have someone screen
-        share
-        so we can work through the exercises together. If you missed the last meeting, don't worry! The progress we
-        make in each meeting will be committed to this repo: https://github.com/CorneliaKelinske/rustlings_meetup
-
-        See details</div>
+      <div>Tue, 19 November 2024 05:00 PM, PST</div>
+      <div>
+        Our bi-weekly online meetup where we can hang out and chat. This meeting is a more technical, 
+        hands-on coding meeting. We'll continue exploring RUST. For this, we use 
+        <a href="https://github.com/rust-lang/rustlings" class="text-blue-600 underline">Rustlings</a>. 
+        If you missed the last meeting, don't worry! 
+        See our <a href="https://github.com/CorneliaKelinske/rustlings_meetup" class="text-blue-600 underline">
+          GitHub repo
+        </a>.
+      </div>
     </div>
     <div class="absolute inset-0 bg-gray-900 opacity-40 lg:hidden"></div>
   </div>
-  <!-- Image Element Only Visible on Large Screens -->
   <div class="hidden lg:flex justify-center items-center aspect-square">
     <img src="images/keys.jpg" alt="Image 2" class="object-cover w-full h-full" />
   </div>
 </section>
+
 <footer class="p-4 text-center text-gray-400">
   <p>&copy; 2024 Women in Tech Victoria</p>
 </footer>
