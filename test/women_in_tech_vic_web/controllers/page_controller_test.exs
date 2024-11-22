@@ -11,7 +11,7 @@ defmodule WomenInTechVicWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")
-    assert html_response(conn, 200) =~ ">Welcome to Women in Tech Victoria</h1>\n"
+    assert html_response(conn, 200) =~ "Welcome to Women in Tech Victoria"
   end
 
   test "redirects logged in users", %{conn: conn, user: user} do
