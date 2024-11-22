@@ -36,18 +36,22 @@
   <!-- Second Section -->
   <div class="relative flex items-center justify-center p-5 font-sans text-gray-900 lg:text-gray-400 text-center h-full bg-keys bg-cover bg-center lg:bg-none lg:order-last">
     <div class="z-10 bg-gray-200 rounded p-4 max-w-full lg:bg-none lg:bg-transparent">
-      <h2 class="text-xl lg:text-2xl pb-4">Next Event</h2>
-      <div>Bi-weekly online meeting</div>
-      <div>Tue, 19 November 2024 05:00 PM, PST</div>
-      <div>
-        Our bi-weekly online meetup where we can hang out and chat. This meeting is a more technical, 
-        hands-on coding meeting. We'll continue exploring RUST. For this, we use 
-        <a href="https://github.com/rust-lang/rustlings" class="text-blue-600 underline">Rustlings</a>. 
-        If you missed the last meeting, don't worry! 
-        See our <a href="https://github.com/CorneliaKelinske/rustlings_meetup" class="text-blue-600 underline">
-          GitHub repo
-        </a>.
-      </div>
+      <h2 class="text-lg lg:text-xl pb-2 uppercase">Next Event</h2>
+          <%= if @event === "No event scheduled" do %>
+      <p class="text-lg font-semibold"><%= @event %></p>
+      <% else %>
+      <h3 class="text-lg font-semibold"><%= @event.title %></h3>
+      <p class="pb-4"><%= @event.scheduled_at %></p>
+      <div class="break-words pb-4"><%=@event.description %>  </div>
+      <div class="flex justify-center items-center mx-auto w-2/5 bg-gray-300 rounded-lg p-2">
+        <.link
+            navigate={~p"/events/#{@event}"}
+            class="font-semibold text-gray-900 hover:text-gray-500"
+          >
+            See details
+          </.link>
+          </div>
+      <% end %>
     </div>
     <div class="absolute inset-0 bg-gray-900 opacity-40 lg:hidden"></div>
   </div>
