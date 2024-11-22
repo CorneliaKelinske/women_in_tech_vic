@@ -1,68 +1,72 @@
-   <section class="relative text-gray-400">
-      <!-- Background image with overlay only -->
-      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('images/code.jpg'); opacity: 0.3;">
-      </div>
+<section class="relative text-gray-400">
+  <!-- Background image with overlay only -->
+  <div
+    class="absolute inset-0 bg-cover bg-center"
+    style="background-image: url('images/code.jpg'); opacity: 0.3;"
+  >
+  </div>
+  <!-- Content overlay with text only -->
+  <div class="relative p-8 mx-auto max-w-3xl text-right md:text-center font-semibold font-sans text-2xl md:text-3xl md:tracking-widest z-10 text-gray-200">
+    Welcome to Women in Tech Victoria!
+  </div>
+</section>
+<section class="grid grid-cols-1 lg:grid-cols-2">
+  <!-- First Row on Large: Text without Background First, then Image -->
+  <div class="relative flex items-center justify-center p-10 lg:text-2xl font-sans text-gray-200  lg:text-gray-400  text-center h-full aspect-square bg-pc bg-cover bg-center lg:bg-none lg:order-1">
+    <!-- Mobile Background with Overlay -->
+    <span class="z-10">
+      This group is for women who are working (or are interested in working) in the tech industry.
+      The goal of this group is to create a supportive and welcoming community where we can chat and share our
+      experience with working in workplaces where, as women, we're often a bit of a unicorn. We adopt the
+      <a
+        href="https://www.contributor-covenant.org"
+        target="_blank"
+        class="hover:underline hover:text-blue-800 text-pink-300 lg:text-pink-800"
+      >
+        Contributor Covenant
+      </a>
+      and the standards set forth therein.
+    </span>
+    <div class="absolute inset-0 bg-gray-900 opacity-40 lg:hidden"></div>
+  </div>
+  <!-- Image Element Only Visible on Large Screens -->
+  <div class="hidden lg:flex justify-center items-center order-last lg:order-2 aspect-square">
+    <img src="images/pc.jpg" alt="Image 1" class="object-cover w-full h-full" />
+  </div>
+</section>
 
-      <!-- Content overlay with text only -->
-      <div
-        class="relative p-8 mx-auto max-w-3xl text-right md:text-center font-semibold font-sans text-2xl md:text-3xl md:tracking-widest z-10 text-gray-200">
-        Welcome to Women in Tech Victoria!
-      </div>
-    </section>
-      <section class="grid grid-cols-1 lg:grid-cols-2">
-      <!-- First Row on Large: Text without Background First, then Image -->
-      <div
-        class="relative flex items-center justify-center p-10 text-2xl font-sans text-gray-200  lg:text-gray-400  text-center h-full aspect-square bg-pc bg-cover bg-center lg:bg-none lg:order-1">
-        <!-- Mobile Background with Overlay -->
-        <span class="z-10">This group is for women who are working (or are interested in working) in the tech industry.
-          The goal of this group is to create a supportive and welcoming community where we can chat and share our
-          experience with working in workplaces where, as women, we're often a bit of a unicorn. We adopt the
-          Contributor Covenant and the standards set forth therein.
+<section class="grid grid-cols-1 lg:grid-cols-2">
+  <!-- Second Row on Large: Text without Background First, then Image -->
+  <div class="relative flex items-center justify-center p-5 font-sans text-gray-900  lg:text-gray-400 text-center h-full aspect-square bg-cover bg-center bg-keys lg:bg-none lg:order-last">
+    <!-- Mobile Background with Overlay -->
+    <div class="z-10 bg-gray-200 rounded p-4 lg:bg-none lg:bg-transparent">
+      <h2 class="text-xl lg:text-2xl pb-4">Next Event</h2>
 
-        </span>
-        <div class="absolute inset-0 bg-gray-900 opacity-40 lg:hidden"></div>
-      </div>
-      <!-- Image Element Only Visible on Large Screens -->
-      <div class="hidden lg:flex justify-center items-center order-last lg:order-2 aspect-square">
-        <img src="images/pc.jpg" alt="Image 1" class="object-cover w-full h-full">
-      </div>
-    </section>
+      <div>Bi-weekly online meeting</div>
 
-    <section class="grid grid-cols-1 lg:grid-cols-2">
-      <!-- Second Row on Large: Text without Background First, then Image -->
-      <div
-        class="relative flex items-center justify-center p-5 font-sans text-gray-900  lg:text-gray-400 text-center h-full aspect-square bg-cover bg-center bg-keys lg:bg-none lg:order-last">
-        <!-- Mobile Background with Overlay -->
-        <span class="z-10 bg-gray-200 rounded p-4 lg:bg-none lg:bg-transparent">
-          <h2 class="text-2xl pb-4"> Next Event</h2>
+        <div>Tue, 19 November 2024 05:00 PM, PST</div>
 
-          <div>Bi-weekly online meeting
+       <div> Our bi-weekly online meetup where we can hang out and chat. This meeting is a more technical,
+        hands-on
+        coding meeting. We'll continue exploring RUST. For this, we use https://github.com/rust-lang/rustlings. To
+        make this work on your computer, you will need a code editor (e.g., VS code) . The Rustlings repo linked
+        above
+        has excellent instructions for what to do to get set up. Follow those, and you are good to go! Let me
+        (Cornelia) know if you need help with the installation or have any questions or concerns. If this seems
+        intimidating, don't worry! We can help you get set up during the meet-up, plus we'll have someone screen
+        share
+        so we can work through the exercises together. If you missed the last meeting, don't worry! The progress we
+        make in each meeting will be committed to this repo: https://github.com/CorneliaKelinske/rustlings_meetup
 
-            Tue, 19 November 2024 05:00 PM, PST
-
-            Details Our bi-weekly online meetup where we can hang out and chat. This meeting is a more technical,
-            hands-on
-            coding meeting. We'll continue exploring RUST. For this, we use https://github.com/rust-lang/rustlings. To
-            make this work on your computer, you will need a code editor (e.g., VS code) . The Rustlings repo linked
-            above
-            has excellent instructions for what to do to get set up. Follow those, and you are good to go! Let me
-            (Cornelia) know if you need help with the installation or have any questions or concerns. If this seems
-            intimidating, don't worry! We can help you get set up during the meet-up, plus we'll have someone screen
-            share
-            so we can work through the exercises together. If you missed the last meeting, don't worry! The progress we
-            make in each meeting will be committed to this repo: https://github.com/CorneliaKelinske/rustlings_meetup
-
-            See details</div>
-
-        </span>
-        <div class="absolute inset-0 bg-bgray-900 opacity-40 lg:hidden"></div>
-      </div>
-      <!-- Image Element Only Visible on Large Screens -->
-      <div class="hidden lg:flex justify-center items-center aspect-square">
-        <img src="images/keys.jpg" alt="Image 2" class="object-cover w-full h-full">
-      </div>
-    </section>
-       <footer class="p-4 text-center text-gray-400">
-    <p>&copy; 2024 Women in Tech Victoria</p>
-  </footer>
-
+        See details</div>
+    </div>
+    <div class="absolute inset-0 bg-gray-900 opacity-40 lg:hidden"></div>
+  </div>
+  <!-- Image Element Only Visible on Large Screens -->
+  <div class="hidden lg:flex justify-center items-center aspect-square">
+    <img src="images/keys.jpg" alt="Image 2" class="object-cover w-full h-full" />
+  </div>
+</section>
+<footer class="p-4 text-center text-gray-400">
+  <p>&copy; 2024 Women in Tech Victoria</p>
+</footer>
