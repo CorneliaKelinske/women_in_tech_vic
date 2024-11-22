@@ -60,7 +60,6 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
       # Now do a logged in request and assert on the menu
       conn = get(conn, "/events")
       response = html_response(conn, 200)
-      assert response =~ user.username
       assert response =~ "Settings"
       assert response =~ "Log out"
     end

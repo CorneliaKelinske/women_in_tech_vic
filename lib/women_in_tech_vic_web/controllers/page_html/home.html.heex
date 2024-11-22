@@ -14,15 +14,17 @@
   <!-- First Section -->
   <div class="relative flex items-center justify-center p-10 lg:text-2xl font-sans text-gray-200 lg:text-gray-400 text-center h-full bg-pc bg-cover bg-center lg:bg-none lg:order-first">
     <span class="z-10 max-w-full">
-      This group is for women who are working (or are interested in working) in the tech industry. 
-      The goal of this group is to create a supportive and welcoming community where we can chat 
-      and share our experience with working in workplaces where, as women, we're often a bit of a unicorn. 
-      We adopt the 
-      <a href="https://www.contributor-covenant.org" 
-         target="_blank" 
-         class="hover:underline hover:text-blue-800 text-pink-300 lg:text-pink-800">
+      This group is for women who are working (or are interested in working) in the tech industry.
+      The goal of this group is to create a supportive and welcoming community where we can chat
+      and share our experience with working in workplaces where, as women, we're often a bit of a unicorn.
+      We adopt the
+      <a
+        href="https://www.contributor-covenant.org"
+        target="_blank"
+        class="hover:underline hover:text-blue-800 text-pink-300 lg:text-pink-800"
+      >
         Contributor Covenant
-      </a> 
+      </a>
       and the standards set forth therein.
     </span>
     <div class="absolute inset-0 bg-gray-900 opacity-40 lg:hidden"></div>
@@ -37,20 +39,20 @@
   <div class="relative flex items-center justify-center p-5 font-sans text-gray-900 lg:text-gray-400 text-center h-full bg-keys bg-cover bg-center lg:bg-none lg:order-last">
     <div class="z-10 bg-gray-200 rounded p-4 max-w-full lg:bg-none lg:bg-transparent">
       <h2 class="text-lg lg:text-xl pb-2 uppercase">Next Event</h2>
-          <%= if @event === "No event scheduled" do %>
-      <p class="text-lg font-semibold"><%= @event %></p>
+      <%= if @event === "No event scheduled" do %>
+        <p class="text-lg font-semibold"><%= @event %></p>
       <% else %>
-      <h3 class="text-lg font-semibold"><%= @event.title %></h3>
-      <p class="pb-4"><%= @event.scheduled_at %></p>
-      <div class="break-words pb-4"><%=@event.description %>  </div>
-      <div class="flex justify-center items-center mx-auto w-2/5 bg-gray-300 rounded-lg p-2">
-        <.link
+        <h3 class="text-lg font-semibold"><%= @event.title %></h3>
+        <p class="pb-4"><%= @event.scheduled_at %></p>
+        <div class="break-words pb-4"><%= @event.description %></div>
+        <div class="flex justify-center items-center mx-auto w-2/5 bg-gray-300 rounded-lg p-2">
+          <.link
             navigate={~p"/events/#{@event}"}
             class="font-semibold text-gray-900 hover:text-gray-500"
           >
             See details
           </.link>
-          </div>
+        </div>
       <% end %>
     </div>
     <div class="absolute inset-0 bg-gray-900 opacity-40 lg:hidden"></div>
