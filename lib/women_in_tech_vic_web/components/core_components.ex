@@ -473,9 +473,9 @@ defmodule WomenInTechVicWeb.CoreComponents do
       end
 
     ~H"""
-    <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class="w-[40rem] mt-11 sm:w-full">
-        <thead class="text-left leading-6 text-zinc-500">
+    <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0 flex justify-center">
+      <table class="w-full max-w-4xl mt-11">
+        <thead class="text-left leading-6 text-gray-400">
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>
             <th :if={@action != []} class="relative p-0 pb-4">
@@ -496,7 +496,7 @@ defmodule WomenInTechVicWeb.CoreComponents do
             >
               <div class="block py-4 pr-6">
                 <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
-                <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
+                <span class={["relative", i == 0 && "font-semibold text-gray-400"]}>
                   <%= render_slot(col, @row_item.(row)) %>
                 </span>
               </div>
@@ -506,7 +506,7 @@ defmodule WomenInTechVicWeb.CoreComponents do
                 <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-50 sm:rounded-r-xl" />
                 <span
                   :for={action <- @action}
-                  class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+                  class="relative ml-4 font-semibold leading-6 text-gray-400 hover:text-gray-700"
                 >
                   <%= render_slot(action, @row_item.(row)) %>
                 </span>
