@@ -1,5 +1,19 @@
-<h1 class="font-bold text-2xl text-gray-900 mb-8"><%= @title %></h1>
-<div class="w-full max-w-lg bg-white bg-opacity-25 rounded-lg">
+<section class="relative text-gray-400 min-w-full">
+  <!-- Background image with overlay only -->
+  <div
+    class="absolute inset-0 bg-cover bg-center"
+    style="background-image: url('/images/code.jpg'); opacity: 0.3;"
+  >
+  </div>
+  <!-- Content overlay with text only -->
+  <div class="relative p-8 mx-auto max-w-3xl text-right md:text-center font-semibold font-sans text-2xl md:text-3xl md:tracking-widest z-10 text-gray-200">
+    <%= @title%>
+  </div>
+</section>
+
+<section class="w-full flex justify-center px-6 py-20 lg:px-8">
+<div class="w-full max-w-lg rounded-lg">
+<div>
   <%= if @events === "No event scheduled" do %>
     <p class="text-lg text-center p-6"><%= @events %></p>
   <% else %>
@@ -20,6 +34,8 @@
     Create Event
   </button>
 </div>
+</div>
+</section>
 
 <.modal id="new-event-modal">
   <.header>Create event</.header>
