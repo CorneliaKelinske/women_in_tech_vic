@@ -1,13 +1,27 @@
-<div class="mb-8">
-  <.link
-    navigate={~p"/events"}
-    class="text-gray-800 hover:text-gray-700 font-semibold uppercase flex items-center space-x-1"
+<section class="relative text-gray-400 min-w-full">
+  <!-- Background image with overlay only -->
+  <div
+    class="absolute inset-0 bg-cover bg-center"
+    style="background-image: url('/images/code.jpg'); opacity: 0.3;"
   >
-    <.icon name="hero-chevron-double-left" class="h-5 w-5" />
-    <span>Events</span>
-  </.link>
-</div>
-<h1 class="font-bold text-2xl text-gray-900 mb-8"><%= @title %></h1>
+  </div>
+  <!-- Content overlay with text only -->
+  <div class="relative p-8 mx-auto max-w-3xl text-right md:text-center font-semibold font-sans text-2xl md:text-3xl md:tracking-widest z-10 text-gray-200">
+    <%= @title %>
+  </div>
+</section>
+<div class="m-8">
+  <div>
+    <.link
+      navigate={~p"/events"}
+      class="text-gray-200 hover:text-gray-400 font-semibold uppercase flex items-center space-x-1"
+    >
+      <.icon name="hero-chevron-double-left" class="h-5 w-5" />
+      <span>Events</span>
+    </.link>
+  </div>
+
+
 
 <.table id="users" rows={@users}>
   <:col :let={user} label="id"><%= user.id %></:col>
@@ -70,3 +84,4 @@
     </div>
   </div>
 <% end %>
+</div>
