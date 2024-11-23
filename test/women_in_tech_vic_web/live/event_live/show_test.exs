@@ -107,7 +107,7 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
       assert html =~ "All Events"
 
       lv
-      |> element(".text-gray-800", "All Events")
+      |> element(".text-gray-200", "All Events")
       |> render_click()
 
       assert_redirect(lv, ~p"/events")
