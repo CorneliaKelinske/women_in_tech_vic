@@ -19,7 +19,7 @@ IO.puts("Seeding data")
 Content.create_event(%{
   user_id: user.id,
   title: "Bi-weekly online meeting",
-  scheduled_at: "2024-08-14T00:00:00Z",
+  scheduled_at: "2025-08-14T00:00:00Z",
   online: true,
   address: "https://meet.google.com/uam-eyys-bxs",
   description: "Our bi-weekly online meetup where we can hang out and chat.
@@ -35,7 +35,7 @@ Content.create_event(%{
 Content.create_event(%{
   user_id: user.id,
   title: "Bi-weekly online meeting",
-  scheduled_at: "2024-09-25T00:00:00Z",
+  scheduled_at: "2025-09-25T00:00:00Z",
   online: true,
   address: "https://meet.google.com/uam-eyys-bxs",
   description:
@@ -52,7 +52,7 @@ Content.create_event(%{
 Content.create_event(%{
   user_id: user.id,
   title: "Nachos and Beer",
-  scheduled_at: "2024-10-20T00:00:00Z",
+  scheduled_at: "2025-10-20T00:00:00Z",
   online: false,
   address: "109-3680 Uptown Blvd · Victoria, BC",
   description: "Our next in-person meeting!
@@ -64,7 +64,7 @@ Content.create_event(%{
 Content.create_event(%{
   user_id: user.id,
   title: "Bi-weekly online meeting",
-  scheduled_at: "2024-10-09T00:00:00Z",
+  scheduled_at: "2025-10-09T00:00:00Z",
   online: true,
   address: "https://meet.google.com/uam-eyys-bxs",
   description:
@@ -81,7 +81,7 @@ Content.create_event(%{
 Content.create_event(%{
   user_id: user.id,
   title: "Bi-weekly online meeting",
-  scheduled_at: "2024-10-23T00:00:00Z",
+  scheduled_at: "2025-10-23T00:00:00Z",
   online: true,
   address: "https://meet.google.com/uam-eyys-bxs",
   description:

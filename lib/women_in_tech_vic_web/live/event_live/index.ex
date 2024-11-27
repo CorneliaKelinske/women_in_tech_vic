@@ -67,10 +67,7 @@ defmodule WomenInTechVicWeb.EventLive.Index do
     events =
       %{scheduled_at: %{gte: DateTime.utc_now()}, order_by: :scheduled_at}
       |> Content.all_events()
-      |> case do
-        [] -> "No event scheduled"
-        [%Event{} | _] = events -> Enum.map(events, &prep_event_for_display/1)
-      end
+      |> Enum.map(&prep_event_for_display/1)
 
     assign(socket, events: events)
   end
@@ -78,6 +75,10 @@ defmodule WomenInTechVicWeb.EventLive.Index do
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do
     Map.put(event, :scheduled_at, Utils.timestamp_to_formatted_pacific(scheduled_at))
   end
+
+  #coveralls-ignore-start
+  defp prep_event_for_display(event), do: event
+  #coveralls-ignore-stop
 
   defp assign_event_form(socket, changeset) do
     assign(socket, :new_event_form, to_form(changeset))

@@ -8,10 +8,8 @@ defmodule WomenInTechVicWeb.PageController do
     online_event =
       %{online: true, scheduled_at: %{gte: DateTime.utc_now()}, order_by: :scheduled_at, limit: 1}
       |> Content.all_events()
-      |> case do
-        [] -> "No event scheduled"
-        [event] -> prep_event_for_display(event)
-      end
+      |> List.first()
+      |> prep_event_for_display()
 
     # The home page is often custom made,
     # so skip the default app layout.
@@ -21,4 +19,6 @@ defmodule WomenInTechVicWeb.PageController do
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do
     Map.put(event, :scheduled_at, Utils.timestamp_to_formatted_pacific(scheduled_at))
   end
+
+  defp prep_event_for_display(event), do: event
 end
