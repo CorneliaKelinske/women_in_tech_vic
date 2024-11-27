@@ -3,8 +3,8 @@
 <section class="w-full flex justify-center px-6 py-20 lg:px-8">
   <div class="w-full max-w-lg rounded-lg">
     <div>
-      <%= if @events === "No event scheduled" do %>
-        <p class="text-lg text-center p-6"><%= @events %></p>
+      <%= if @events === [] do %>
+        <p class="text-3xl text-gray-400 text-center p-6 mb-16">No event scheduled</p>
       <% else %>
         <.event_display
           :for={event <- @events}

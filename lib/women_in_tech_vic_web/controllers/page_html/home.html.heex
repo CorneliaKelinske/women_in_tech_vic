@@ -28,9 +28,7 @@
   <div class="relative flex items-center justify-center p-5 font-sans text-gray-900 lg:text-gray-400 text-center h-full bg-keys bg-cover bg-center lg:bg-none lg:order-last">
     <div class="z-10 bg-gray-200 rounded p-4 max-w-full lg:bg-none lg:bg-transparent">
       <h2 class="text-lg lg:text-xl pb-2 uppercase">Next Event</h2>
-      <%= if @event === "No event scheduled" do %>
-        <p class="text-lg font-semibold"><%= @event %></p>
-      <% else %>
+      <%= if @event do %>
         <h3 class="text-lg font-semibold"><%= @event.title %></h3>
         <p class="pb-4"><%= @event.scheduled_at %></p>
         <div class="break-words pb-4"><%= @event.description %></div>
@@ -42,6 +40,8 @@
             See details
           </.link>
         </div>
+      <% else %>
+        <p class="text-lg font-semibold">No event scheduled</p>
       <% end %>
     </div>
     <div class="absolute inset-0 bg-gray-900 opacity-40 lg:hidden"></div>

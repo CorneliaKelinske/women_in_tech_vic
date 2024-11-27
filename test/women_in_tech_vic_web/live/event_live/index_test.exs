@@ -22,6 +22,21 @@ defmodule WomenInTechVic.EventLive.IndexTest do
       assert html =~ "Create Event"
     end
 
+    test "renders no Event scheduled if no event exists", %{
+      conn: conn,
+      user: user,
+      online_event: online_event
+    } do
+      assert {:ok, _} = Content.delete_event(online_event)
+      {:ok, _lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/events")
+
+      assert html =~ "Upcoming Events"
+      assert html =~ "No event scheduled"
+    end
+
     test "does not show the Create Event button to non-admin users", %{conn: conn, user_2: user_2} do
       {:ok, _lv, html} =
         conn
