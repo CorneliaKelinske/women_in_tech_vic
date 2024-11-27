@@ -4,6 +4,30 @@ defmodule WomenInTechVicWeb.CustomComponents do
   use Phoenix.Component
   use WomenInTechVicWeb, :live_view
 
+  attr :title, :string, default: "Welcome to Women in Tech Victoria"
+
+  @doc """
+  Renders the banner with the image background and the page title
+
+  ## Example
+
+    <.title_banner title={@title}/>
+  """
+  def title_banner(assigns) do
+    ~H"""
+    <section class="relative text-gray-400 min-w-full">
+      <div
+        class="absolute inset-0 bg-cover bg-center"
+        style="background-image: url('/images/code.jpg'); opacity: 0.3;"
+      >
+      </div>
+      <h1 class="relative p-8 mx-auto max-w-3xl text-right md:text-center font-semibold font-sans text-2xl md:text-3xl md:tracking-widest z-10 text-gray-200">
+        <%= @title %>
+      </h1>
+    </section>
+    """
+  end
+
   attr :user, :map, required: true
   attr :event, :map, required: true
   attr :show_address, :boolean, default: false
@@ -14,7 +38,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
 
   ## Example
 
-    <.event_display event={event} />
+    <.event_display event={event} user={user}/>
 
   """
   def event_display(assigns) do

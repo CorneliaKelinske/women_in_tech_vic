@@ -1,10 +1,12 @@
 defmodule WomenInTechVicWeb.EventLive.Show do
   use WomenInTechVicWeb, :live_view
 
-  import WomenInTechVicWeb.CustomComponents, only: [event_display: 1]
+  import WomenInTechVicWeb.CustomComponents, only: [event_display: 1, title_banner: 1]
 
   alias WomenInTechVic.{Content, Utils}
   alias WomenInTechVic.Content.Event
+
+  @title "Event Details"
 
   @impl true
   def mount(_params, _session, socket) do
@@ -19,6 +21,7 @@ defmodule WomenInTechVicWeb.EventLive.Show do
          socket
          |> assign_event(event)
          |> assign(:attendees, attendees)
+         |> assign(:title, @title)
          |> assign_button_text(socket.assigns.current_user, attendees)}
 
       _ ->
