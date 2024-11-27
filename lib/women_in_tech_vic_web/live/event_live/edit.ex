@@ -1,6 +1,8 @@
 defmodule WomenInTechVicWeb.EventLive.Edit do
   use WomenInTechVicWeb, :live_view
 
+  import WomenInTechVicWeb.CustomComponents, only: [title_banner: 1]
+
   alias WomenInTechVic.{Content, Utils}
   alias WomenInTechVic.Content.Event
 

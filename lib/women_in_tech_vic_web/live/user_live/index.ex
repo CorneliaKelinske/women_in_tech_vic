@@ -1,6 +1,8 @@
 defmodule WomenInTechVicWeb.UserLive.Index do
   use WomenInTechVicWeb, :live_view
 
+  import WomenInTechVicWeb.CustomComponents, only: [title_banner: 1]
+
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Accounts.User
 
