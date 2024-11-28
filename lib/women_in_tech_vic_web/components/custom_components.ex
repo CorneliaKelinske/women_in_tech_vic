@@ -43,7 +43,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
   """
   def event_display(assigns) do
     ~H"""
-    <div class="break-words group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
+    <div class="w-full max-w-lg break-words group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
       <h2 class="text-3xl font-bold text-center mb-2"><%= @event.title %></h2>
       <p class="text-xl text-center mb-2"><%= @event.scheduled_at %></p>
       <%= if @show_address do %>

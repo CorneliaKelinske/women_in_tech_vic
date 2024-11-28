@@ -1,31 +1,26 @@
 <.title_banner title={@title} />
 
-<section class="w-full flex justify-center px-6 py-20 lg:px-8">
-  <div class="w-full max-w-lg rounded-lg">
-    <div>
-      <%= if @events === [] do %>
-        <p class="text-3xl text-gray-400 text-center p-6 mb-16">No event scheduled</p>
-      <% else %>
-        <.event_display
-          :for={event <- @events}
-          event={event}
-          show_address={false}
-          user={@current_user}
-        />
-      <% end %>
-    </div>
-
-    <div :if={@current_user.role === :admin} class="mt-4">
-      <button
-        phx-click={show_modal("new-event-modal")}
-        class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
-      >
-        Create Event
-      </button>
-    </div>
-  </div>
+<section class="min-w-full flex flex-wrap justify-around px-6 pt-20 lg:px-8">
+  <%= if @events === [] do %>
+    <p class="text-3xl text-gray-400 text-center pr-6 mb-16">No event scheduled</p>
+  <% else %>
+    <.event_display
+      :for={event <- @events}
+      event={event}
+      show_address={false}
+      user={@current_user}
+    />
+  <% end %>
 </section>
 
+<div :if={@current_user.role === :admin} class="mb-8 min-w-full flex justify-center">
+  <button
+    phx-click={show_modal("new-event-modal")}
+    class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
+  >
+    Create Event
+  </button>
+</div>
 <.modal id="new-event-modal">
   <.header>Create event</.header>
   <.simple_form for={@new_event_form} id="event-form" phx-submit="save-event">

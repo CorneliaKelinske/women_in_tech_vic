@@ -76,9 +76,9 @@ defmodule WomenInTechVicWeb.EventLive.Index do
     Map.put(event, :scheduled_at, Utils.timestamp_to_formatted_pacific(scheduled_at))
   end
 
-  #coveralls-ignore-start
+  # coveralls-ignore-start
   defp prep_event_for_display(event), do: event
-  #coveralls-ignore-stop
+  # coveralls-ignore-stop
 
   defp assign_event_form(socket, changeset) do
     assign(socket, :new_event_form, to_form(changeset))
