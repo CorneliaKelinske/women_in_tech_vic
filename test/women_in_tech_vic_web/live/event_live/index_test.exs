@@ -28,6 +28,7 @@ defmodule WomenInTechVic.EventLive.IndexTest do
       online_event: online_event
     } do
       assert {:ok, _} = Content.delete_event(online_event)
+
       {:ok, _lv, html} =
         conn
         |> log_in_user(user)
