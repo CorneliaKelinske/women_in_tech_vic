@@ -15,7 +15,7 @@ defmodule WomenInTechVicWeb.ContactLive do
   def render(assigns) do
     ~H"""
     <div class="min-h-screen flex items-center justify-center">
-      <div class="bg-white bg-opacity-80 p-8 rounded-lg shadow-md w-full max-w-md mx-auto">
+      <div class="border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300 p-8 rounded-lg shadow-md w-full max-w-md mx-auto">
         <.header class="text-center text-zinc-900">
           Contact the Admin
         </.header>
@@ -60,7 +60,7 @@ defmodule WomenInTechVicWeb.ContactLive do
 
           <.button
             phx-disable-with="Sending..."
-            class="w-full bg-purple-700 text-white font-semibold py-3 rounded-lg hover:bg-purple-600"
+            class="w-full bg-pink-600 text-white font-semibold py-3 rounded-lg hover:bg-pink-800"
           >
             Submit <span aria-hidden="true">→</span>
           </.button>
