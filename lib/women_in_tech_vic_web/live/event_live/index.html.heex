@@ -1,5 +1,5 @@
 <.title_banner title={@title} />
-
+<div class="min-w-full h-full bg-pc bg-cover bg-center ">
 <section class="min-w-full flex flex-wrap justify-around px-6 pt-20 lg:px-8">
   <%= if @events === [] do %>
     <p class="text-3xl text-gray-400 text-center pr-6 mb-16">No event scheduled</p>
@@ -13,13 +13,14 @@
   <% end %>
 </section>
 
-<div :if={@current_user.role === :admin} class="mb-8 min-w-full flex justify-center">
+<div :if={@current_user.role === :admin} class="p-8 min-w-full flex justify-center">
   <button
     phx-click={show_modal("new-event-modal")}
     class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
   >
     Create Event
   </button>
+</div>
 </div>
 <.modal id="new-event-modal">
   <.header>Create event</.header>
