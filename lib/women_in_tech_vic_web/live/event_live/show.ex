@@ -8,8 +8,11 @@ defmodule WomenInTechVicWeb.EventLive.Show do
 
   @title "Event Details"
 
+  @dialyzer {:nowarn_function, mount: 3}
   @impl true
   def mount(_params, _session, socket) do
+
+    if connected?(socket), do: Content.subscribe_to_attendance_updates()
     {:ok, socket}
   end
 
@@ -63,6 +66,11 @@ defmodule WomenInTechVicWeb.EventLive.Show do
          socket
          |> put_flash(:error, "Could not delete event")}
     end
+  end
+
+  @impl true
+  def handle_info({:attendance_updated, %Event{attendees: attendees}}, socket) do
+    {:noreply, assign(socket, :attendees, attendees)}
   end
 
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do

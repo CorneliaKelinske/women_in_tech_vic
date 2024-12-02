@@ -1,15 +1,12 @@
 <.title_banner title={@title} />
 <div class="min-h-screen flex flex-col bg-pc bg-cover bg-center">
-
- 
-    <.link
-      navigate={~p"/events"}
-      class="text-gray-200 m-8 hover:text-gray-400 font-semibold uppercase flex items-center space-x-1"
-    >
-      <.icon name="hero-chevron-double-left" class="h-5 w-5" />
-      <span>All Events</span>
-    </.link>
-
+  <.link
+    navigate={~p"/events"}
+    class="text-gray-200 m-8 hover:text-gray-400 font-semibold uppercase flex items-center space-x-1"
+  >
+    <.icon name="hero-chevron-double-left" class="h-5 w-5" />
+    <span>All Events</span>
+  </.link>
   <!-- Event Display -->
   <section class="w-full flex flex-col items-center px-6 py-20 lg:px-8">
     <!-- Event Details Display -->
@@ -56,5 +53,4 @@
       </span>
     </div>
   </section>
-  </div>
-
+</div>
