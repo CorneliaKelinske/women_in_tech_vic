@@ -4,11 +4,14 @@ defmodule WomenInTechVic.Content do
   """
 
   alias EctoShorts.Actions
+  alias Phoenix.PubSub
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Accounts.User
   alias WomenInTechVic.Content.Event
   alias WomenInTechVic.Repo
 
+  @pubsub WomenInTechVic.PubSub
+  @topic "attendance"
   @type change_res(type) :: ErrorMessage.t_res(type) | {:error, Ecto.Changeset.t()}
 
   # EVENTS
@@ -42,18 +45,15 @@ defmodule WomenInTechVic.Content do
   @spec update_attendance(map()) :: change_res(Event.t())
   def update_attendance(%{event_id: event_id, user_id: user_id}) do
     with {:ok, %Event{} = event} <- find_event(%{id: event_id}),
-         {:ok, %User{} = attendee} <- Accounts.find_user(%{id: user_id}) do
-      %Event{attendees: attendees} = event = Repo.preload(event, :attendees)
-
-      updated_attendees =
-        case Enum.find_index(attendees, &(&1.id === attendee.id)) do
-          nil -> [attendee | attendees]
-          index -> List.delete_at(attendees, index)
-        end
-
-      event
-      |> Event.update_changeset(%{attendees: updated_attendees})
-      |> Repo.update()
+         {:ok, %User{} = attendee} <- Accounts.find_user(%{id: user_id}),
+         %Event{attendees: attendees} = event = Repo.preload(event, :attendees),
+         updated_attendees = update_attendance_list(attendees, attendee),
+         {:ok, event} = result <-
+           event
+           |> Event.update_changeset(%{attendees: updated_attendees})
+           |> Repo.update() do
+     _ = PubSub.broadcast(@pubsub, "attendance", {:attendance_updated, event})
+      result
     end
   end
 
@@ -77,5 +77,17 @@ defmodule WomenInTechVic.Content do
   @spec event_changeset(Event.t()) :: Ecto.Changeset.t()
   def event_changeset(event, params \\ %{}) do
     Event.changeset(event, params)
+  end
+
+  @spec subscribe_to_attendance_updates() :: :ok | {:error, term()}
+  def subscribe_to_attendance_updates do
+    PubSub.subscribe(@pubsub, @topic)
+  end
+
+  defp update_attendance_list(attendance_list, attendee) do
+    case Enum.find_index(attendance_list, &(&1.id === attendee.id)) do
+      nil -> [attendee | attendance_list]
+      index -> List.delete_at(attendance_list, index)
+    end
   end
 end
