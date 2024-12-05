@@ -3,6 +3,7 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
 
   import Phoenix.LiveViewTest
   import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
+  import Swoosh.TestAssertions, only: [assert_email_sent: 0]
 
   alias WomenInTechVic.Support.AccountsFixtures
 
@@ -43,7 +44,7 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
   end
 
   describe "register user" do
-    test "creates account and logs the user in", %{conn: conn} do
+    test "creates account, notifies admin and logs the user in", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
       email = @unique_user_email
@@ -53,6 +54,7 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
         form(lv, "#registration_form", user: user)
 
       render_submit(form)
+      assert_email_sent()
       conn = follow_trigger_action(form, conn)
 
       assert redirected_to(conn) === ~p"/events"

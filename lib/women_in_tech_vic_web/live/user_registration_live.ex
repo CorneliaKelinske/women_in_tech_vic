@@ -97,6 +97,8 @@ defmodule WomenInTechVicWeb.UserRegistrationLive do
             &url(~p"/users/confirm/#{&1}")
           )
 
+        {:ok, _} = Accounts.deliver_admin_new_user_notification(user)
+
         changeset = Accounts.change_user_registration(user)
         {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 

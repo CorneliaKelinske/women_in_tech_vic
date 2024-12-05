@@ -338,6 +338,12 @@ defmodule WomenInTechVic.Accounts do
     end
   end
 
+  @doc "Notifies the admin when a new user signs up"
+  @spec deliver_admin_new_user_notification(User.t()) :: UserNotifier.swoosh_return()
+  def deliver_admin_new_user_notification(%User{} = user) do
+    UserNotifier.deliver_admin_new_user_notification(user)
+  end
+
   @doc """
   Confirms a user by the given token.
 
