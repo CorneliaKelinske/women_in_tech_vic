@@ -75,6 +75,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
         class="absolute bottom-4 right-4 text-gray-700 hover:text-red-800 cursor-pointer hidden group-hover:block"
         phx-click="delete_event"
         phx-value-id={@event.id}
+        data-confirm="Are you sure?"
       >
         <%!-- only shows for user who created the event or admin--%>
         <.icon :if={@user.role === :admin} name="hero-trash" class="h-5 w-5" />

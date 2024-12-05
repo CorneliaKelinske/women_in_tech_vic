@@ -31,6 +31,7 @@
       <button
         class="text-gray-700 hover:text-red-800 cursor-pointer"
         phx-click="delete-user"
+        data-confirm="Are you sure?"
         phx-value-id={user.id}
       >
         <.icon :if={user.role !== :admin} name="hero-trash" class="h-4 w-4 align-baseline" />
