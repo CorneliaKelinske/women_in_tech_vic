@@ -43,6 +43,29 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
   end
 
   @doc """
+  Deliver a notification that a new user has signed up to the page Admin.
+  """
+  @spec deliver_admin_new_user_notification(User.t()) :: swoosh_return()
+  def deliver_admin_new_user_notification(%User{} = user) do
+    deliver("corneliakelinske@gmail.com", "New user registered", """
+
+    ==============================
+
+    Hi Cornelia,
+
+    A new user has registered for the Women in Tech Vic website.
+    Here is their info:
+
+    Email: #{user.email}
+    First name: #{user.first_name}
+    Last name: #{user.last_name}
+    Username: #{user.username}
+
+    ==============================
+    """)
+  end
+
+  @doc """
   Deliver instructions to reset a user password.
   """
   @spec deliver_reset_password_instructions(User.t(), String.t()) :: swoosh_return()
