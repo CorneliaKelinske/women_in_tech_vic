@@ -27,7 +27,7 @@ defmodule WomenInTechVic.Accounts.User do
   @roles [:admin, :member]
 
   @required [:email, :first_name, :last_name, :username]
-  @cast [:password, :role | @required]
+  @cast [:password, :role, :confirmed_at | @required]
 
   schema "users" do
     field :first_name, :string
