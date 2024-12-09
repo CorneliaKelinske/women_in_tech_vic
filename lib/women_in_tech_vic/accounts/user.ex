@@ -15,7 +15,7 @@ defmodule WomenInTechVic.Accounts.User do
           email: String.t() | nil,
           password: String.t() | nil,
           hashed_password: String.t() | nil,
-          confirmed_at: NaiveDateTime | nil,
+          confirmed_at: DateTime | nil,
           updated_at: DateTime.t() | nil,
           inserted_at: DateTime.t() | nil,
           user_tokens: [UserToken.t()] | Ecto.Association.NotLoaded.t(),
@@ -38,7 +38,7 @@ defmodule WomenInTechVic.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
-    field :confirmed_at, :naive_datetime
+    field :confirmed_at, :utc_datetime_usec
 
     has_many :user_tokens, UserToken
     has_many :events, Event
@@ -180,7 +180,7 @@ defmodule WomenInTechVic.Accounts.User do
   """
   @spec confirm_changeset(map()) :: Ecto.Changeset.t()
   def confirm_changeset(user) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    now = DateTime.utc_now()
     change(user, confirmed_at: now)
   end
 

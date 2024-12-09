@@ -11,7 +11,6 @@ defmodule WomenInTechVicWeb.EventLive.Show do
   @dialyzer {:nowarn_function, mount: 3}
   @impl true
   def mount(_params, _session, socket) do
-
     if connected?(socket), do: Content.subscribe_to_attendance_updates()
     {:ok, socket}
   end

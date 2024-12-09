@@ -52,7 +52,7 @@ defmodule WomenInTechVic.Content do
            event
            |> Event.update_changeset(%{attendees: updated_attendees})
            |> Repo.update() do
-     _ = PubSub.broadcast(@pubsub, "attendance", {:attendance_updated, event})
+      _ = PubSub.broadcast(@pubsub, "attendance", {:attendance_updated, event})
       result
     end
   end

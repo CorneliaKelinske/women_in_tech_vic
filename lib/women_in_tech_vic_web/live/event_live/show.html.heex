@@ -26,7 +26,7 @@
       <% else %>
         <ul class="list-disc list-inside text-center">
           <%= for attendee <- @attendees do %>
-            <li class="text-lg text-left"><%= attendee.username %></li>
+            <li class="text-lg text-left">{attendee.username}</li>
           <% end %>
         </ul>
       <% end %>
@@ -40,7 +40,7 @@
         phx-value-user_id={@current_user.id}
         class="px-2 lg:px-6 py-2 bg-gray-200 border border-pink-700 text-pink-700 font-semibold rounded-lg hover:bg-pink-700 hover:text-gray-200 h-12"
       >
-        <%= @button_text %>
+        {@button_text}
       </button>
 
       <span :if={@current_user.role === :admin}>

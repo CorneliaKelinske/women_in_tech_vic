@@ -12,7 +12,7 @@
 
   <section class="w-full flex justify-center px-6 py-20 lg:px-8">
     <div class="w-full max-w-2xl group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
-      <.header><%= @title %></.header>
+      <.header>{@title}</.header>
       <.simple_form for={@form} id="event-form" phx-submit="save-event">
         <.input field={@form[:title]} type="text" label="Title" phx-debounce />
         <.input
