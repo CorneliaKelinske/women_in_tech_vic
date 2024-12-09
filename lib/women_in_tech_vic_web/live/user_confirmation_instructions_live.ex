@@ -5,7 +5,8 @@ defmodule WomenInTechVicWeb.UserConfirmationInstructionsLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+       <div class="min-h-screen flex items-center justify-center">
+       <div class="bg-white bg-opacity-80 p-8 rounded-lg shadow-md w-full max-w-md mx-auto">
       <.header class="text-center">
         No confirmation instructions received?
         <:subtitle>We'll send a new confirmation link to your inbox</:subtitle>
@@ -14,7 +15,7 @@ defmodule WomenInTechVicWeb.UserConfirmationInstructionsLive do
       <.simple_form for={@form} id="resend_confirmation_form" phx-submit="send_instructions">
         <.input field={@form[:email]} type="email" placeholder="Email" required />
         <:actions>
-          <.button phx-disable-with="Sending..." class="w-full">
+          <.button phx-disable-with="Sending..." class="w-full bg-purple-700 text-white font-semibold py-3 rounded-lg hover:bg-purple-600">
             Resend confirmation instructions
           </.button>
         </:actions>
@@ -24,6 +25,7 @@ defmodule WomenInTechVicWeb.UserConfirmationInstructionsLive do
         <.link href={~p"/users/register"}>Register</.link>
         | <.link href={~p"/users/log_in"}>Log in</.link>
       </p>
+      </div>
     </div>
     """
   end
