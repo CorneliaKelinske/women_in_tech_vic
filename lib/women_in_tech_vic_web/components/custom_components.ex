@@ -22,7 +22,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
       >
       </div>
       <h1 class="relative p-8 mx-auto max-w-3xl text-right md:text-center font-semibold font-sans text-2xl md:text-3xl md:tracking-widest z-10 text-gray-200">
-        <%= @title %>
+        {@title}
       </h1>
     </section>
     """
@@ -44,8 +44,8 @@ defmodule WomenInTechVicWeb.CustomComponents do
   def event_display(assigns) do
     ~H"""
     <div class="w-full max-w-lg break-words group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gray-200">
-      <h2 class="text-3xl font-bold text-center mb-2"><%= @event.title %></h2>
-      <p class="text-xl text-center mb-2"><%= @event.scheduled_at %></p>
+      <h2 class="text-3xl font-bold text-center mb-2">{@event.title}</h2>
+      <p class="text-xl text-center mb-2">{@event.scheduled_at}</p>
       <%= if @show_address do %>
         <p class="text-lg text-center mb-4">
           <%= if @event.online do %>
@@ -57,7 +57,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
       <% end %>
       <!-- Description with light grey background -->
       <div>
-        <p class="text-sm text-justify"><%= @event.description %></p>
+        <p class="text-sm text-justify">{@event.description}</p>
       </div>
       <%= if @link_details do %>
         <div class="mt-4 flex justify-center">
@@ -92,7 +92,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
       target="_blank"
       rel="noopener noreferrer"
     >
-      <%= @event.address %>
+      {@event.address}
     </.link>
     """
   end
@@ -105,7 +105,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
       target="_blank"
       rel="noopener noreferrer"
     >
-      <%= @event.address %>
+      {@event.address}
     </.link>
     """
   end

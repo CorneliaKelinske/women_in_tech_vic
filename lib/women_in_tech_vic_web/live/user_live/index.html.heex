@@ -11,13 +11,13 @@
   </div>
 
   <.table id="users" rows={@users}>
-    <:col :let={user} label="id"><%= user.id %></:col>
-    <:col :let={user} label="Username"><%= user.username %></:col>
-    <:col :let={user} label="First name"><%= user.first_name %></:col>
-    <:col :let={user} label="Last name"><%= user.last_name %></:col>
-    <:col :let={user} label="Email"><%= user.email %></:col>
-    <:col :let={user} label="Confirmed at"><%= user.confirmed_at %></:col>
-    <:col :let={user} label="Role"><%= user.role %></:col>
+    <:col :let={user} label="id">{user.id}</:col>
+    <:col :let={user} label="Username">{user.username}</:col>
+    <:col :let={user} label="First name">{user.first_name}</:col>
+    <:col :let={user} label="Last name">{user.last_name}</:col>
+    <:col :let={user} label="Email">{user.email}</:col>
+    <:col :let={user} label="Confirmed at">{user.confirmed_at}</:col>
+    <:col :let={user} label="Role">{user.role}</:col>
 
     <:col :let={user} label="">
       <button

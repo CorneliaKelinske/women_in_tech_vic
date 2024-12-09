@@ -29,9 +29,9 @@
     <div class="z-10 bg-gray-200 rounded p-4 max-w-full lg:bg-none lg:bg-transparent">
       <h2 class="text-lg lg:text-xl pb-2 uppercase">Next Event</h2>
       <%= if @event do %>
-        <h3 class="text-lg font-semibold"><%= @event.title %></h3>
-        <p class="pb-4"><%= @event.scheduled_at %></p>
-        <div class="break-words pb-4"><%= @event.description %></div>
+        <h3 class="text-lg font-semibold">{@event.title}</h3>
+        <p class="pb-4">{@event.scheduled_at}</p>
+        <div class="break-words pb-4">{@event.description}</div>
         <div class="flex justify-center items-center mx-auto w-2/5 bg-gray-300 rounded-lg p-2">
           <.link
             navigate={~p"/events/#{@event}"}
