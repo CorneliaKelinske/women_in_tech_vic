@@ -55,7 +55,9 @@ defmodule WomenInTechVic.Accounts.User do
     |> cast(params, @cast)
     |> validate_required(@required)
     |> unique_constraint(:username)
-    |> unique_constraint([:first_name, :last_name])
+    |> unique_constraint([:first_name, :last_name],
+      message: "A user with this first and last name already exists"
+    )
   end
 
   @doc """
@@ -96,7 +98,9 @@ defmodule WomenInTechVic.Accounts.User do
     |> validate_length(:email, max: 160)
     |> maybe_validate_unique_email(opts)
     |> unique_constraint(:username)
-    |> unique_constraint([:first_name, :last_name])
+    |> unique_constraint([:first_name, :last_name],
+      message: "A user with this first and last name already exists"
+    )
   end
 
   defp validate_password(changeset, opts) do
