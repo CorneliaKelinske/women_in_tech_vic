@@ -6,20 +6,25 @@ defmodule WomenInTechVicWeb.UserConfirmationLive do
   def render(%{live_action: :edit} = assigns) do
     ~H"""
     <div class="min-h-screen flex items-center justify-center">
-    <div class="bg-white bg-opacity-80 p-8 rounded-lg shadow-md w-full max-w-md mx-auto">
-      <.header class="text-center">Confirm Account</.header>
+      <div class="bg-white bg-opacity-80 p-8 rounded-lg shadow-md w-full max-w-md mx-auto">
+        <.header class="text-center">Confirm Account</.header>
 
-      <.simple_form for={@form} id="confirmation_form" phx-submit="confirm_account">
-        <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
-        <:actions>
-          <.button phx-disable-with="Confirming..." class="w-full bg-purple-700 text-white font-semibold py-3 rounded-lg hover:bg-purple-600">Confirm my account</.button>
-        </:actions>
-      </.simple_form>
+        <.simple_form for={@form} id="confirmation_form" phx-submit="confirm_account">
+          <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
+          <:actions>
+            <.button
+              phx-disable-with="Confirming..."
+              class="w-full bg-purple-700 text-white font-semibold py-3 rounded-lg hover:bg-purple-600"
+            >
+              Confirm my account
+            </.button>
+          </:actions>
+        </.simple_form>
 
-      <p class="text-center mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        | <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
+        <p class="text-center mt-4">
+          <.link href={~p"/users/register"}>Register</.link>
+          | <.link href={~p"/users/log_in"}>Log in</.link>
+        </p>
       </div>
     </div>
     """
