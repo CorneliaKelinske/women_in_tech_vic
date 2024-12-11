@@ -44,16 +44,26 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
   end
 
   describe "register user" do
-    test "creates account, notifies admin and logs the user in", %{conn: conn} do
+    test "creates account, notifies admin redirects to landing page", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
       email = @unique_user_email
-      user = AccountsFixtures.valid_user_attributes(email: email)
 
-      form =
-        form(lv, "#registration_form", user: user)
+      user =
+        %{email: email}
+        |> AccountsFixtures.valid_user_attributes()
+        |> Map.delete(:confirmed_at)
 
-      {:error, {:redirect, %{to: "/"}}} = render_submit(form)
+      result =
+        lv
+        |> form("#registration_form", user: user)
+        |> render_submit()
+        |> follow_redirect(conn, "/")
+
+      assert {:ok, conn} = result
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "Account created successfully. Please check your email for the confirmation link."
 
       assert_email_sent()
     end

@@ -1,11 +1,11 @@
 defmodule WomenInTechVicWeb.UserSessionControllerTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
-  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, unconfirmed_user: 1]
   alias WomenInTechVic.Support.AccountsFixtures
 
   @valid_password AccountsFixtures.valid_user_password()
-  setup [:user]
+  setup [:user, :unconfirmed_user]
 
   describe "POST /users/log_in" do
     test "logs the user in", %{conn: conn, user: user} do
@@ -53,21 +53,6 @@ defmodule WomenInTechVicWeb.UserSessionControllerTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Welcome back!"
     end
 
-    test "login following registration", %{conn: conn, user: user} do
-      conn =
-        conn
-        |> post(~p"/users/log_in", %{
-          "_action" => "registered",
-          "user" => %{
-            "email" => user.email,
-            "password" => @valid_password
-          }
-        })
-
-      assert redirected_to(conn) === ~p"/events"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Account created successfully"
-    end
-
     test "login following password update", %{conn: conn, user: user} do
       conn =
         conn
@@ -81,6 +66,19 @@ defmodule WomenInTechVicWeb.UserSessionControllerTest do
 
       assert redirected_to(conn) === ~p"/users/settings"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Password updated successfully"
+    end
+
+    test "redirects to user confirmation page when user is not confirmed", %{
+      conn: conn,
+      unconfirmed_user: unconfirmed_user
+    } do
+      conn =
+        post(conn, ~p"/users/log_in", %{
+          "user" => %{"email" => unconfirmed_user.email, "password" => @valid_password}
+        })
+
+      assert redirected_to(conn) === ~p"/users/confirm"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "Please confirm your account"
     end
 
     test "redirects to login page with invalid credentials", %{conn: conn} do

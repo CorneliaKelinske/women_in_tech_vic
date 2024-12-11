@@ -43,7 +43,7 @@ defmodule WomenInTechVicWeb.UserConfirmationLive do
         {:noreply,
          socket
          |> put_flash(:info, "User confirmed successfully.")
-         |> redirect(to: ~p"/")}
+         |> redirect(to: ~p"/users/log_in")}
 
       :error ->
         # If there is a current user and the account was already confirmed,

@@ -22,4 +22,10 @@ defmodule WomenInTechVic.Support.AccountsTestSetup do
 
     %{user_2: user_2}
   end
+
+  def unconfirmed_user(_) do
+    unconfirmed_user = AccountsFixtures.user_fixture(confirmed_at: nil)
+
+    %{unconfirmed_user: unconfirmed_user}
+  end
 end

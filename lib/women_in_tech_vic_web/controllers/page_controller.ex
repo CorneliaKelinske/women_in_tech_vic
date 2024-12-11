@@ -13,7 +13,7 @@ defmodule WomenInTechVicWeb.PageController do
 
     # The home page is often custom made,
     # so skip the default app layout.
-    render(conn, :home, layout: false, event: online_event)
+    render(conn, :home, event: online_event)
   end
 
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do

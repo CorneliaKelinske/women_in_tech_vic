@@ -1,7 +1,7 @@
 defmodule WomenInTechVic.AccountsTest do
   use WomenInTechVic.DataCase
 
-  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1, unconfirmed_user: 1]
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Accounts.{User, UserToken}
@@ -10,7 +10,7 @@ defmodule WomenInTechVic.AccountsTest do
   @valid_password AccountsFixtures.valid_user_password()
   @unique_user_email AccountsFixtures.unique_user_email()
 
-  setup [:user, :user_2]
+  setup [:user, :user_2, :unconfirmed_user]
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
@@ -91,7 +91,13 @@ defmodule WomenInTechVic.AccountsTest do
 
     test "registers users with a hashed password" do
       email = @unique_user_email
-      {:ok, user} = Accounts.register_user(AccountsFixtures.valid_user_attributes(email: email))
+
+      user_params =
+        %{email: email}
+        |> AccountsFixtures.valid_user_attributes()
+        |> Map.delete(:confirmed_at)
+
+      {:ok, user} = Accounts.register_user(user_params)
       assert user.email === email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -136,7 +142,7 @@ defmodule WomenInTechVic.AccountsTest do
 
   describe "all users/2" do
     test "returns a list of  all users" do
-      assert [%User{}, %User{}] = Accounts.all_users(%{})
+      assert [%User{}, %User{}, %User{}] = Accounts.all_users(%{})
     end
 
     test "returns empty list when no user found", %{user: user} do
@@ -433,49 +439,55 @@ defmodule WomenInTechVic.AccountsTest do
   end
 
   describe "deliver_user_confirmation_instructions/2" do
-    test "sends token through notification", %{user: user} do
+    test "sends token through notification", %{unconfirmed_user: unconfirmed_user} do
       token =
         AccountsFixtures.extract_user_token(fn url ->
-          Accounts.deliver_user_confirmation_instructions(user, url)
+          Accounts.deliver_user_confirmation_instructions(unconfirmed_user, url)
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
       assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
-      assert user_token.user_id === user.id
-      assert user_token.sent_to === user.email
+      assert user_token.user_id === unconfirmed_user.id
+      assert user_token.sent_to === unconfirmed_user.email
       assert user_token.context === "confirm"
     end
   end
 
   describe "confirm_user/1" do
-    setup(%{user: user}) do
+    setup(%{unconfirmed_user: unconfirmed_user}) do
       token =
         AccountsFixtures.extract_user_token(fn url ->
-          Accounts.deliver_user_confirmation_instructions(user, url)
+          Accounts.deliver_user_confirmation_instructions(unconfirmed_user, url)
         end)
 
       %{token: token}
     end
 
-    test "confirms the email with a valid token", %{user: user, token: token} do
+    test "confirms the email with a valid token", %{
+      unconfirmed_user: unconfirmed_user,
+      token: token
+    } do
       assert {:ok, confirmed_user} = Accounts.confirm_user(token)
       assert confirmed_user.confirmed_at
-      assert confirmed_user.confirmed_at !== user.confirmed_at
-      assert Repo.get!(User, user.id).confirmed_at
-      refute Repo.get_by(UserToken, user_id: user.id)
+      assert confirmed_user.confirmed_at !== unconfirmed_user.confirmed_at
+      assert Repo.get!(User, unconfirmed_user.id).confirmed_at
+      refute Repo.get_by(UserToken, user_id: unconfirmed_user.id)
     end
 
-    test "does not confirm with invalid token", %{user: user} do
+    test "does not confirm with invalid token", %{unconfirmed_user: unconfirmed_user} do
       assert Accounts.confirm_user("oops") === :error
-      refute Repo.get!(User, user.id).confirmed_at
-      assert Repo.get_by(UserToken, user_id: user.id)
+      refute Repo.get!(User, unconfirmed_user.id).confirmed_at
+      assert Repo.get_by(UserToken, user_id: unconfirmed_user.id)
     end
 
-    test "does not confirm email if token expired", %{user: user, token: token} do
+    test "does not confirm email if token expired", %{
+      unconfirmed_user: unconfirmed_user,
+      token: token
+    } do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
       assert Accounts.confirm_user(token) === :error
-      refute Repo.get!(User, user.id).confirmed_at
-      assert Repo.get_by(UserToken, user_id: user.id)
+      refute Repo.get!(User, unconfirmed_user.id).confirmed_at
+      assert Repo.get_by(UserToken, user_id: unconfirmed_user.id)
     end
   end
 
