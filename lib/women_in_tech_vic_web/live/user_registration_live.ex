@@ -19,15 +19,7 @@ defmodule WomenInTechVicWeb.UserRegistrationLive do
           </:subtitle>
         </.header>
 
-        <.simple_form
-          for={@form}
-          id="registration_form"
-          phx-submit="save"
-          phx-change="validate"
-          phx-trigger-action={@trigger_submit}
-          action={~p"/users/log_in?_action=registered"}
-          method="post"
-        >
+        <.simple_form for={@form} id="registration_form" phx-submit="save" phx-change="validate">
           <.error :if={@check_errors}>
             Oops, something went wrong! Please check the errors below.
           </.error>
@@ -99,8 +91,15 @@ defmodule WomenInTechVicWeb.UserRegistrationLive do
 
         {:ok, _} = Accounts.deliver_admin_new_user_notification(user)
 
-        changeset = Accounts.change_user_registration(user)
-        {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
+        socket =
+          socket
+          |> put_flash(
+            :info,
+            "Account created successfully. Please check your email for the confirmation link."
+          )
+          |> redirect(to: ~p"/")
+
+        {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, socket |> assign(check_errors: true) |> assign_form(changeset)}
