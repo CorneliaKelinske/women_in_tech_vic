@@ -13,7 +13,8 @@ defmodule WomenInTechVic.Support.AccountsFixtures do
       password: valid_user_password(),
       first_name: Faker.Person.first_name() <> "#{System.unique_integer()}",
       last_name: Faker.Person.last_name() <> "#{System.unique_integer()}",
-      username: Faker.Pokemon.name() <> "#{System.unique_integer()}"
+      username: Faker.Pokemon.name() <> "#{System.unique_integer()}",
+      confirmed_at: DateTime.utc_now()
     })
   end
 
