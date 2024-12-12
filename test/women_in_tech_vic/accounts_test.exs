@@ -92,10 +92,7 @@ defmodule WomenInTechVic.AccountsTest do
     test "registers users with a hashed password" do
       email = @unique_user_email
 
-      user_params =
-        %{email: email}
-        |> AccountsFixtures.valid_user_attributes()
-        |> Map.delete(:confirmed_at)
+      user_params = AccountsFixtures.unconfirmed_user_attributes(%{email: email})
 
       {:ok, user} = Accounts.register_user(user_params)
       assert user.email === email

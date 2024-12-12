@@ -18,6 +18,12 @@ defmodule WomenInTechVic.Support.AccountsFixtures do
     })
   end
 
+  def unconfirmed_user_attributes(attrs \\ %{}) do
+    attrs
+    |> Enum.into(valid_user_attributes())
+    |> Map.delete(:confirmed_at)
+  end
+
   def user_fixture(attrs \\ %{}) do
     {:ok, user} =
       attrs
