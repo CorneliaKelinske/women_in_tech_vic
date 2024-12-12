@@ -49,10 +49,7 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
 
       email = @unique_user_email
 
-      user =
-        %{email: email}
-        |> AccountsFixtures.valid_user_attributes()
-        |> Map.delete(:confirmed_at)
+      user = AccountsFixtures.unconfirmed_user_attributes(%{email: email})
 
       result =
         lv
