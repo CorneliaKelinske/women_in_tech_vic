@@ -3,7 +3,7 @@ defmodule WomenInTechVic.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias WomenInTechVic.Accounts.UserToken
+  alias WomenInTechVic.Accounts.{Profile, UserToken}
   alias WomenInTechVic.Content.Event
 
   @type t :: %__MODULE__{
@@ -20,7 +20,8 @@ defmodule WomenInTechVic.Accounts.User do
           inserted_at: DateTime.t() | nil,
           user_tokens: [UserToken.t()] | Ecto.Association.NotLoaded.t(),
           events: [Event.t()] | Ecto.Association.NotLoaded.t(),
-          attending_events: [Event.t()] | Ecto.Association.NotLoaded.t()
+          attending_events: [Event.t()] | Ecto.Association.NotLoaded.t(),
+          profile: Profile.t() | Ecto.Association.NotLoaded.t()
         }
   @type role :: :admin | :member
 
@@ -42,6 +43,8 @@ defmodule WomenInTechVic.Accounts.User do
 
     has_many :user_tokens, UserToken
     has_many :events, Event
+
+    has_one :profile, Profile
 
     many_to_many :attending_events, Event, join_through: "events_users", on_replace: :delete
 
