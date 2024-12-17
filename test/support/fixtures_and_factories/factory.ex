@@ -1,3 +1,4 @@
+# credo:disable-for-this-file
 defmodule WomenInTechVic.Support.Factory do
   @moduledoc """
   Factory code for building test resources
@@ -21,6 +22,17 @@ defmodule WomenInTechVic.Support.Factory do
       online: false,
       description: Faker.Lorem.paragraph(),
       address: "Pub around the Corner"
+    }
+  end
+
+  def profile_factory do
+    %{
+      linked_in: "https://www.linkedin.com/in/" <> Faker.Person.name(),
+      github: "https://www.github.com/" <> Faker.Pokemon.name(),
+      workplace: Faker.Company.name(),
+      hobbies: Faker.StarWars.planet(),
+      projects: Faker.Company.bs(),
+      other: Faker.Lorem.Shakespeare.romeo_and_juliet()
     }
   end
 end

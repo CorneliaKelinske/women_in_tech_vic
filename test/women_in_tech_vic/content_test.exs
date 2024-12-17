@@ -101,7 +101,7 @@ defmodule WomenInTechVic.ContentTest do
                Content.update_event(event_id + 11, update_params)
     end
 
-    test "returns error when invalid params are passed in does not exist", %{
+    test "returns error when invalid params are passed in", %{
       online_event: online_event
     } do
       event_id = online_event.id
