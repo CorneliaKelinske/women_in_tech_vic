@@ -1,16 +1,19 @@
 defmodule WomenInTechVic.AccountsTest do
   use WomenInTechVic.DataCase
 
-  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1, unconfirmed_user: 1]
+  import WomenInTechVic.Support.Factory, only: [build: 1]
+
+  import WomenInTechVic.Support.AccountsTestSetup,
+    only: [user: 1, user_2: 1, unconfirmed_user: 1, profile: 1]
 
   alias WomenInTechVic.Accounts
-  alias WomenInTechVic.Accounts.{User, UserToken}
+  alias WomenInTechVic.Accounts.{Profile, User, UserToken}
   alias WomenInTechVic.Support.AccountsFixtures
 
   @valid_password AccountsFixtures.valid_user_password()
   @unique_user_email AccountsFixtures.unique_user_email()
 
-  setup [:user, :user_2, :unconfirmed_user]
+  setup [:user, :user_2, :unconfirmed_user, :profile]
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
@@ -566,6 +569,111 @@ defmodule WomenInTechVic.AccountsTest do
   describe "inspect/2 for the User module" do
     test "does not include password" do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
+    end
+  end
+
+  # Profile Tests
+
+  describe "create_profile/1" do
+    test "successfully creates profile when given correct params but does not create 2 profiles for the same user",
+         %{user_2: user_2} do
+      user_id = user_2.id
+
+      profile_params =
+        :profile
+        |> build()
+        |> Map.merge(%{user_id: user_id})
+
+      assert {:ok, %Profile{user_id: ^user_id}} = Accounts.create_profile(profile_params)
+      assert {:error, %Ecto.Changeset{errors: errors}} = Accounts.create_profile(profile_params)
+
+      assert [
+               user_id: {
+                 "has already been taken",
+                 [constraint: :unique, constraint_name: "profiles_user_id_index"]
+               }
+             ] = errors
+    end
+  end
+
+  describe "find_profile/1" do
+    test "finds profile by user_id", %{user: user, profile: profile} do
+      user_id = user.id
+      profile_id = profile.id
+
+      assert {:ok, %Profile{id: ^profile_id, user_id: ^user_id}} =
+               Accounts.find_profile(%{user_id: user_id})
+    end
+
+    test "returns error if no profile is found", %{profile: profile} do
+      assert {:error, %ErrorMessage{code: :not_found, message: "no records found"}} =
+               Accounts.find_profile(%{id: profile.id + 11})
+    end
+  end
+
+  describe "all profiles/2" do
+    test "returns a list of  all profiles", %{profile: profile} do
+      profile_id = profile.id
+      assert [%Profile{id: ^profile_id}] = Accounts.all_profiles(%{})
+    end
+
+    test "returns empty list when no profile found" do
+      assert [] = Accounts.all_profiles(%{other: %{==: nil}})
+    end
+  end
+
+  describe "update_profile/2" do
+    test "updates a profile by id", %{profile: profile} do
+      profile_id = profile.id
+      update_params = %{workplace: "self-employed"}
+
+      assert {:ok, %Profile{id: ^profile_id, workplace: "self-employed"}} =
+               Accounts.update_profile(profile_id, update_params)
+    end
+
+    test "updates profile by schema", %{profile: profile} do
+      profile_id = profile.id
+      update_params = %{workplace: "self-employed"}
+
+      assert {:ok, %Profile{id: ^profile_id, workplace: "self-employed"}} =
+               Accounts.update_profile(profile, update_params)
+    end
+
+    test "returns error when profile does not exist", %{profile: profile} do
+      profile_id = profile.id
+      update_params = %{workplace: "self-employed"}
+
+      assert {:error, %ErrorMessage{code: :not_found}} =
+               Accounts.update_profile(profile_id + 11, update_params)
+    end
+  end
+
+  describe "delete profile/1" do
+    test "deletes a profile", %{profile: profile} do
+      assert {:ok, %Profile{}} = Accounts.delete_profile(profile)
+    end
+  end
+
+  describe "profile_changeset/2" do
+    test "returns a Profile changeset " do
+      assert %Ecto.Changeset{valid?: false} = Accounts.profile_changeset(%Profile{})
+    end
+
+    test "can be used to build changesets with input params" do
+      params = build(:profile)
+
+      assert %Ecto.Changeset{
+               action: nil,
+               changes: %{
+                 other: _,
+                 linked_in: _,
+                 projects: _,
+                 workplace: _,
+                 github: _,
+                 hobbies: _
+               },
+               valid?: false
+             } = Accounts.profile_changeset(%Profile{}, params)
     end
   end
 end

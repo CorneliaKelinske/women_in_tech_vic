@@ -7,7 +7,7 @@ defmodule WomenInTechVic.Accounts do
 
   alias EctoShorts.Actions
   alias WomenInTechVic.Repo
-  alias WomenInTechVic.Accounts.{User, UserNotifier, UserToken}
+  alias WomenInTechVic.Accounts.{Profile, User, UserNotifier, UserToken}
 
   @type change_res(type) :: ErrorMessage.t_res(type) | {:error, Ecto.Changeset.t()}
 
@@ -430,5 +430,45 @@ defmodule WomenInTechVic.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  # PROFILES
+
+  @doc false
+  @spec create_profile(map) :: change_res(Profile.t())
+  def create_profile(params) do
+    Actions.create(Profile, params)
+  end
+
+  @doc false
+  @spec find_profile(map) :: ErrorMessage.t_res(Profile.t())
+  def find_profile(params) do
+    Actions.find(Profile, params)
+  end
+
+  @doc false
+  @spec all_profiles(map()) :: [Profile.t()]
+  def all_profiles(params) do
+    Actions.all(Profile, params)
+  end
+
+  @doc false
+  @spec update_profile(pos_integer(), map()) :: change_res(Profile.t())
+  @spec update_profile(Profile.t(), map()) :: change_res(Profile.t())
+  def update_profile(id_or_schema, params) do
+    Actions.update(Profile, id_or_schema, params)
+  end
+
+  @doc false
+  @spec delete_profile(Profile.t()) :: change_res(Profile.t())
+  def delete_profile(profile) do
+    Actions.delete(profile)
+  end
+
+  @doc "creates an Profile changeset with nil values"
+  @spec profile_changeset(Profile.t(), map()) :: Ecto.Changeset.t()
+  @spec profile_changeset(Profile.t()) :: Ecto.Changeset.t()
+  def profile_changeset(profile, params \\ %{}) do
+    Profile.changeset(profile, params)
   end
 end
