@@ -1,0 +1,44 @@
+<.title_banner title={@title} />
+<div class="m-8">
+  <div>
+    <.link
+      navigate={~p"/events"}
+      class="text-gray-200 hover:text-gray-400 font-semibold uppercase flex items-center space-x-1"
+    >
+      <.icon name="hero-chevron-double-left" class="h-5 w-5" />
+      <span>All Events</span>
+    </.link>
+  </div>
+  <section class="w-full flex justify-center px-6 py-20 lg:px-8">
+    <div class="w-full max-w-2xl group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
+      <.header>{@title}</.header>
+      <.simple_form for={@new_profile_form} id="new-profile-form" phx-submit="save-new-profile">
+        <.input field={@new_profile_form[:linked_in]} type="text" label="LinkedIn" phx-debounce />
+        <.input field={@new_profile_form[:github]} type="text" label="Github" phx-debounce />
+        <.input
+          field={@new_profile_form[:workplace]}
+          type="text"
+          label="Current workplace or other occupation"
+          phx-debounce
+        />
+        <.input field={@new_profile_form[:hobbies]} type="text" label="Hobbies" phx-debounce />
+        <.input
+          field={@new_profile_form[:projects]}
+          type="textarea"
+          label="Something that you have built and would like to share"
+          phx-debounce
+        />
+        <.input
+          field={@new_profile_form[:other]}
+          type="textarea"
+          label="Wildcard field! Room to post something random you would like to share"
+          phx-debounce
+        />
+
+        <:actions>
+          <.button phx-disable-with="Saving..." class="w-full">Save</.button>
+        </:actions>
+      </.simple_form>
+    </div>
+  </section>
+</div>

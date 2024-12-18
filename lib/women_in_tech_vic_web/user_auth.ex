@@ -6,6 +6,7 @@ defmodule WomenInTechVicWeb.UserAuth do
   import Phoenix.Controller
 
   alias WomenInTechVic.Accounts
+  alias WomenInTechVic.Accounts.Profile
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -189,6 +190,21 @@ defmodule WomenInTechVicWeb.UserAuth do
           |> Phoenix.LiveView.redirect(to: ~p"/")
 
         {:halt, socket}
+    end
+  end
+
+  def on_mount(:redirect_if_profile_exists, _params, session, socket) do
+    socket = mount_current_user(socket, session)
+    %{id: user_id, username: username} = socket.assigns.current_user
+
+    case Accounts.find_profile(%{user_id: user_id}) do
+      {:ok, %Profile{}} ->
+        socket =
+        Phoenix.LiveView.redirect(socket, to: ~p"/profiles/show/#{username}")
+        {:halt, socket}
+
+      _ ->
+        {:cont, socket}
     end
   end
 
