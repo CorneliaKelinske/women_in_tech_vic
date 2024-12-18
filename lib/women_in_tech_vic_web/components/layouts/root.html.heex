@@ -34,6 +34,17 @@
           <% end %>
           <.link href={~p"/contact"} class="hover:text-gray-700">Contact</.link>
         </div>
+        <div :if={@current_user} class="relative group">
+          <.link
+            navigate={~p"/profiles/create/#{@current_user.username}"}
+            class="text-gray-900 hover:text-gray-700"
+          >
+            <.icon name="hero-user-circle" class="h-6 w-6" />
+          </.link>
+          <div class="absolute right-full mr-2 top-1/2 transform -translate-y-1/2 hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2">
+            {@current_user.username}
+          </div>
+        </div>
         <!-- Mobile menu button - Right side -->
         <div class="flex items-center sm:hidden">
           <button
