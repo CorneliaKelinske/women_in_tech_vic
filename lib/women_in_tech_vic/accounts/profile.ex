@@ -15,9 +15,9 @@ defmodule WomenInTechVic.Accounts.Profile do
           user: User.t() | Ecto.Association.NotLoaded.t(),
           linked_in: String.t() | nil,
           github: String.t() | nil,
-          workplace: String.t() |nil,
+          workplace: String.t() | nil,
           hobbies: String.t() | nil,
-          other: String.t() |nil
+          other: String.t() | nil
         }
 
   @required [:user_id]

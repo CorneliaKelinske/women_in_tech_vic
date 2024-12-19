@@ -200,7 +200,8 @@ defmodule WomenInTechVicWeb.UserAuth do
     case Accounts.find_profile(%{user_id: user_id}) do
       {:ok, %Profile{}} ->
         socket =
-        Phoenix.LiveView.redirect(socket, to: ~p"/profiles/show/#{username}")
+          Phoenix.LiveView.redirect(socket, to: ~p"/profiles/show/#{username}")
+
         {:halt, socket}
 
       _ ->
