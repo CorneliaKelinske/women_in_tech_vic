@@ -11,13 +11,13 @@ defmodule WomenInTechVic.Accounts.Profile do
 
   @type t :: %__MODULE__{
           id: pos_integer() | nil,
-          user_id: pos_integer(),
+          user_id: pos_integer() | nil,
           user: User.t() | Ecto.Association.NotLoaded.t(),
           linked_in: String.t() | nil,
           github: String.t() | nil,
-          workplace: String.t(),
-          hobbies: String.t(),
-          other: String.t()
+          workplace: String.t() |nil,
+          hobbies: String.t() | nil,
+          other: String.t() |nil
         }
 
   @required [:user_id]
