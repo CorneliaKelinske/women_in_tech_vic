@@ -1,4 +1,55 @@
 <.title_banner title={@title} />
-<div class="text-center text-3xl mt-8 text-gray-200">
-  Coming soon!
+<div class="min-h-screen bg-cover bg-center bg-keys">
+  <%= if @profile_owner.profile do %>
+    <section class="w-full flex justify-center px-6 py-20 lg:px-8">
+      <div class="w-full max-w-2xl group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gray-200">
+        
+<!-- Profile Details Section -->
+        <div class="space-y-4">
+          <div>
+            <label class="block font-semibold text-gray-700">Name</label>
+            <p class="text-gray-900 py-2">
+              {@profile_owner.first_name} {@profile_owner.last_name}
+            </p>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-700">LinkedIn</label>
+            <p class="text-gray-900 py-2">{@profile_owner.profile.linked_in || "Not provided"}</p>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-700">Github</label>
+            <p class="text-gray-900 py-2">{@profile_owner.profile.github || "Not provided"}</p>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-700">
+              Current workplace or other occupation
+            </label>
+            <p class="text-gray-900 py-2">{@profile_owner.profile.workplace || "Not provided"}</p>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-700">Hobbies</label>
+            <p class="text-gray-900 py-2">{@profile_owner.profile.hobbies || "Not provided"}</p>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-700">
+              A project I would like to share
+            </label>
+            <p class="text-gray-900 py-2">
+              {@profile_owner.profile.projects || "Nothing shared yet"}
+            </p>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-700">Random share</label>
+            <p class="text-gray-900 py-2">
+              {@profile_owner.profile.other || "Nothing shared yet"}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  <% else %>
+    <div class="text-center text-3xl mt-8 text-gray-200">
+      Nothing to see yet!
+    </div>
+  <% end %>
 </div>

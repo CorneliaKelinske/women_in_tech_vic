@@ -3,12 +3,29 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
 
   import WomenInTechVicWeb.CustomComponents, only: [title_banner: 1]
 
-  @title "User Profile"
+  alias WomenInTechVic.Accounts
+  alias WomenInTechVic.Accounts.User
+
+  @title "Profile"
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, assign_title(socket, @title)}
+  def mount(%{"id" => id}, _session, socket) do
+    case Accounts.find_user(%{id: id, preload: :profile}) do
+      {:ok, %User{username: username} = user} ->
+        {:ok,
+         socket
+         |> assign_title("#{username}'s #{@title}")
+         |> assign_profile_owner(user)}
+
+      _ ->
+        {:ok,
+         socket
+         |> put_flash(:error, "Something went wrong. Please try again")
+         |> push_navigate(to: ~p"/")}
+    end
   end
 
   defp assign_title(socket, title), do: assign(socket, title: title)
+
+  defp assign_profile_owner(socket, user), do: assign(socket, profile_owner: user)
 end

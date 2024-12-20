@@ -19,7 +19,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
 
   @impl true
   def handle_event("save-new-profile", %{"profile" => profile_params}, socket) do
-    %{id: user_id, username: username} = socket.assigns.current_user
+    %{id: user_id} = socket.assigns.current_user
     profile_params = Map.put(profile_params, "user_id", to_string(user_id))
 
     case Accounts.create_profile(profile_params) do
@@ -27,7 +27,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
         {:noreply,
          socket
          |> put_flash(:info, "Created profile")
-         |> push_navigate(to: ~p"/profiles/show/#{username}")}
+         |> push_navigate(to: ~p"/profiles/show/#{user_id}")}
 
       # This is a highly unlikely error, since none of the user provided fields are unique or required
       {:error, _} ->

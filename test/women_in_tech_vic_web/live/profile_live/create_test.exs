@@ -41,10 +41,10 @@ defmodule WomenInTechVicWeb.ProfileLive.CreateTest do
       assert {:error, redirect} =
                conn
                |> log_in_user(user)
-               |> live(~p"/profiles/create/#{user.username}")
+               |> live(~p"/profiles/create/#{user.id}")
 
       assert {:redirect, %{to: path}} = redirect
-      assert path === ~p"/profiles/show/#{user.username}"
+      assert path === ~p"/profiles/show/#{user.id}"
     end
 
     test "redirects to home page if something goes wrong during user creation", %{

@@ -81,11 +81,11 @@ defmodule WomenInTechVic.MixProject do
       {:ex_machina, "~> 2.8.0", only: :test},
       {:faker, "~> 0.18.0", only: :test},
       {:tzdata, "~> 1.1"},
-      {:ex_robo_cop, "~> 0.1.5"},
+      {:ex_robo_cop, "~> 0.1.6"},
 
       # Tooling
       {:ex_check, "~> 0.16", only: :test, runtime: false},
-      {:credo, "~> 1.7.7", only: :test, runtime: false},
+      {:credo, "~> 1.7.10", only: :test, runtime: false},
       {:dialyxir, "~> 1.4.3", only: :test, runtime: false},
       {:excoveralls, "~> 0.18.1", only: :test, runtime: false},
       {:blitz_credo_checks, "~> 0.1", only: :test, runtime: false}
@@ -103,7 +103,7 @@ defmodule WomenInTechVic.MixProject do
       setup: ["deps.get", "ecto.setup", "assets.setup"],
       "ecto.setup": ecto_setup(env),
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test --warnings-as-errors"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]
