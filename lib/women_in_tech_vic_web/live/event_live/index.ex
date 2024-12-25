@@ -48,7 +48,7 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
   @impl true
   def handle_event("delete_event", %{"id" => event_id}, socket) do
-    case Content.delete_event_by_admin(event_id, socket.assigns.current_user) do
+    case Content.delete_event_by_admin(String.to_integer(event_id), socket.assigns.current_user) do
       {:ok, %Event{}} ->
         {:noreply, assign_events(socket)}
 

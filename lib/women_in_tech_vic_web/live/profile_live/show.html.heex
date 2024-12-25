@@ -45,6 +45,16 @@
             </p>
           </div>
         </div>
+        <button
+          class="absolute bottom-4 right-4 text-gray-700 hover:text-red-800 cursor-pointer hidden group-hover:block"
+          phx-click="delete_profile"
+          phx-value-id={@profile_owner.profile.id}
+          phx-value-profile-user-id={@profile_owner.id}
+          data-confirm="Are you sure?"
+        >
+          <%!-- only shows for user who created the event or admin--%>
+          <.icon :if={@current_user.id === @profile_owner.id} name="hero-trash" class="h-5 w-5" />
+        </button>
       </div>
     </section>
   <% else %>

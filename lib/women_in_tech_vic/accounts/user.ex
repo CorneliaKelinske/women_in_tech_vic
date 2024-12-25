@@ -2,7 +2,6 @@ defmodule WomenInTechVic.Accounts.User do
   @moduledoc false
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query
 
   alias WomenInTechVic.Accounts.{Profile, UserToken}
   alias WomenInTechVic.Content.Event
