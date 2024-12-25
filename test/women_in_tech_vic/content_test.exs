@@ -134,7 +134,7 @@ defmodule WomenInTechVic.ContentTest do
   describe "delete_event_by_admin/2" do
     setup [:user_2]
 
-    test "lets admin delete ane event", %{user: user, online_event: online_event} do
+    test "lets admin delete an event", %{user: user, online_event: online_event} do
       assert {:ok, %Event{}} = Content.delete_event_by_admin(online_event.id, user)
     end
 

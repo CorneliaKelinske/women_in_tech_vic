@@ -4,7 +4,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
   import WomenInTechVicWeb.CustomComponents, only: [title_banner: 1]
 
   alias WomenInTechVic.Accounts
-  alias WomenInTechVic.Accounts.User
+  alias WomenInTechVic.Accounts.{Profile, User}
 
   @title "Profile"
 
@@ -22,6 +22,21 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
          socket
          |> put_flash(:error, "Something went wrong. Please try again")
          |> push_navigate(to: ~p"/")}
+    end
+  end
+
+  @impl true
+  def handle_event("delete_profile", %{"id" => profile_id, "profile-user-id" => user_id}, socket) do
+    case Accounts.delete_profile_by_owner(
+           String.to_integer(profile_id),
+           String.to_integer(user_id),
+           socket.assigns.current_user
+         ) do
+      {:ok, %Profile{}} ->
+        {:noreply, push_navigate(socket, to: ~p"/profiles/create/#{user_id}")}
+
+      _ ->
+        {:noreply, put_flash(socket, :error, "Could not delete profile")}
     end
   end
 

@@ -194,6 +194,25 @@ defmodule WomenInTechVic.AccountsTest do
     end
   end
 
+  describe "delete_profile_by_owner/2" do
+    test "lets owner delete their profile", %{user: user, profile: profile} do
+      assert {:ok, %Profile{}} =
+               Accounts.delete_profile_by_owner(profile.id, profile.user_id, user)
+    end
+
+    test "does not allow other non-owners to delete a profile", %{
+      profile: profile,
+      user_2: user_2
+    } do
+      assert {:error,
+              %ErrorMessage{
+                code: :unauthorized,
+                message: "Not authorized to delete this profile",
+                details: nil
+              }} === Accounts.delete_profile_by_owner(profile.id, profile.user_id, user_2)
+    end
+  end
+
   describe "delete user/1" do
     test "deletes a user", %{user: user} do
       assert {:ok, user} = Accounts.find_user(%{id: user.id})

@@ -465,6 +465,16 @@ defmodule WomenInTechVic.Accounts do
     Actions.delete(profile)
   end
 
+  @doc "called in event handlers; checking that only owner can delete their profile"
+  @spec delete_profile_by_owner(pos_integer(), pos_integer(), User.t()) :: change_res(Profile.t())
+  def delete_profile_by_owner(profile_id, profile_user_id, %{id: profile_user_id}) do
+    Actions.delete(Profile, profile_id)
+  end
+
+  def delete_profile_by_owner(_profile_id, _profile_user_id, _user) do
+    {:error, ErrorMessage.unauthorized("Not authorized to delete this profile")}
+  end
+
   @doc "creates an Profile changeset with nil values"
   @spec profile_changeset(Profile.t(), map()) :: Ecto.Changeset.t()
   @spec profile_changeset(Profile.t()) :: Ecto.Changeset.t()
