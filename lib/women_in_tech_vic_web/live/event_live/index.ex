@@ -46,6 +46,8 @@ defmodule WomenInTechVicWeb.EventLive.Index do
     end
   end
 
+  # coveralls-ignore-stop
+
   @impl true
   def handle_event("delete_event", %{"id" => event_id}, socket) do
     case Content.delete_event_by_admin(String.to_integer(event_id), socket.assigns.current_user) do
@@ -56,8 +58,6 @@ defmodule WomenInTechVicWeb.EventLive.Index do
         {:noreply, put_flash(socket, :error, "Could not delete event")}
     end
   end
-
-  # coveralls-ignore-stop
 
   defp assign_title(socket, title), do: assign(socket, title: title)
 

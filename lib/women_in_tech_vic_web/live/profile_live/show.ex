@@ -12,10 +12,13 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
   def mount(%{"id" => id}, _session, socket) do
     case Accounts.find_user(%{id: id, preload: :profile}) do
       {:ok, %User{username: username} = user} ->
+        edit_profile_changeset = Accounts.profile_changeset(user.profile || %Profile{})
+
         {:ok,
          socket
          |> assign_title("#{username}'s #{@title}")
-         |> assign_profile_owner(user)}
+         |> assign_profile_owner(user)
+         |> assign_edit_profile_form(edit_profile_changeset)}
 
       _ ->
         {:ok,
@@ -24,6 +27,30 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
          |> push_navigate(to: ~p"/")}
     end
   end
+
+  # coveralls-ignore-start
+  @impl true
+  def handle_event("save-profile", %{"profile" => profile_params}, socket) do
+    user = socket.assigns.profile_owner
+
+    case Accounts.update_profile_by_owner(
+           user.profile,
+           profile_params,
+           socket.assigns.current_user
+         ) do
+      {:ok, updated_profile} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Profile updated successfully.")
+         |> push_navigate(to: ~p"/profiles/show/#{user.id}")
+         |> assign(:profile_owner, %{user | profile: updated_profile})}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, :edit_profile_form, to_form(changeset))}
+    end
+  end
+
+  # coveralls-ignore-stop
 
   @impl true
   def handle_event("delete_profile", %{"id" => profile_id, "profile-user-id" => user_id}, socket) do
@@ -43,4 +70,8 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
   defp assign_title(socket, title), do: assign(socket, title: title)
 
   defp assign_profile_owner(socket, user), do: assign(socket, profile_owner: user)
+
+  defp assign_edit_profile_form(socket, changeset) do
+    assign(socket, :edit_profile_form, to_form(changeset))
+  end
 end

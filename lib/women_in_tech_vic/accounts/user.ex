@@ -21,7 +21,7 @@ defmodule WomenInTechVic.Accounts.User do
           user_tokens: [UserToken.t()] | Ecto.Association.NotLoaded.t(),
           events: [Event.t()] | Ecto.Association.NotLoaded.t(),
           attending_events: [Event.t()] | Ecto.Association.NotLoaded.t(),
-          profile: Profile.t() | Ecto.Association.NotLoaded.t()
+          profile: Profile.t() | Ecto.Association.NotLoaded.t() | nil
         }
   @type role :: :admin | :member
 
