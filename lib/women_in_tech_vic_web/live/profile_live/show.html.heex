@@ -45,18 +45,51 @@
             </p>
           </div>
         </div>
+        <!-- Edit Button (Visible to Profile Owner Only) -->
+        <div :if={@current_user.id === @profile_owner.id} class="mt-4 text-left">
+          <button
+            phx-click={show_modal("edit-profile-modal")}
+            class="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
+          >
+            Edit Profile
+          </button>
+        </div>
+
         <button
-          class="absolute bottom-4 right-4 text-gray-700 hover:text-red-800 cursor-pointer hidden group-hover:block"
+          class="absolute bottom-6 right-6 text-gray-700 hover:text-red-800 cursor-pointer hidden group-hover:block"
           phx-click="delete_profile"
           phx-value-id={@profile_owner.profile.id}
           phx-value-profile-user-id={@profile_owner.id}
           data-confirm="Are you sure?"
         >
-          <%!-- only shows for user who created the event or admin--%>
           <.icon :if={@current_user.id === @profile_owner.id} name="hero-trash" class="h-5 w-5" />
         </button>
       </div>
     </section>
+    <.modal id="edit-profile-modal">
+      <.header>Edit Profile</.header>
+      <.simple_form for={@edit_profile_form} id="profile-form" phx-submit="save-profile">
+        <.input field={@edit_profile_form[:linked_in]} type="text" label="LinkedIn" phx-debounce />
+        <.input field={@edit_profile_form[:github]} type="text" label="Github" phx-debounce />
+        <.input field={@edit_profile_form[:workplace]} type="text" label="Workplace" phx-debounce />
+        <.input field={@edit_profile_form[:hobbies]} type="textarea" label="Hobbies" phx-debounce />
+        <.input
+          field={@edit_profile_form[:projects]}
+          type="textarea"
+          label="Projects"
+          phx-debounce
+        />
+        <.input
+          field={@edit_profile_form[:other]}
+          type="textarea"
+          label="Random Share"
+          phx-debounce
+        />
+        <:actions>
+          <.button phx-disable-with="Saving..." class="w-full">Save</.button>
+        </:actions>
+      </.simple_form>
+    </.modal>
   <% else %>
     <div class="text-center text-3xl mt-8 text-gray-200">
       Nothing to see yet!

@@ -194,25 +194,6 @@ defmodule WomenInTechVic.AccountsTest do
     end
   end
 
-  describe "delete_profile_by_owner/2" do
-    test "lets owner delete their profile", %{user: user, profile: profile} do
-      assert {:ok, %Profile{}} =
-               Accounts.delete_profile_by_owner(profile.id, profile.user_id, user)
-    end
-
-    test "does not allow other non-owners to delete a profile", %{
-      profile: profile,
-      user_2: user_2
-    } do
-      assert {:error,
-              %ErrorMessage{
-                code: :unauthorized,
-                message: "Not authorized to delete this profile",
-                details: nil
-              }} === Accounts.delete_profile_by_owner(profile.id, profile.user_id, user_2)
-    end
-  end
-
   describe "delete user/1" do
     test "deletes a user", %{user: user} do
       assert {:ok, user} = Accounts.find_user(%{id: user.id})
@@ -667,9 +648,53 @@ defmodule WomenInTechVic.AccountsTest do
     end
   end
 
+  describe "update_profile_by_owner/3" do
+    test "allows profile owner to update their profile", %{user: user, profile: profile} do
+      profile_id = profile.id
+      user_id = user.id
+      update_params = %{workplace: "self-employed"}
+
+      assert {:ok, %Profile{id: ^profile_id, workplace: "self-employed", user_id: ^user_id}} =
+               Accounts.update_profile_by_owner(profile, update_params, user)
+    end
+
+    test "prevents non-owner from updating someone else's profile", %{
+      user_2: user_2,
+      profile: profile
+    } do
+      update_params = %{workplace: "self-employed"}
+
+      assert {:error,
+              %ErrorMessage{
+                code: :unauthorized,
+                message: "Not authorized to update this profile",
+                details: nil
+              }} === Accounts.update_profile_by_owner(profile, update_params, user_2)
+    end
+  end
+
   describe "delete profile/1" do
     test "deletes a profile", %{profile: profile} do
       assert {:ok, %Profile{}} = Accounts.delete_profile(profile)
+    end
+  end
+
+  describe "delete_profile_by_owner/2" do
+    test "lets owner delete their profile", %{user: user, profile: profile} do
+      assert {:ok, %Profile{}} =
+               Accounts.delete_profile_by_owner(profile.id, profile.user_id, user)
+    end
+
+    test "does not allow other non-owners to delete a profile", %{
+      profile: profile,
+      user_2: user_2
+    } do
+      assert {:error,
+              %ErrorMessage{
+                code: :unauthorized,
+                message: "Not authorized to delete this profile",
+                details: nil
+              }} === Accounts.delete_profile_by_owner(profile.id, profile.user_id, user_2)
     end
   end
 

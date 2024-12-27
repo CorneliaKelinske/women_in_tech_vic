@@ -459,6 +459,18 @@ defmodule WomenInTechVic.Accounts do
     Actions.update(Profile, id_or_schema, params)
   end
 
+  @doc "called in event handlers; checking that only owner can update their profile"
+  @spec update_profile_by_owner(Profile.t(), map(), User.t()) :: change_res(Profile.t())
+  def update_profile_by_owner(%Profile{user_id: profile_user_id} = profile, params, %User{
+        id: profile_user_id
+      }) do
+    Actions.update(Profile, profile, params)
+  end
+
+  def update_profile_by_owner(_profile, _param, _user) do
+    {:error, ErrorMessage.unauthorized("Not authorized to update this profile")}
+  end
+
   @doc false
   @spec delete_profile(Profile.t()) :: change_res(Profile.t())
   def delete_profile(profile) do
