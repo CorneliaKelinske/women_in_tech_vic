@@ -26,7 +26,18 @@
       <% else %>
         <ul class="list-disc list-inside text-center">
           <%= for attendee <- @attendees do %>
-            <li class="text-lg text-left">{attendee.username}</li>
+            <%= if attendee.profile do %>
+              <li class="text-lg text-left">
+                <.link
+                  class="text-purple-700 hover:underline hover:text-blue-800"
+                  navigate={~p"/profiles/#{attendee.id}"}
+                >
+                  {attendee.username}
+                </.link>
+              </li>
+            <% else %>
+              <li class="text-lg text-left">{attendee.username}</li>
+            <% end %>
           <% end %>
         </ul>
       <% end %>

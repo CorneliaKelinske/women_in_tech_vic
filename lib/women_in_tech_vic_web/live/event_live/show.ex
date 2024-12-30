@@ -3,6 +3,7 @@ defmodule WomenInTechVicWeb.EventLive.Show do
 
   import WomenInTechVicWeb.CustomComponents, only: [event_display: 1, title_banner: 1]
 
+  alias WomenInTechVic.Accounts.User
   alias WomenInTechVic.{Content, Utils}
   alias WomenInTechVic.Content.Event
 
@@ -17,7 +18,7 @@ defmodule WomenInTechVicWeb.EventLive.Show do
 
   @impl true
   def handle_params(%{"id" => event_id}, _, socket) do
-    case Content.find_event(%{id: event_id, preload: :attendees}) do
+    case Content.find_event(%{id: event_id, preload: [attendees: :profile]}) do
       {:ok, %Event{attendees: attendees} = event} ->
         {:noreply,
          socket
@@ -80,8 +81,10 @@ defmodule WomenInTechVicWeb.EventLive.Show do
     assign(socket, :event, prep_event_for_display(event))
   end
 
-  defp assign_button_text(socket, user, attendees) do
-    if user in attendees do
+  defp assign_button_text(socket, %User{id: current_user_id}, attendees) do
+    attendee_ids = Enum.map(attendees, & &1.id)
+
+    if current_user_id in attendee_ids do
       assign(socket, :button_text, "I changed my mind")
     else
       assign(socket, :button_text, "I will be there")
