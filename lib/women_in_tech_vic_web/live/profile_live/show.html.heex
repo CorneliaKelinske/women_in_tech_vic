@@ -48,7 +48,7 @@
         <!-- Edit Button (Visible to Profile Owner Only) -->
         <div :if={@current_user.id === @profile_owner.id} class="mt-4 text-left">
           <button
-            phx-click={show_modal("edit-profile-modal")}
+            phx-click={JS.navigate(~p"/profiles/#{@profile_owner.id}/edit")}
             class="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
           >
             Edit Profile
@@ -66,7 +66,11 @@
         </button>
       </div>
     </section>
-    <.modal id="edit-profile-modal">
+    <.modal
+      id="edit-profile-modal"
+      show={@live_action == :edit}
+      on_cancel={JS.navigate(~p"/profiles/#{@profile_owner.id}")}
+    >
       <.header>Edit Profile</.header>
       <.simple_form for={@edit_profile_form} id="profile-form" phx-submit="save-profile">
         <.input field={@edit_profile_form[:linked_in]} type="text" label="LinkedIn" phx-debounce />

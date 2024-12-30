@@ -36,7 +36,7 @@
         </div>
         <div :if={@current_user} class="relative group">
           <.link
-            navigate={~p"/profiles/create/#{@current_user.id}"}
+            navigate={~p"/profiles/#{@current_user.id}/create"}
             class="text-gray-900 hover:text-gray-700"
           >
             <.icon name="hero-user-circle" class="h-6 w-6" />

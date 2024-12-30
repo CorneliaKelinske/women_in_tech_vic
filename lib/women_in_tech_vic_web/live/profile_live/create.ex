@@ -27,7 +27,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
         {:noreply,
          socket
          |> put_flash(:info, "Created profile")
-         |> push_navigate(to: ~p"/profiles/show/#{user_id}")}
+         |> push_navigate(to: ~p"/profiles/#{user_id}")}
 
       # This is a highly unlikely error, since none of the user provided fields are unique or required
       {:error, _} ->

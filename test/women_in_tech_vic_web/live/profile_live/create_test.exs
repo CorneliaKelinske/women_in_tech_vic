@@ -22,7 +22,7 @@ defmodule WomenInTechVicWeb.ProfileLive.CreateTest do
       {:ok, lv, html} =
         conn
         |> log_in_user(user_2)
-        |> live(~p"/profiles/create/#{user_2.username}")
+        |> live(~p"/profiles/#{user_2.id}/create")
 
       assert html =~ "Create Your User Profile"
 
@@ -41,10 +41,10 @@ defmodule WomenInTechVicWeb.ProfileLive.CreateTest do
       assert {:error, redirect} =
                conn
                |> log_in_user(user)
-               |> live(~p"/profiles/create/#{user.id}")
+               |> live(~p"/profiles/#{user.id}/create")
 
       assert {:redirect, %{to: path}} = redirect
-      assert path === ~p"/profiles/show/#{user.id}"
+      assert path === ~p"/profiles/#{user.id}"
     end
 
     test "redirects to home page if something goes wrong during user creation", %{
@@ -59,7 +59,7 @@ defmodule WomenInTechVicWeb.ProfileLive.CreateTest do
       {:ok, lv, html} =
         conn
         |> log_in_user(user_2)
-        |> live(~p"/profiles/create/#{user_2.username}")
+        |> live(~p"/profiles/#{user_2.id}/create")
 
       assert html =~ "Create Your User Profile"
       assert {:ok, _} = Accounts.delete_user(user_id)

@@ -42,7 +42,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
         {:noreply,
          socket
          |> put_flash(:info, "Profile updated successfully.")
-         |> push_navigate(to: ~p"/profiles/show/#{user.id}")
+         |> push_navigate(to: ~p"/profiles/#{user.id}")
          |> assign(:profile_owner, %{user | profile: updated_profile})}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -60,7 +60,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
            socket.assigns.current_user
          ) do
       {:ok, %Profile{}} ->
-        {:noreply, push_navigate(socket, to: ~p"/profiles/create/#{user_id}")}
+        {:noreply, push_navigate(socket, to: ~p"/profiles/#{user_id}/create")}
 
       _ ->
         {:noreply, put_flash(socket, :error, "Could not delete profile")}

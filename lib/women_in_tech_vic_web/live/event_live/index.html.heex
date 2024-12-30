@@ -18,7 +18,7 @@
 
   <div :if={@current_user.role === :admin} class="p-8 flex justify-center">
     <button
-      phx-click={show_modal("new-event-modal")}
+      phx-click={JS.navigate(~p"/events/create")}
       class="px-6 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
     >
       Create Event
@@ -26,7 +26,7 @@
   </div>
 </div>
 
-<.modal id="new-event-modal">
+<.modal id="new-event-modal" show={@live_action == :create} on_cancel={JS.navigate(~p"/events")}>
   <.header>Create event</.header>
   <.simple_form for={@new_event_form} id="event-form" phx-submit="save-event">
     <.input field={@new_event_form[:title]} type="text" label="Title" phx-debounce />

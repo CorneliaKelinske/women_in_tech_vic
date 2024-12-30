@@ -17,7 +17,7 @@ defmodule WomenInTechVicWeb.ProfileLive.ShowTest do
       {:ok, lv, html} =
         conn
         |> log_in_user(user)
-        |> live(~p"/profiles/show/#{user.id}")
+        |> live(~p"/profiles/#{user.id}")
 
       assert html =~ "#{user.username}&#39;s Profile"
       assert html =~ "LinkedIn"
@@ -31,7 +31,7 @@ defmodule WomenInTechVicWeb.ProfileLive.ShowTest do
                %{to: "/", flash: %{"error" => "Something went wrong. Please try again"}}}} =
                conn
                |> log_in_user(user)
-               |> live(~p"/profiles/show/#{user.id + 11}")
+               |> live(~p"/profiles/#{user.id + 11}")
     end
 
     test "returns show page with Nothing to See info if profile doesn't exist yet", %{
@@ -41,7 +41,7 @@ defmodule WomenInTechVicWeb.ProfileLive.ShowTest do
       {:ok, _lv, html} =
         conn
         |> log_in_user(user_2)
-        |> live(~p"/profiles/show/#{user_2.id}")
+        |> live(~p"/profiles/#{user_2.id}")
 
       assert html =~ "#{user_2.username}&#39;s Profile"
       assert html =~ "Nothing to see yet!"
@@ -58,7 +58,7 @@ defmodule WomenInTechVicWeb.ProfileLive.ShowTest do
     {:ok, lv, html} =
       conn
       |> log_in_user(user)
-      |> live(~p"/profiles/show/#{user.id}")
+      |> live(~p"/profiles/#{user.id}")
 
     assert html =~ "#{user.username}&#39;s Profile"
     assert html =~ "hero-trash"
@@ -84,7 +84,7 @@ defmodule WomenInTechVicWeb.ProfileLive.ShowTest do
     {:ok, lv, html} =
       conn
       |> log_in_user(user_2)
-      |> live(~p"/profiles/show/#{user.id}")
+      |> live(~p"/profiles/#{user.id}")
 
     assert html =~ "#{user.username}&#39;s Profile"
     refute html =~ "hero-trash"
@@ -100,7 +100,7 @@ defmodule WomenInTechVicWeb.ProfileLive.ShowTest do
     {:ok, lv, html} =
       conn
       |> log_in_user(user_2)
-      |> live(~p"/profiles/show/#{user.id}")
+      |> live(~p"/profiles/#{user.id}")
 
     assert html =~ "#{user.username}&#39;s Profile"
 
