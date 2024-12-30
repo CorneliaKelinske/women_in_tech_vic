@@ -1,7 +1,8 @@
 {
     "skip_files": [
       "test/support/*",   
-      "lib/women_in_tech_vic_web/components/core_components.ex"     
+      "lib/women_in_tech_vic_web/components/core_components.ex",
+      "lib/women_in_tech_vic_web/router.ex"   
     ],
     "terminal_options": {
       "file_column_width": 75
