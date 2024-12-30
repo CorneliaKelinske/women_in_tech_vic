@@ -2,13 +2,14 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1, profile: 1]
   import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1, in_person_event: 1]
 
+  alias WomenInTechVic.Accounts
   alias WomenInTechVic.Content
   alias WomenInTechVic.Content.Event
 
-  setup [:user, :user_2, :online_event, :in_person_event]
+  setup [:user, :user_2, :online_event, :in_person_event, :profile]
 
   describe "Show page" do
     test "renders a page with event info", %{conn: conn, user: user, online_event: online_event} do
@@ -92,6 +93,60 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
 
       refute html =~ "I will be there"
       assert html =~ "I changed my mind"
+    end
+
+    test "attending users with a profile will have their name link to profile", %{
+      conn: conn,
+      user: user,
+      user_2: user_2,
+      online_event: online_event,
+      profile: profile
+    } do
+      assert [^profile] = Accounts.all_profiles(%{})
+
+      online_event_id = online_event.id
+
+      {:ok, lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/events/#{online_event}")
+
+      assert html =~ "I will be there"
+      refute html =~ "I changed my mind"
+
+      lv
+      |> element("button[phx-click=\"rsvp\"]")
+      |> render_click(%{
+        "event_id" => to_string(online_event_id),
+        "user_id" => to_string(user.id)
+      })
+
+      {:ok, _lv, html} =
+        conn
+        |> log_in_user(user_2)
+        |> live(~p"/events/#{online_event}")
+
+      assert html =~ "I will be there"
+      refute html =~ "I changed my mind"
+
+      lv
+      |> element("button[phx-click=\"rsvp\"]")
+      |> render_click(%{
+        "event_id" => to_string(online_event_id),
+        "user_id" => to_string(user_2.id)
+      })
+
+      {:ok, _lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/events/#{online_event}")
+
+      refute html =~ "I will be there"
+      assert html =~ "I changed my mind"
+      assert html =~ "</a></li>"
+      refute html =~ ">#{user_2.username}</a></li>"
+      assert html =~ ">#{user_2.username}</li>"
+      refute html =~ ">#{user.username}</li>"
     end
 
     test "clicking All events link leads back to events index page", %{
