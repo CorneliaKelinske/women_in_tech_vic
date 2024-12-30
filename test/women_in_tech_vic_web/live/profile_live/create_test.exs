@@ -43,7 +43,7 @@ defmodule WomenInTechVicWeb.ProfileLive.CreateTest do
                |> log_in_user(user)
                |> live(~p"/profiles/#{user.id}/create")
 
-      assert {:redirect, %{to: path}} = redirect
+      assert {:live_redirect, %{to: path}} = redirect
       assert path === ~p"/profiles/#{user.id}"
     end
 

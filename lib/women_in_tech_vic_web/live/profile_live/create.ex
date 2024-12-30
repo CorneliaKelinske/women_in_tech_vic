@@ -1,7 +1,7 @@
 defmodule WomenInTechVicWeb.ProfileLive.Create do
   use WomenInTechVicWeb, :live_view
 
-  on_mount {WomenInTechVicWeb.UserAuth, :redirect_if_profile_exists}
+  # on_mount {WomenInTechVicWeb.UserAuth, :redirect_if_profile_exists}
 
   import WomenInTechVicWeb.CustomComponents, only: [title_banner: 1]
   alias WomenInTechVic.Accounts
@@ -11,10 +11,20 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok,
-     socket
-     |> assign_title(@title)
-     |> assign_profile_form(Accounts.profile_changeset(%Profile{}))}
+    %{id: user_id} = socket.assigns.current_user
+
+    case Accounts.find_profile(%{user_id: user_id}) do
+      {:ok, %Profile{}} ->
+        {:ok,
+         socket
+         |> push_navigate(to: ~p"/profiles/#{user_id}")}
+
+      _ ->
+        {:ok,
+         socket
+         |> assign_title(@title)
+         |> assign_profile_form(Accounts.profile_changeset(%Profile{}))}
+    end
   end
 
   @impl true
