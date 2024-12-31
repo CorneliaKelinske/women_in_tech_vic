@@ -211,4 +211,39 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
       assert message === "You must log in to access this page."
     end
   end
+
+  describe "delete account" do
+    test "deletes account and redirects user to landing page when correct password is provided",
+         %{conn: conn, user: user} do
+      {:ok, lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/users/settings")
+
+      assert html =~ "Delete Account"
+
+      assert lv
+             |> form("#delete_account_form", %{"password" => @valid_password})
+             |> render_submit
+
+      assert_redirected(lv, "/")
+      assert {:error, %ErrorMessage{code: :not_found}} = Accounts.find_user(%{id: user.id})
+    end
+
+    test "provides error when wrong password is given", %{conn: conn, user: user} do
+      {:ok, lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/users/settings")
+
+      assert html =~ "Delete Account"
+
+      assert lv
+             |> form("#delete_account_form", %{"password" => "Invalid"})
+             |> render_submit
+
+      refute_redirected(lv, "/")
+      assert {:ok, ^user} = Accounts.find_user(%{id: user.id})
+    end
+  end
 end

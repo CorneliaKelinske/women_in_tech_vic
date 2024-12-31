@@ -138,6 +138,16 @@ defmodule WomenInTechVic.Accounts do
     Actions.update(User, user_id, %{role: role})
   end
 
+  @doc "Used when user wants to delete their own account"
+  @spec delete_account(User.t(), String.t()) :: change_res(User.t())
+  def delete_account(user, password) do
+    if User.valid_password?(user, password) do
+      Actions.delete(user)
+    else
+      {:error, ErrorMessage.unauthorized("Incorrect password")}
+    end
+  end
+
   @doc false
   @spec delete_user(User.t() | pos_integer()) :: change_res(User.t())
   def delete_user(user_id) when is_integer(user_id) do
