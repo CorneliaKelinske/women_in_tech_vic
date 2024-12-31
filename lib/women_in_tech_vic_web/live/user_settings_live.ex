@@ -1,7 +1,9 @@
 defmodule WomenInTechVicWeb.UserSettingsLive do
   use WomenInTechVicWeb, :live_view
-
+  require Logger
   alias WomenInTechVic.Accounts
+  alias WomenInTechVic.Accounts.User
+  @delete_account_form_params %{"password" => nil}
 
   def render(assigns) do
     ~H"""
@@ -30,7 +32,7 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
             phx-submit="update_email"
             phx-change="validate_email"
           >
-            <.input field={@email_form[:email]} type="email" label="Email" required />
+            <.input field={@email_form[:email]} type="email" label="New Email" required />
             <.input
               field={@email_form[:current_password]}
               name="current_password"
@@ -88,6 +90,20 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
             </:actions>
           </.simple_form>
         </div>
+        <div>
+          <.simple_form
+            for={@delete_account_form}
+            id="delete_account_form"
+            phx-submit="delete_account"
+          >
+            <.input field={@delete_account_form[:password]} type="password" label="Password" required />
+            <:actions>
+              <.button data-confirm="Are you sure?" phx-disable-with="Changing...">
+                Delete Account
+              </.button>
+            </:actions>
+          </.simple_form>
+        </div>
       </div>
     </section>
     """
@@ -118,6 +134,7 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
       |> assign(:current_email, user.email)
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
+      |> assign(:delete_account_form, to_form(@delete_account_form_params))
       |> assign(:trigger_submit, false)
 
     {:ok, socket}
@@ -182,6 +199,36 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
 
       {:error, changeset} ->
         {:noreply, assign(socket, password_form: to_form(changeset))}
+    end
+  end
+
+  def handle_event("delete_account", params, socket) do
+    %{"password" => password} = params
+    user = socket.assigns.current_user
+
+    case Accounts.delete_account(user, password) do
+      {:ok, %User{}} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "So long and thanks for all the fish!")
+         |> redirect(to: ~p"/")}
+
+      {:error, %ErrorMessage{code: :unauthorized}} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Invalid password! Please try again!")
+         |> assign(:delete_account_form, to_form(@delete_account_form_params))}
+
+      # coveralls-ignore-start
+      error ->
+        Logger.error("Error deleting user #{user.id}: #{inspect(error)}")
+
+        {:noreply,
+         socket
+         |> put_flash(:error, "Something went wrong! Please try again!") >
+           assign(:delete_account_form, to_form(@delete_account_form_params))}
+
+        # coveralls-ignore-stop
     end
   end
 end

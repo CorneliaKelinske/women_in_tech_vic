@@ -194,9 +194,29 @@ defmodule WomenInTechVic.AccountsTest do
     end
   end
 
+  describe "delete_account/2" do
+    test "deletes a user when correct password is provided", %{user: user} do
+      assert {:ok, ^user} = Accounts.find_user(%{id: user.id})
+      assert {:ok, %User{}} = Accounts.delete_account(user, @valid_password)
+
+      assert {:error, %ErrorMessage{code: :not_found, message: "no records found"}} =
+               Accounts.find_user(%{id: user.id})
+    end
+
+    test "returns error if incorrect password is provided", %{user: user} do
+      assert {:ok, ^user} = Accounts.find_user(%{id: user.id})
+
+      assert {:error,
+              %ErrorMessage{code: :unauthorized, message: "Incorrect password", details: nil}} =
+               Accounts.delete_account(user, "not correct")
+
+      assert {:ok, ^user} = Accounts.find_user(%{id: user.id})
+    end
+  end
+
   describe "delete user/1" do
     test "deletes a user", %{user: user} do
-      assert {:ok, user} = Accounts.find_user(%{id: user.id})
+      assert {:ok, ^user} = Accounts.find_user(%{id: user.id})
       assert {:ok, %User{}} = Accounts.delete_user(user)
 
       assert {:error, %ErrorMessage{code: :not_found, message: "no records found"}} =
@@ -204,7 +224,7 @@ defmodule WomenInTechVic.AccountsTest do
     end
 
     test "deletes a user by user id", %{user: user} do
-      assert {:ok, user} = Accounts.find_user(%{id: user.id})
+      assert {:ok, ^user} = Accounts.find_user(%{id: user.id})
       assert {:ok, %User{}} = Accounts.delete_user(user.id)
 
       assert {:error, %ErrorMessage{code: :not_found, message: "no records found"}} =
