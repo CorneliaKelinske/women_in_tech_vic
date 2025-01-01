@@ -1,0 +1,50 @@
+<.title_banner title={@title} />
+<div class="min-h-screen flex flex-col bg-pc bg-cover bg-center">
+  <!-- Text Section with Consistent Dark Gray Background -->
+  <section class="relative bg-gray-900 flex items-center justify-center px-10 lg:px-20 py-10 lg:text-2xl font-sans text-gray-200 text-center">
+    <span class="z-10 max-w-full">
+      Thank you for signing in! We're so excited to have you here.
+
+      Have fun exploring the page and connecting with our amazing community.
+      To create your own user profile, simply click on the Account
+      <span class="inline-flex items-center">
+        <.icon name="hero-user-circle" class="h-6 w-6 ml-1 relative top-[2px]" />
+      </span>
+      item at the top of the page.
+
+      This homepage is your hub — everything important is linked right here.
+
+      Enjoy your time here and let us know if you have any questions!
+    </span>
+  </section>
+  <section class="flex-grow flex flex-col justify-center items-center pt-20 lg:pt-0 px-6 lg:px-8">
+    <div class="flex flex-wrap justify-around w-full">
+      <div class="w-full max-w-lg break-words group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gray-200">
+        <h2 class="text-3xl font-bold text-center mb-2">Events</h2>
+        <p>Discover all our upcoming online and in-person events right here!
+          Stay connected with the community and never miss out on exciting networking opportunities and inspiring conversations.
+          Want to attend an event? Please RSVP and we are looking forward to seeing you there!</p>
+        <div class="mt-4 flex justify-center">
+          <.link navigate={~p"/events"} class="text-gray-600 font-semibold hover:text-gray-500">
+            See details
+          </.link>
+        </div>
+      </div>
+      <div class="w-full max-w-lg break-words group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gray-200">
+        <h2 class="text-3xl font-bold text-center mb-2">Members</h2>
+        <p>
+          Are you curious about who else is part of this group?
+          Visit the <.link navigate={~p"/members"} class="font-semibold hover:text-gray-500">
+            Members
+          </.link>page to see a list of our members. You can check out their profiles to learn more about their journey.
+          Start connecting and building meaningful relationships today!
+        </p>
+        <div class="mt-4 flex justify-center">
+          <.link navigate={~p"/members"} class="text-gray-600 font-semibold hover:text-gray-500">
+            See details
+          </.link>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -23,7 +23,7 @@ defmodule WomenInTechVicWeb.UserForgotPasswordLiveTest do
         conn
         |> log_in_user(user)
         |> live(~p"/users/reset_password")
-        |> follow_redirect(conn, ~p"/events")
+        |> follow_redirect(conn, ~p"/home")
 
       assert {:ok, _conn} = result
     end

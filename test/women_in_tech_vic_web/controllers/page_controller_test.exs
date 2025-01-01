@@ -20,7 +20,7 @@ defmodule WomenInTechVicWeb.PageControllerTest do
         "user" => %{"email" => user.email, "password" => @valid_password}
       })
 
-    assert redirected_to(conn) === ~p"/events"
+    assert redirected_to(conn) === ~p"/home"
   end
 
   test "shows message when no meeting has been scheduled", %{conn: conn} do
