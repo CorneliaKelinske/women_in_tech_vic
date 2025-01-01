@@ -8,13 +8,12 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
   def render(assigns) do
     ~H"""
     <section class="relative text-gray-400 min-w-full">
-      <!-- Background image with overlay only -->
       <div
         class="absolute inset-0 bg-cover bg-center"
         style="background-image: url('/images/code.jpg'); opacity: 0.3;"
       >
       </div>
-      <!-- Content overlay with text only -->
+
       <div class="relative p-8 mx-auto max-w-3xl text-right md:text-center font-semibold font-sans text-2xl md:text-3xl md:tracking-widest z-10 text-gray-200">
         Account Settings
         <p class="mt-2 text-sm leading-6 font-normal md:tracking-normal">
@@ -22,6 +21,13 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
         </p>
       </div>
     </section>
+    <.link
+      navigate={~p"/home"}
+      class="text-gray-200 mb-0 m-8 hover:text-gray-400 font-semibold uppercase flex items-center space-x-1"
+    >
+      <.icon name="hero-chevron-double-left" class="h-5 w-5" />
+      <span>Home</span>
+    </.link>
 
     <section class="w-full flex justify-center px-6 py-20 lg:px-8">
       <div class="w-full max-w-2xl space-y-12 divide-y 6 p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">

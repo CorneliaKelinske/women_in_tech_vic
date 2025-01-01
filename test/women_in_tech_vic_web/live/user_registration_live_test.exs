@@ -24,7 +24,7 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
         conn
         |> log_in_user(user)
         |> live(~p"/users/register")
-        |> follow_redirect(conn, "/events")
+        |> follow_redirect(conn, "/home")
 
       assert {:ok, _conn} = result
     end

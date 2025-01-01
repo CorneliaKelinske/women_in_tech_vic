@@ -1,7 +1,18 @@
 <.title_banner title={@title} />
 <div class="min-h-screen bg-cover bg-center bg-keys">
+  <div class="p-8">
+    <.link
+      navigate={~p"/home"}
+      class="text-gray-200 hover:text-gray-400 font-semibold uppercase flex items-center space-x-1"
+    >
+      <.icon name="hero-chevron-double-left" class="h-5 w-5" />
+      <span>Home</span>
+    </.link>
+  </div>
+
   <%= if @profile_owner.profile do %>
     <section class="w-full flex justify-center px-6 py-20 lg:px-8">
+    
       <div class="w-full max-w-2xl group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gray-200">
         
 <!-- Profile Details Section -->

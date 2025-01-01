@@ -79,6 +79,7 @@ defmodule WomenInTechVicWeb.Router do
       live "/profiles/:id/edit", ProfileLive.Show, :edit
       live "/profiles/:id/create", ProfileLive.Create, :create
       live "/members", MemberLive.Index, :index
+      live "/home", HomeLive
     end
   end
 
