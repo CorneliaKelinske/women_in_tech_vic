@@ -11,9 +11,11 @@ defmodule WomenInTechVicWeb.PageController do
       |> List.first()
       |> prep_event_for_display()
 
+    year = Date.utc_today().year
+
     # The home page is often custom made,
     # so skip the default app layout.
-    render(conn, :home, event: online_event)
+    render(conn, :home, event: online_event, year: year)
   end
 
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do
