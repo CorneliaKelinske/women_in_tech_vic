@@ -17,11 +17,12 @@ defmodule WomenInTechVic.Accounts.Profile do
           github: String.t() | nil,
           workplace: String.t() | nil,
           hobbies: String.t() | nil,
-          other: String.t() | nil
+          other: String.t() | nil,
+          picture_path: String.t() | nil
         }
 
   @required [:user_id]
-  @cast [:linked_in, :github, :workplace, :hobbies, :projects, :other] ++ @required
+  @cast [:linked_in, :github, :workplace, :hobbies, :projects, :other, :picture_path] ++ @required
 
   schema "profiles" do
     field :linked_in, :string
@@ -30,6 +31,7 @@ defmodule WomenInTechVic.Accounts.Profile do
     field :hobbies, :string
     field :projects, :string
     field :other, :string
+    field :picture_path, :string
 
     belongs_to :user, User
 
