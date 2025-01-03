@@ -33,3 +33,7 @@ kill_signal = 'SIGTERM'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+[mounts]
+  source = "women_in_tech_vic_data"
+  destination = "/app/lib/women_in_tech_vic/priv/static/data"
