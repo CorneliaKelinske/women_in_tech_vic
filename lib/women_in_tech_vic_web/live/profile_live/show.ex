@@ -18,6 +18,12 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
          socket
          |> assign_title("#{username}'s #{@title}")
          |> assign_profile_owner(user)
+         |> assign(:uploaded_files, [])
+         |> allow_upload(:image,
+           accept: ~w(.jpg .jpeg .png),
+           max_entries: 1,
+           max_file_size: 2_000_000
+         )
          |> assign_edit_profile_form(edit_profile_changeset)}
 
       _ ->
@@ -30,8 +36,30 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
 
   # coveralls-ignore-start
   @impl true
+  def handle_event("validate", _params, socket) do
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("save-profile", %{"profile" => profile_params}, socket) do
     user = socket.assigns.profile_owner
+
+    file_path =
+      socket
+      |> consume_uploaded_entries(:image, fn %{path: path}, _entry ->
+        dest =
+          Path.join(
+            "priv/static/uploads",
+            Path.basename(path)
+          )
+
+        # You will need to create priv/static/uploads for File.cp!/2 to work.
+        File.cp!(path, dest)
+        {:ok, ~p"/uploads/#{Path.basename(dest)}"}
+      end)
+      |> List.first()
+
+    profile_params = Map.put(profile_params, "picture_path", file_path)
 
     case Accounts.update_profile_by_owner(
            user.profile,
@@ -74,4 +102,8 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
   defp assign_edit_profile_form(socket, changeset) do
     assign(socket, :edit_profile_form, to_form(changeset))
   end
+
+  defp upload_error_to_string(:too_large), do: "The file is too large"
+  defp upload_error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp upload_error_to_string(_), do: "Hm, something went wrong. Please try again"
 end
