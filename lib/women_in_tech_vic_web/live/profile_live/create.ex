@@ -47,7 +47,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
       |> consume_uploaded_entries(:image, fn %{path: path}, _entry ->
         dest =
           Path.join(
-             "priv/static/uploads",
+            "priv/static/uploads",
             Path.basename(path)
           )
 
@@ -81,4 +81,8 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
   defp assign_profile_form(socket, changeset) do
     assign(socket, :new_profile_form, to_form(changeset))
   end
+
+  defp upload_error_to_string(:too_large), do: "The file is too large"
+  defp upload_error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp upload_error_to_string(_), do: "Hm, something went wrong. Please try again"
 end
