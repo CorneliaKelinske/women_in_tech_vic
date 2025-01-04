@@ -87,7 +87,7 @@
       on_cancel={JS.navigate(~p"/profiles/#{@profile_owner.id}")}
     >
       <.header>Edit Profile</.header>
-      <.simple_form for={@edit_profile_form} id="profile-form" phx-submit="save-profile">
+      <.simple_form for={@edit_profile_form} id="profile-form" phx-submit="save-profile" phx-change="validate">
         <.input field={@edit_profile_form[:linked_in]} type="text" label="LinkedIn" phx-debounce />
         <.input field={@edit_profile_form[:github]} type="text" label="Github" phx-debounce />
         <.input field={@edit_profile_form[:workplace]} type="text" label="Workplace" phx-debounce />
@@ -104,6 +104,23 @@
           label="Random Share"
           phx-debounce
         />
+         <div
+          class="container border-2 border-dashed border-gray-300 rounded-md p-4 text-center"
+          phx-drop-target={@uploads.image.ref}
+        >
+          <p class="mb-2 text-sm text-gray-500">
+            Drag and drop your file here, or click <b>Choose File</b> to upload
+          </p>
+          <.live_file_input upload={@uploads.image} />
+        </div>
+        <%= for entry <- @uploads.image.entries do %>
+          <div
+            :for={err <- upload_errors(@uploads.image, entry)}
+            class="text-red-900 font-semibold text-center"
+          >
+            {upload_error_to_string(err)}
+          </div>
+        <% end %>
         <:actions>
           <.button phx-disable-with="Saving..." class="w-full">Save</.button>
         </:actions>
