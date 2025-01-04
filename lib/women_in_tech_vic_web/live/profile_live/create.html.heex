@@ -13,7 +13,12 @@
   <section class="w-full flex justify-center px-6 py-20 lg:px-8">
     <div class="w-full max-w-2xl group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
       <.header>{@title}</.header>
-      <.simple_form for={@new_profile_form} id="new-profile-form" phx-submit="save-new-profile">
+      <.simple_form
+        for={@new_profile_form}
+        id="new-profile-form"
+        phx-submit="save-new-profile"
+        phx-change="validate"
+      >
         <.input field={@new_profile_form[:linked_in]} type="text" label="LinkedIn" phx-debounce />
         <.input field={@new_profile_form[:github]} type="text" label="Github" phx-debounce />
         <.input
@@ -35,6 +40,16 @@
           label="Wildcard field! Room to post something random you would like to share"
           phx-debounce
         />
+
+        <div
+          class="container border-2 border-dashed border-gray-300 rounded-md p-4 text-center"
+          phx-drop-target={@uploads.image.ref}
+        >
+          <p class="mb-2 text-sm text-gray-500">
+            Drag and drop your file here, or click <b>Choose File</b> to upload
+          </p>
+          <.live_file_input upload={@uploads.image} />
+        </div>
 
         <:actions>
           <.button phx-disable-with="Saving..." class="w-full">Save</.button>
