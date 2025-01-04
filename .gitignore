@@ -36,4 +36,5 @@ npm-debug.log
 
 /dialyzer/*.plt
 /dialyzer/*.plt.hash
+/priv/static/uploads/
 
