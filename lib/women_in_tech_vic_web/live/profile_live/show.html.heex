@@ -54,6 +54,11 @@
               {@profile_owner.profile.other || "Nothing shared yet"}
             </p>
           </div>
+          <%= if @profile_owner.profile.picture_path do %>
+            <img class="h-10 w-10 rounded" src={@profile_owner.profile.picture_path} />
+          <% else %>
+            <.icon name="hero-user-circle" class="h-10 w-10 text-gray-700" />
+          <% end %>
         </div>
         <!-- Edit Button (Visible to Profile Owner Only) -->
         <div :if={@current_user.id === @profile_owner.id} class="mt-4 text-left">

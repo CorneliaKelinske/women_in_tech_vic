@@ -23,14 +23,42 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
         {:ok,
          socket
          |> assign_title(@title)
-         |> assign_profile_form(Accounts.profile_changeset(%Profile{}))}
+         |> assign_profile_form(Accounts.profile_changeset(%Profile{}))
+         |> assign(:uploaded_files, [])
+         |> allow_upload(:image,
+           accept: ~w(.jpg .jpeg .png),
+           max_entries: 1,
+           max_file_size: 2_000_000
+         )}
     end
+  end
+
+  @impl true
+  def handle_event("validate", _params, socket) do
+    {:noreply, socket}
   end
 
   @impl true
   def handle_event("save-new-profile", %{"profile" => profile_params}, socket) do
     %{id: user_id} = socket.assigns.current_user
-    profile_params = Map.put(profile_params, "user_id", to_string(user_id))
+
+    file_path =
+      socket
+      |> consume_uploaded_entries(:image, fn %{path: path}, _entry ->
+        dest =
+          Path.join(
+             "priv/static/uploads",
+            Path.basename(path)
+          )
+
+        # You will need to create priv/static/uploads for File.cp!/2 to work.
+        File.cp!(path, dest)
+        {:ok, ~p"/uploads/#{Path.basename(dest)}"}
+      end)
+      |> List.first()
+
+    profile_params =
+      Map.merge(profile_params, %{"user_id" => to_string(user_id), "picture_path" => file_path})
 
     case Accounts.create_profile(profile_params) do
       {:ok, %Profile{}} ->
