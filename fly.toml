@@ -36,4 +36,4 @@ kill_signal = 'SIGTERM'
 
 [mounts]
   source = "women_in_tech_vic_data"
-  destination = "/app/lib/women_in_tech_vic/priv/static/data"
+  destination = "/app/lib/women_in_tech_vic-0.1.0/priv/static/uploads"

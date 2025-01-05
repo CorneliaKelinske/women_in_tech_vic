@@ -26,12 +26,15 @@ defmodule WomenInTechVicWeb.ProfileLive.CreateTest do
 
       assert html =~ "Create Your User Profile"
 
-      profile_picture = file_input(lv, "#new-profile-form", :image, [%{
-        last_modified: 1_594_171_879_000,
-        name: "test_image.png",
-        content: File.read!("test/support/fixtures_and_factories/test_image.png"),
-        type: "image/jpeg"
-      }])
+      profile_picture =
+        file_input(lv, "#new-profile-form", :image, [
+          %{
+            last_modified: 1_594_171_879_000,
+            name: "test_image.png",
+            content: File.read!("test/support/fixtures_and_factories/test_image.png"),
+            type: "image/jpeg"
+          }
+        ])
 
       assert render_upload(profile_picture, "test_image.png") =~ "100%"
 

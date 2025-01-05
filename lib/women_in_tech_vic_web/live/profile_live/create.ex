@@ -6,6 +6,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
   import WomenInTechVicWeb.CustomComponents, only: [title_banner: 1]
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Accounts.Profile
+  alias WomenInTechVic.Config
 
   @title "Create Your User Profile"
 
@@ -33,10 +34,13 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
     end
   end
 
+  # coveralls-ignore-start
   @impl true
   def handle_event("validate", _params, socket) do
     {:noreply, socket}
   end
+
+  # coveralls-ignore-stop
 
   @impl true
   def handle_event("save-new-profile", %{"profile" => profile_params}, socket) do
@@ -47,7 +51,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
       |> consume_uploaded_entries(:image, fn %{path: path}, _entry ->
         dest =
           Path.join(
-            "priv/static/uploads",
+            Config.upload_path(),
             Path.basename(path)
           )
 
@@ -82,7 +86,9 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
     assign(socket, :new_profile_form, to_form(changeset))
   end
 
+  # coveralls-ignore-start
   defp upload_error_to_string(:too_large), do: "The file is too large"
   defp upload_error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
   defp upload_error_to_string(_), do: "Hm, something went wrong. Please try again"
+  # coveralls-ignore-stop
 end

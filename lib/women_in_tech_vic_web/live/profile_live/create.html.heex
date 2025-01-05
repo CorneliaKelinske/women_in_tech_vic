@@ -51,7 +51,7 @@
           <.live_file_input upload={@uploads.image} />
         </div>
         <%= for entry <- @uploads.image.entries do %>
-         <progress class= "hidden" value={entry.progress} max="100"> {entry.progress}% </progress>
+          <progress class="hidden" value={entry.progress} max="100">{entry.progress}%</progress>
           <div
             :for={err <- upload_errors(@uploads.image, entry)}
             class="text-red-900 font-semibold text-center"
