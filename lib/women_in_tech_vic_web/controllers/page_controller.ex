@@ -5,8 +5,8 @@ defmodule WomenInTechVicWeb.PageController do
   alias WomenInTechVic.{Content, Utils}
 
   def home(conn, _params) do
-    online_event =
-      %{online: true, scheduled_at: %{gte: DateTime.utc_now()}, order_by: :scheduled_at, limit: 1}
+    event =
+      %{scheduled_at: %{gte: DateTime.utc_now()}, order_by: :scheduled_at, limit: 1}
       |> Content.all_events()
       |> List.first()
       |> prep_event_for_display()
@@ -15,7 +15,7 @@ defmodule WomenInTechVicWeb.PageController do
 
     # The home page is often custom made,
     # so skip the default app layout.
-    render(conn, :home, event: online_event, year: year)
+    render(conn, :home, event: event, year: year)
   end
 
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do
