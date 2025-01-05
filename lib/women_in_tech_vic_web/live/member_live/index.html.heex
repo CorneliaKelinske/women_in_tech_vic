@@ -36,7 +36,15 @@
             <%= for user <- @users do %>
               <tr>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <.icon name="hero-user-circle" class="h-10 w-10 text-gray-700" />
+                  <%= if user.profile && user.profile.picture_path do %>
+                    <img
+                      class="h-10 w-10 rounded-full object-cover border-1 border-gray-700 shadow-md"
+                      src={user.profile.picture_path}
+                      alt="Profile Picture"
+                    />
+                  <% else %>
+                    <.icon name="hero-user-circle" class="h-10 w-10 text-gray-700" />
+                  <% end %>
                 </td>
 
                 <td class="px-6 py-4 whitespace-nowrap">
