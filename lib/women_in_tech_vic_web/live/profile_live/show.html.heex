@@ -12,7 +12,21 @@
 
   <%= if @profile_owner.profile do %>
     <section class="w-full flex justify-center px-6 py-20 lg:px-8">
-      <div class="w-full max-w-2xl group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gray-200">
+      <div class="w-full max-w-2xl relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gray-200">
+        <!-- Profile Picture Inside Box -->
+        <div class="absolute top-8 right-8">
+          <%= if @profile_owner.profile.picture_path do %>
+            <img
+              class="h-60 w-60 rounded-full object-cover border-4 border-gray-300 shadow-md"
+              src={@profile_owner.profile.picture_path}
+              alt="Profile Picture"
+            />
+          <% else %>
+            <div class="h-60 w-60 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 shadow-md">
+              <.icon name="hero-camera" class="h-28 w-28" />
+            </div>
+          <% end %>
+        </div>
         
 <!-- Profile Details Section -->
         <div class="space-y-4">
@@ -54,13 +68,9 @@
               {@profile_owner.profile.other || "Nothing shared yet"}
             </p>
           </div>
-          <%= if @profile_owner.profile.picture_path do %>
-            <img class="h-10 w-10 rounded" src={@profile_owner.profile.picture_path} />
-          <% else %>
-            <.icon name="hero-user-circle" class="h-10 w-10 text-gray-700" />
-          <% end %>
         </div>
-        <!-- Edit Button (Visible to Profile Owner Only) -->
+        
+<!-- Edit Button (Visible to Profile Owner Only) -->
         <div :if={@current_user.id === @profile_owner.id} class="mt-4 text-left">
           <button
             phx-click={JS.navigate(~p"/profiles/#{@profile_owner.id}/edit")}
@@ -81,6 +91,7 @@
         </button>
       </div>
     </section>
+
     <.modal
       id="edit-profile-modal"
       show={@live_action == :edit}
