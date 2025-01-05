@@ -18,5 +18,5 @@ config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: WomenInTechVic.F
 # Do not print debug messages in production
 config :logger, level: :info
 
-# Runtime production configuration, including reading
+config :women_in_tech_vic, upload_path: "/app/lib/women_in_tech_vic-0.1.0/priv/static/uploads"
 # of environment variables, is done on config/runtime.exs.

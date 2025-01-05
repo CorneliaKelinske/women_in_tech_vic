@@ -5,6 +5,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Accounts.{Profile, User}
+  alias WomenInTechVic.Config
 
   @title "Profile"
 
@@ -40,16 +41,19 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
     {:noreply, socket}
   end
 
+  # coveralls-ignore-stop
+
   @impl true
   def handle_event("save-profile", %{"profile" => profile_params}, socket) do
     user = socket.assigns.profile_owner
 
+    # coveralls-ignore-start
     file_path =
       socket
       |> consume_uploaded_entries(:image, fn %{path: path}, _entry ->
         dest =
           Path.join(
-            "priv/static/uploads",
+            Config.upload_path(),
             Path.basename(path)
           )
 
@@ -60,6 +64,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
       |> List.first()
 
     profile_params = Map.put(profile_params, "picture_path", file_path)
+    # coveralls-ignore-stop
 
     case Accounts.update_profile_by_owner(
            user.profile,
@@ -77,8 +82,6 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
         {:noreply, assign(socket, :edit_profile_form, to_form(changeset))}
     end
   end
-
-  # coveralls-ignore-stop
 
   @impl true
   def handle_event("delete_profile", %{"id" => profile_id, "profile-user-id" => user_id}, socket) do
@@ -103,7 +106,9 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
     assign(socket, :edit_profile_form, to_form(changeset))
   end
 
+  # coveralls-ignore-start
   defp upload_error_to_string(:too_large), do: "The file is too large"
   defp upload_error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
   defp upload_error_to_string(_), do: "Hm, something went wrong. Please try again"
+  # coveralls-ignore-stop
 end
