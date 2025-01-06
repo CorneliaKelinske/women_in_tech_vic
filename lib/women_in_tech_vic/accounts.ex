@@ -4,8 +4,10 @@ defmodule WomenInTechVic.Accounts do
   """
 
   import Ecto.Query, warn: false
+  require Logger
 
   alias EctoShorts.Actions
+  alias WomenInTechVic.Config
   alias WomenInTechVic.Repo
   alias WomenInTechVic.Accounts.{Profile, User, UserNotifier, UserToken}
 
@@ -471,6 +473,32 @@ defmodule WomenInTechVic.Accounts do
 
   @doc "called in event handlers; checking that only owner can update their profile"
   @spec update_profile_by_owner(Profile.t(), map(), User.t()) :: change_res(Profile.t())
+  # No existing profile picture, nothing needs to be deleted
+  def update_profile_by_owner(
+        %Profile{user_id: profile_user_id, picture_path: nil} = profile,
+        params,
+        %User{
+          id: profile_user_id
+        }
+      ) do
+    Actions.update(Profile, profile, params)
+  end
+
+  # Existing profile picture needs to be deleted
+  def update_profile_by_owner(
+        %Profile{user_id: profile_user_id, picture_path: old_picture_path} = profile,
+        params,
+        %User{
+          id: profile_user_id
+        }
+      )
+      when is_map_key(params, "picture_path") do
+    with {:ok, _} = result <- Actions.update(Profile, profile, params) do
+      _ = delete_file(old_picture_path)
+      result
+    end
+  end
+
   def update_profile_by_owner(%Profile{user_id: profile_user_id} = profile, params, %User{
         id: profile_user_id
       }) do
@@ -490,7 +518,13 @@ defmodule WomenInTechVic.Accounts do
   @doc "called in event handlers; checking that only owner can delete their profile"
   @spec delete_profile_by_owner(pos_integer(), pos_integer(), User.t()) :: change_res(Profile.t())
   def delete_profile_by_owner(profile_id, profile_user_id, %{id: profile_user_id}) do
-    Actions.delete(Profile, profile_id)
+    with {:ok, %Profile{picture_path: picture_path}} = result when picture_path !== nil <-
+      # coveralls-ignore-start
+           Actions.delete(Profile, profile_id) do
+      _ = delete_file(picture_path)
+      result
+      # coveralls-ignore-stop
+     end
   end
 
   def delete_profile_by_owner(_profile_id, _profile_user_id, _user) do
@@ -502,5 +536,23 @@ defmodule WomenInTechVic.Accounts do
   @spec profile_changeset(Profile.t()) :: Ecto.Changeset.t()
   def profile_changeset(profile, params \\ %{}) do
     Profile.changeset(profile, params)
+  end
+
+  defp delete_file(path) do
+    upload_dir =
+      Config.upload_path()
+
+    full_path = Path.join(upload_dir, Path.basename(path))
+
+    case File.rm(full_path) do
+      :ok ->
+        :ok
+
+      # coveralls-ignore-start
+      {:error, reason} ->
+        Logger.error("Failed to delete file #{full_path}: #{inspect(reason)}")
+        {:error, reason}
+        # coveralls-ignore-stop
+    end
   end
 end

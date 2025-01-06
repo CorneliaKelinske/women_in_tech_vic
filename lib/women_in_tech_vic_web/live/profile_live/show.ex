@@ -68,6 +68,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
         nil -> profile_params
         _ -> Map.put(profile_params, "picture_path", file_path)
       end
+
     # coveralls-ignore-stop
 
     case Accounts.update_profile_by_owner(
