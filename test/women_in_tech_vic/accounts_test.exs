@@ -691,6 +691,55 @@ defmodule WomenInTechVic.AccountsTest do
                 details: nil
               }} === Accounts.update_profile_by_owner(profile, update_params, user_2)
     end
+
+    test "deletes existing profile picture when new profile picture is uploaded", %{
+      user: user,
+      profile: profile
+    } do
+      profile_id = profile.id
+      user_id = user.id
+
+      # Paths setup
+      original_path = Path.expand("test/support/fixtures_and_factories/test_image.png")
+      test_upload_dir = Path.expand("tmp/uploads")
+      File.mkdir_p!(test_upload_dir)
+
+      # Create a copy of the old profile picture
+      old_file_path = Path.join(test_upload_dir, "test_image_#{System.unique_integer()}.png")
+      File.cp!(original_path, old_file_path)
+
+      # Simulate the existing profile with an old picture path
+      profile = %{profile | picture_path: old_file_path}
+
+      # New profile picture setup
+      new_file_path = Path.join(test_upload_dir, "new_test_image_#{System.unique_integer()}.png")
+      File.cp!(original_path, new_file_path)
+
+      # Verify the old file exists before the update
+      assert File.exists?(old_file_path)
+
+      # Perform the profile update with a new picture
+      update_params = %{"picture_path" => new_file_path}
+
+      assert {:ok, %Profile{id: ^profile_id, picture_path: ^new_file_path, user_id: ^user_id}} =
+               Accounts.update_profile_by_owner(profile, update_params, user)
+
+      # Verify the old file no longer exists after the update
+      refute File.exists?(old_file_path)
+
+      assert File.exists?(new_file_path)
+
+      test_upload_dir
+      |> File.ls!()
+      |> Enum.each(fn entry ->
+        full_path = Path.join(test_upload_dir, entry)
+
+        # Skip .gitkeep file, if it exists
+        if entry !== ".gitkeep" and File.regular?(full_path) do
+          File.rm!(full_path)
+        end
+      end)
+    end
   end
 
   describe "delete profile/1" do
