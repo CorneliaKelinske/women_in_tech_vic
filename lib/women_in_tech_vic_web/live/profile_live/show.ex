@@ -63,7 +63,11 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
       end)
       |> List.first()
 
-    profile_params = Map.put(profile_params, "picture_path", file_path)
+    profile_params =
+      case file_path do
+        nil -> profile_params
+        _ -> Map.put(profile_params, "picture_path", file_path)
+      end
     # coveralls-ignore-stop
 
     case Accounts.update_profile_by_owner(
