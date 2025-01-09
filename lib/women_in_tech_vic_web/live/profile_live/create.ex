@@ -1,12 +1,10 @@
 defmodule WomenInTechVicWeb.ProfileLive.Create do
   use WomenInTechVicWeb, :live_view
 
-  # on_mount {WomenInTechVicWeb.UserAuth, :redirect_if_profile_exists}
-
   import WomenInTechVicWeb.CustomComponents, only: [title_banner: 1]
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Accounts.Profile
-  alias WomenInTechVic.Config
+  alias WomenInTechVicWeb.ProfileLive.UploadUtils
 
   @title "Create Your User Profile"
 
@@ -25,7 +23,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
          socket
          |> assign_title(@title)
          |> assign_profile_form(Accounts.profile_changeset(%Profile{}))
-         |> assign(:uploaded_files, [])
+         |> assign_uploaded_files()
          |> allow_upload(:image,
            accept: ~w(.jpg .jpeg .png),
            max_entries: 1,
@@ -46,20 +44,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
   def handle_event("save-new-profile", %{"profile" => profile_params}, socket) do
     %{id: user_id} = socket.assigns.current_user
 
-    file_path =
-      socket
-      |> consume_uploaded_entries(:image, fn %{path: path}, _entry ->
-        dest =
-          Path.join(
-            Config.upload_path(),
-            Path.basename(path)
-          )
-
-        # You will need to create priv/static/uploads for File.cp!/2 to work.
-        File.cp!(path, dest)
-        {:ok, ~p"/uploads/#{Path.basename(dest)}"}
-      end)
-      |> List.first()
+    file_path = UploadUtils.create_image_upload_with_path(socket)
 
     profile_params =
       Map.merge(profile_params, %{"user_id" => to_string(user_id), "picture_path" => file_path})
@@ -85,6 +70,8 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
   defp assign_profile_form(socket, changeset) do
     assign(socket, :new_profile_form, to_form(changeset))
   end
+
+  defp assign_uploaded_files(socket), do: assign(socket, uploaded_files: [])
 
   # coveralls-ignore-start
   defp upload_error_to_string(:too_large), do: "The file is too large"
