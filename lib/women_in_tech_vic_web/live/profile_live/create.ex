@@ -27,7 +27,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Create do
          |> allow_upload(:image,
            accept: ~w(.jpg .jpeg .png),
            max_entries: 1,
-           max_file_size: 2_000_000
+           max_file_size: 4_000_000
          )}
     end
   end
