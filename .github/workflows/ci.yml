@@ -82,6 +82,8 @@ jobs:
         with:
           otp-version: 27.0
           elixir-version: 1.17
+      - uses: mfinelli/setup-imagemagick@v5    
+
       - run: mix deps.get
       - run: mix coveralls.json
       - name: Upload to codecov.io

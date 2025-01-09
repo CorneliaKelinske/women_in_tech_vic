@@ -82,6 +82,7 @@ defmodule WomenInTechVic.MixProject do
       {:faker, "~> 0.18.0", only: :test},
       {:tzdata, "~> 1.1"},
       {:ex_robo_cop, "~> 0.1.6"},
+      {:mogrify, "~> 0.9.3"},
 
       # Tooling
       {:ex_check, "~> 0.16", only: :test, runtime: false},
