@@ -518,13 +518,13 @@ defmodule WomenInTechVic.Accounts do
   @doc "called in event handlers; checking that only owner can delete their profile"
   @spec delete_profile_by_owner(pos_integer(), pos_integer(), User.t()) :: change_res(Profile.t())
   def delete_profile_by_owner(profile_id, profile_user_id, %{id: profile_user_id}) do
+    # coveralls-ignore-start
     with {:ok, %Profile{picture_path: picture_path}} = result when picture_path !== nil <-
-      # coveralls-ignore-start
            Actions.delete(Profile, profile_id) do
       _ = delete_file(picture_path)
       result
       # coveralls-ignore-stop
-     end
+    end
   end
 
   def delete_profile_by_owner(_profile_id, _profile_user_id, _user) do

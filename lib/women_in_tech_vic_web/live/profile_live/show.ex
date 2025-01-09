@@ -5,7 +5,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Accounts.{Profile, User}
-  alias WomenInTechVic.Config
+  alias WomenInTechVicWeb.ProfileLive.UploadUtils
 
   @title "Profile"
 
@@ -19,7 +19,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
          socket
          |> assign_title("#{username}'s #{@title}")
          |> assign_profile_owner(user)
-         |> assign(:uploaded_files, [])
+         |> assign_uploaded_files()
          |> allow_upload(:image,
            accept: ~w(.jpg .jpeg .png),
            max_entries: 1,
@@ -48,20 +48,7 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
     user = socket.assigns.profile_owner
 
     # coveralls-ignore-start
-    file_path =
-      socket
-      |> consume_uploaded_entries(:image, fn %{path: path}, _entry ->
-        dest =
-          Path.join(
-            Config.upload_path(),
-            Path.basename(path)
-          )
-
-        # You will need to create priv/static/uploads for File.cp!/2 to work.
-        File.cp!(path, dest)
-        {:ok, ~p"/uploads/#{Path.basename(dest)}"}
-      end)
-      |> List.first()
+    file_path = UploadUtils.create_image_upload_with_path(socket)
 
     profile_params =
       case file_path do
@@ -104,6 +91,8 @@ defmodule WomenInTechVicWeb.ProfileLive.Show do
   end
 
   defp assign_title(socket, title), do: assign(socket, title: title)
+
+  defp assign_uploaded_files(socket), do: assign(socket, uploaded_files: [])
 
   defp assign_profile_owner(socket, user), do: assign(socket, profile_owner: user)
 
