@@ -19,7 +19,7 @@
   </section>
   <section class="flex-grow flex flex-col justify-center items-center pt-20 lg:pt-0 px-6 lg:px-8">
     <div class="flex flex-wrap justify-around w-full">
-      <div class="w-full max-w-lg break-words group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gray-200">
+      <div class="w-full max-w-lg break-words group relative p-6 rounded-lg shadow-md mb-8 lg:mb-16 border border-gray-300 bg-gray-200">
         <h2 class="text-3xl font-bold text-center mb-2">Events</h2>
         <p>Discover all our upcoming online and in-person events right here!
           Stay connected with the community and never miss out on exciting networking opportunities and inspiring conversations.
@@ -30,7 +30,7 @@
           </.link>
         </div>
       </div>
-      <div class="w-full max-w-lg break-words group relative p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gray-200">
+      <div class="w-full max-w-lg break-words group relative p-6 rounded-lg shadow-md mb-8 lg:mb-16 border border-gray-300 bg-gray-200">
         <h2 class="text-3xl font-bold text-center mb-2">Members</h2>
         <p>
           Are you curious about who else is part of this group?
@@ -43,6 +43,22 @@
           <.link navigate={~p"/members"} class="text-gray-600 font-semibold hover:text-gray-500">
             See details
           </.link>
+        </div>
+      </div>
+      <div class="w-full max-w-lg break-words group relative p-6 rounded-lg shadow-md mb-8 lg:mb-16 border border-gray-300 bg-gray-200">
+        <h2 class="text-3xl font-bold text-center mb-2">Slack</h2>
+        <p>
+          We have a group Slack. This is where we discuss dates and locations for upcoming meetings before they are posted here.
+          Please join so your voice can be heard as well and to chat with other members.
+        </p>
+        <div class="mt-4 flex justify-center">
+          <a
+            href={@slack_invite_link}
+            target="_blank"
+            class="text-gray-600 font-semibold hover:text-gray-500"
+          >
+            Join us on Slack!
+          </a>
         </div>
       </div>
     </div>

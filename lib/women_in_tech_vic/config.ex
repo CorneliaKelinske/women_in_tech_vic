@@ -9,4 +9,9 @@ defmodule WomenInTechVic.Config do
   def upload_path do
     Application.fetch_env!(@app, :upload_path)
   end
+
+  @spec slack_invite_link :: String.t()
+  def slack_invite_link do
+    Application.fetch_env!(@app, :slack_invite_link)
+  end
 end
