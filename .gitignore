@@ -39,3 +39,4 @@ npm-debug.log
 priv/static/uploads/*live_view_upload-*
 
 
+.envrc

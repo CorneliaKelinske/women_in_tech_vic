@@ -56,6 +56,8 @@ config :phoenix, :json_library, Jason
 
 config :women_in_tech_vic, upload_path: "priv/static/uploads"
 
+config :women_in_tech_vic, slack_invite_link: System.get_env("SLACK_INVITE_LINK")
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

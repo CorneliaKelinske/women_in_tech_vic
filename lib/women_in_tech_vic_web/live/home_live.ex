@@ -7,6 +7,17 @@ defmodule WomenInTechVicWeb.HomeLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, title: @title)}
+    {:ok,
+     socket
+     |> assign_title()
+     |> assign_invite_link()}
+  end
+
+  defp assign_title(socket) do
+    assign(socket, title: @title)
+  end
+
+  defp assign_invite_link(socket) do
+    assign(socket, slack_invite_link: WomenInTechVic.Config.slack_invite_link())
   end
 end
