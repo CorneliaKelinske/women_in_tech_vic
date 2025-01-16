@@ -19,6 +19,7 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
         |> live(~p"/events/#{online_event}")
 
       assert html =~ "meet.google"
+      assert html =~ "Add to Google Calendar"
       refute html =~ "Show details"
     end
 

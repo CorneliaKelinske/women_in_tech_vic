@@ -5,7 +5,7 @@ defmodule WomenInTechVicWeb.EventLive.Show do
 
   alias WomenInTechVic.Accounts.User
   alias WomenInTechVic.{Content, Utils}
-  alias WomenInTechVic.Content.Event
+  alias WomenInTechVic.Content.{CalendarHelper, Event}
 
   @title "Event Details"
 
@@ -25,7 +25,8 @@ defmodule WomenInTechVicWeb.EventLive.Show do
          |> assign_event(event)
          |> assign(:attendees, attendees)
          |> assign(:title, @title)
-         |> assign_button_text(socket.assigns.current_user, attendees)}
+         |> assign_button_text(socket.assigns.current_user, attendees)
+         |> assign_google_calendar_url(event)}
 
       _ ->
         {:noreply,
@@ -89,5 +90,9 @@ defmodule WomenInTechVicWeb.EventLive.Show do
     else
       assign(socket, :button_text, "I will be there")
     end
+  end
+
+  defp assign_google_calendar_url(socket, event) do
+    assign(socket, :google_calendar_url, CalendarHelper.google_calendar_url(event))
   end
 end
