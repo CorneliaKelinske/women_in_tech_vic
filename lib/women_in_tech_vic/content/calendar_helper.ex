@@ -10,19 +10,24 @@ defmodule WomenInTechVic.Content.CalendarHelper do
   @spec google_calendar_url(Event.t()) :: String.t()
   # Calculate the end time by adding 3600 seconds (1 hour) to the start time
   def google_calendar_url(event) do
-    end_time =
-      DateTime.add(event.scheduled_at, 3600, :second)
-
     params = %{
       action: "TEMPLATE",
       text: event.title,
-      dates: format_dates(event.scheduled_at, end_time),
+      dates: format_dates(event.scheduled_at, calculate_end_time(event)),
       details: event.description,
       location: event.address
     }
 
     query_string = URI.encode_query(params)
     "#{@base_url}?#{query_string}"
+  end
+
+  defp calculate_end_time(%Event{online: true, scheduled_at: scheduled_at}) do
+    DateTime.add(scheduled_at, 3600, :second)
+  end
+
+  defp calculate_end_time(%Event{scheduled_at: scheduled_at}) do
+    DateTime.add(scheduled_at, 7200, :second)
   end
 
   defp format_dates(start_time, end_time) do
