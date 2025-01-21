@@ -45,6 +45,7 @@ defmodule WomenInTechVic.Accounts.Subscription do
     |> cast(params, @cast)
     |> validate_required(@required)
     |> foreign_key_constraint(:user_id)
+    |> validate_inclusion(:subscription_type, @subscription_types)
     |> unique_constraint([:user_id, :subscription_type])
   end
 end
