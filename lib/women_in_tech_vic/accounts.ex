@@ -9,7 +9,7 @@ defmodule WomenInTechVic.Accounts do
   alias EctoShorts.Actions
   alias WomenInTechVic.Config
   alias WomenInTechVic.Repo
-  alias WomenInTechVic.Accounts.{Profile, User, UserNotifier, UserToken}
+  alias WomenInTechVic.Accounts.{Profile, Subscription, User, UserNotifier, UserToken}
 
   @type change_res(type) :: ErrorMessage.t_res(type) | {:error, Ecto.Changeset.t()}
 
@@ -554,5 +554,31 @@ defmodule WomenInTechVic.Accounts do
         {:error, reason}
         # coveralls-ignore-stop
     end
+  end
+
+  # SUBSCRIPTIONS
+
+  @doc false
+  @spec create_subscription(map) :: change_res(Profile.t())
+  def create_subscription(params) do
+    Actions.create(Subscription, params)
+  end
+
+  @doc false
+  @spec find_subscription(map) :: ErrorMessage.t_res(Profile.t())
+  def find_subscription(params) do
+    Actions.find(Subscription, params)
+  end
+
+  @doc false
+  @spec all_subscriptions(map()) :: [Subscription.t()]
+  def all_subscriptions(params) do
+    Actions.all(Subscription, params)
+  end
+
+  @doc false
+  @spec delete_subscription(Subscription.t()) :: change_res(Subscription.t())
+  def delete_subscription(subscription) do
+    Actions.delete(subscription)
   end
 end

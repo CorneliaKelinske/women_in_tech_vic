@@ -35,4 +35,10 @@ defmodule WomenInTechVic.Support.Factory do
       other: Faker.Lorem.Shakespeare.romeo_and_juliet()
     }
   end
+
+  def subscription_factory do
+    %{
+      subscription_type: :event
+    }
+  end
 end

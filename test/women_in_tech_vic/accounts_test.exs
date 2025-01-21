@@ -4,16 +4,16 @@ defmodule WomenInTechVic.AccountsTest do
   import WomenInTechVic.Support.Factory, only: [build: 1]
 
   import WomenInTechVic.Support.AccountsTestSetup,
-    only: [user: 1, user_2: 1, unconfirmed_user: 1, profile: 1]
+    only: [user: 1, user_2: 1, unconfirmed_user: 1, profile: 1, subscription: 1]
 
   alias WomenInTechVic.Accounts
-  alias WomenInTechVic.Accounts.{Profile, User, UserToken}
+  alias WomenInTechVic.Accounts.{Profile, Subscription, User, UserToken}
   alias WomenInTechVic.Support.AccountsFixtures
 
   @valid_password AccountsFixtures.valid_user_password()
   @unique_user_email AccountsFixtures.unique_user_email()
 
-  setup [:user, :user_2, :unconfirmed_user, :profile]
+  setup [:user, :user_2, :unconfirmed_user, :profile, :subscription]
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
@@ -787,6 +787,92 @@ defmodule WomenInTechVic.AccountsTest do
                },
                valid?: false
              } = Accounts.profile_changeset(%Profile{}, params)
+    end
+  end
+
+  ## Subscription Tests
+
+  describe "create_subscription/1" do
+    test "successfully creates subscription when given correct params but does not create 2 subscriptions
+       of the same type for the same user",
+         %{user_2: user_2} do
+      user_id = user_2.id
+
+      subscription_params =
+        :subscription
+        |> build()
+        |> Map.merge(%{user_id: user_id})
+
+      assert {:ok, %Subscription{user_id: ^user_id}} =
+               Accounts.create_subscription(subscription_params)
+
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               Accounts.create_subscription(subscription_params)
+
+      assert [
+               user_id: {
+                 "has already been taken",
+                 [
+                   constraint: :unique,
+                   constraint_name: "subscriptions_user_id_subscription_type_index"
+                 ]
+               }
+             ] = errors
+    end
+
+    test "does not allow invalid subscription types", %{user_2: user_2} do
+      user_id = user_2.id
+
+      subscription_params =
+        :subscription
+        |> build()
+        |> Map.merge(%{user_id: user_id, subscription_type: :invalid})
+
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               Accounts.create_subscription(subscription_params)
+
+      assert [
+               subscription_type: {"is invalid", _}
+             ] = errors
+    end
+  end
+
+  describe "find_subscription/1" do
+    test "finds subscription by user_id and subscription type", %{
+      user: user,
+      subscription: subscription
+    } do
+      user_id = user.id
+      subscription_id = subscription.id
+
+      assert {:ok, %Subscription{id: ^subscription_id, user_id: ^user_id}} =
+               Accounts.find_subscription(%{
+                 user_id: user_id,
+                 subscription_type: subscription.subscription_type
+               })
+    end
+
+    test "returns error if no subscription is found", %{subscription: subscription} do
+      assert {:error, %ErrorMessage{code: :not_found, message: "no records found"}} =
+               Accounts.find_subscription(%{id: subscription.id + 11})
+    end
+  end
+
+  describe "all subscriptions/2" do
+    test "returns a list of  all subscriptions", %{subscription: subscription} do
+      subscription_id = subscription.id
+      assert [%Subscription{id: ^subscription_id}] = Accounts.all_subscriptions(%{})
+    end
+
+    test "returns empty list when no subscription is found", %{user_2: user_2} do
+      assert [] = Accounts.all_subscriptions(%{user_id: user_2.id})
+    end
+  end
+
+  describe "delete subscription/1" do
+    test "deletes a subscription", %{subscription: subscription} do
+      assert {:ok, %Subscription{}} = Accounts.delete_subscription(subscription)
+      assert [] = Accounts.all_subscriptions(%{})
     end
   end
 end

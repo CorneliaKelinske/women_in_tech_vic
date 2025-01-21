@@ -9,7 +9,7 @@ defmodule WomenInTechVic.Support.AccountsTestSetup do
   """
 
   import WomenInTechVic.Support.Factory, only: [insert: 1, build: 1]
-  alias WomenInTechVic.Accounts.Profile
+  alias WomenInTechVic.Accounts.{Profile, Subscription}
   alias WomenInTechVic.Support.AccountsFixtures
 
   # This is an admin user
@@ -40,5 +40,16 @@ defmodule WomenInTechVic.Support.AccountsTestSetup do
       |> insert()
 
     %{profile: profile}
+  end
+
+  def subscription(%{user: user}) do
+    subscription =
+      :subscription
+      |> build()
+      |> Map.merge(%{user_id: user.id})
+      |> then(&struct!(Subscription, &1))
+      |> insert()
+
+    %{subscription: subscription}
   end
 end
