@@ -57,6 +57,7 @@ defmodule WomenInTechVic.Accounts.User do
     user
     |> cast(params, @cast)
     |> validate_required(@required)
+    |> validate_inclusion(:role, @roles)
     |> unique_constraint(:username)
     |> unique_constraint([:first_name, :last_name],
       message: "A user with this first and last name already exists"

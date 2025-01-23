@@ -3,6 +3,7 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
   import Swoosh.Email, only: [new: 0, from: 2, to: 2, subject: 2, text_body: 2]
 
   alias WomenInTechVic.Accounts.User
+  alias WomenInTechVic.Content.Event
   alias WomenInTechVic.Mailer
 
   @type swoosh_return :: {:ok, Swoosh.Email.t()} | {:error, any()}
@@ -102,6 +103,26 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
     #{url}
 
     If you didn't request this change, please ignore this.
+
+    ==============================
+    """)
+  end
+
+  @spec deliver_new_event_created_notification(Event.t(), User.t()) :: swoosh_return()
+  def deliver_new_event_created_notification(event, user) do
+    deliver(user.email, "New event created", """
+    ==============================
+
+    Hi #{user.first_name},
+
+    A new Women in Tech Victorian event has been posted.
+    Here is the event info:
+
+    #{event.title} on #{event.scheduled_at} at #{event.location}.
+
+    Visit the website for more details and to RSVP.
+
+    We hope to see you there!
 
     ==============================
     """)

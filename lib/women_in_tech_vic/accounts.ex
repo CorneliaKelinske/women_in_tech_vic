@@ -10,6 +10,7 @@ defmodule WomenInTechVic.Accounts do
   alias WomenInTechVic.Config
   alias WomenInTechVic.Repo
   alias WomenInTechVic.Accounts.{Profile, Subscription, User, UserNotifier, UserToken}
+  alias WomenInTechVic.Content.Event
 
   @type change_res(type) :: ErrorMessage.t_res(type) | {:error, Ecto.Changeset.t()}
 
@@ -580,5 +581,10 @@ defmodule WomenInTechVic.Accounts do
   @spec delete_subscription(Subscription.t()) :: change_res(Subscription.t())
   def delete_subscription(subscription) do
     Actions.delete(subscription)
+  end
+
+  @spec deliver_new_event_created_notification(Event.t(), User.t()) :: UserNotifier.swoosh_return()
+  def deliver_new_event_created_notification(event, user) do
+    UserNotifier.deliver_new_event_created_notification(event, user)
   end
 end
