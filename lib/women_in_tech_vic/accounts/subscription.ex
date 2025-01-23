@@ -11,6 +11,7 @@ defmodule WomenInTechVic.Accounts.Subscription do
   @type t :: %__MODULE__{
           id: pos_integer(),
           user_id: pos_integer(),
+          user: User.t() | Ecto.Association.NotLoaded.t(),
           subscription_type: subscription_type(),
           updated_at: DateTime.t() | nil,
           inserted_at: DateTime.t() | nil
