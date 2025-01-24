@@ -4,6 +4,7 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Accounts.User
   @delete_account_form_params %{"password" => nil}
+  @subscription_types Accounts.all_subscription_types()
 
   def render(assigns) do
     ~H"""
@@ -16,9 +17,6 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
 
       <div class="relative p-8 mx-auto max-w-3xl text-right md:text-center font-semibold font-sans text-2xl md:text-3xl md:tracking-widest z-10 text-gray-200">
         Account Settings
-        <p class="mt-2 text-sm leading-6 font-normal md:tracking-normal">
-          Manage your account email address and password settings
-        </p>
       </div>
     </section>
     <.link
@@ -30,7 +28,39 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
     </.link>
 
     <section class="w-full flex justify-center px-6 py-20 lg:px-8">
-      <div class="w-full max-w-2xl space-y-12 divide-y 6 p-6 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
+      <div class="w-full max-w-2xl space-y-12 divide-y 6 px-6 pb-12 rounded-lg shadow-md mb-8 border border-gray-300 bg-gradient-to-r from-pink-200 via-gray-100 to-pink-300">
+        <div>
+          <.simple_form
+            for={@subscriptions_form}
+            id="subscriptions_form"
+            phx-submit="update_subscriptions"
+          >
+            <h3 class="block text font-semibold leading-6 text-zinc-800">
+              Update your subscriptions
+            </h3>
+            <%= for subscription <- @subscription_types do %>
+              <.input
+                field={@subscriptions_form[subscription]}
+                type="checkbox"
+                name={to_string(subscription)}
+                value={subscription in @user_subscription_types}
+                label={subscription |> to_string() |> String.capitalize()}
+                phx-hook="SubscriptionChangeHook"
+              />
+            <% end %>
+            <:actions>
+              <.button
+                id="save-changes-button"
+                disabled="true"
+                class="disabled:pointer-events-none"
+                phx-disable-with="Changing..."
+              >
+                Save Changes
+              </.button>
+            </:actions>
+          </.simple_form>
+        </div>
+
         <div>
           <.simple_form
             for={@email_form}
@@ -141,7 +171,10 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:delete_account_form, to_form(@delete_account_form_params))
+      |> assign(:subscriptions_form, subscriptions_form_params())
       |> assign(:trigger_submit, false)
+      |> assign(:subscription_types, @subscription_types)
+      |> assign_user_subscriptions_and_types(user.id)
 
     {:ok, socket}
   end
@@ -236,5 +269,68 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
 
         # coveralls-ignore-stop
     end
+  end
+
+  def handle_event("update_subscriptions", params, socket) do
+    user_subscriptions = MapSet.new(socket.assigns.user_subscription_types)
+    # MORE TESTS WILL BE ADDED IN NEXT ITERATION
+    # coveralls-ignore-start
+    # Convert submitted params into a MapSet of selected subscriptions
+    submitted_subscriptions =
+      params
+      |> Stream.filter(fn {_, value} -> value === "true" end)
+      |> Stream.map(fn {key, _} -> String.to_existing_atom(key) end)
+      |> MapSet.new()
+
+    # Determine which subscriptions need to be added and removed
+    to_add =
+      MapSet.difference(submitted_subscriptions, user_subscriptions)
+
+    to_remove =
+      user_subscriptions
+      |> MapSet.difference(submitted_subscriptions)
+      |> then(
+        &Enum.filter(socket.assigns.user_subscriptions, fn x -> x.subscription_type in &1 end)
+      )
+
+    # Perform database updates
+    if MapSet.size(to_add) > 0 do
+      Enum.each(
+        to_add,
+        &Accounts.create_subscription(%{
+          user_id: socket.assigns.current_user.id,
+          subscription_type: &1
+        })
+      )
+    end
+
+    if length(to_remove) > 0 do
+      Enum.each(
+        to_remove,
+        &Accounts.delete_subscription(&1)
+      )
+    end
+
+    {:noreply,
+     socket
+     |> assign_user_subscriptions_and_types(socket.assigns.current_user.id)
+     |> assign(:subscriptions_form, subscriptions_form_params())
+     |> put_flash(:info, "Subscriptions updated!")}
+
+    # coveralls-ignore-stop
+  end
+
+  defp assign_user_subscriptions_and_types(socket, user_id) do
+    user_subscriptions = Accounts.all_subscriptions(%{user_id: user_id})
+    user_subscription_types = Enum.map(user_subscriptions, & &1.subscription_type)
+
+    assign(socket, %{
+      user_subscriptions: user_subscriptions,
+      user_subscription_types: user_subscription_types
+    })
+  end
+
+  defp subscriptions_form_params do
+    Enum.reduce(@subscription_types, %{}, &Map.put(&2, to_string(&1), false))
   end
 end

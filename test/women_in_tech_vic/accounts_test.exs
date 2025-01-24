@@ -875,4 +875,34 @@ defmodule WomenInTechVic.AccountsTest do
       assert [] = Accounts.all_subscriptions(%{})
     end
   end
+
+  describe "find_user_subscription_types/1" do
+    test "returns a list of all subscription types for a given user_id", %{
+      user: user,
+      subscription: subscription
+    } do
+      user_id = user.id
+      subscription_type = subscription.subscription_type
+
+      assert [^subscription_type] = Accounts.find_user_subscription_types(user_id)
+    end
+  end
+
+  describe "all subscription types/1" do
+    test "returns a list of all subscription types" do
+      assert [:event] === Accounts.all_subscription_types()
+    end
+  end
+
+  describe "find subscription type users/1" do
+    test "returns a list of all user_ids with a given subscription type", %{
+      user: user,
+      subscription: subscription
+    } do
+      user_id = user.id
+      subscription_type = subscription.subscription_type
+
+      assert [^user_id] = Accounts.find_subscription_type_users(subscription_type)
+    end
+  end
 end

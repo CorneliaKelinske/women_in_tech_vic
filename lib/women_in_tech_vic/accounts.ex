@@ -583,8 +583,28 @@ defmodule WomenInTechVic.Accounts do
     Actions.delete(subscription)
   end
 
-  @spec deliver_new_event_created_notification(Event.t(), User.t()) :: UserNotifier.swoosh_return()
+  @spec deliver_new_event_created_notification(Event.t(), User.t()) ::
+          UserNotifier.swoosh_return()
   def deliver_new_event_created_notification(event, user) do
     UserNotifier.deliver_new_event_created_notification(event, user)
   end
+
+  @spec find_user_subscription_types(pos_integer()) :: [Subscription.subscription_type()]
+  def find_user_subscription_types(user_id) do
+    Subscription
+    |> Subscription.by_user(user_id)
+    |> Subscription.return_subscription_types()
+    |> Actions.all()
+  end
+
+  @spec find_subscription_type_users(Subscription.subscription_type()) :: [pos_integer()]
+  def find_subscription_type_users(subscription_type) do
+    Subscription
+    |> Subscription.by_subscription_type(subscription_type)
+    |> Subscription.return_user_ids()
+    |> Actions.all()
+  end
+
+  @spec all_subscription_types() :: [Subscription.subscription_type()]
+  def all_subscription_types, do: Subscription.subscription_types()
 end
