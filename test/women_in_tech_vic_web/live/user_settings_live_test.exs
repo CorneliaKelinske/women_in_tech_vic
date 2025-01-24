@@ -2,7 +2,7 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, subscription: 1]
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Support.AccountsFixtures
@@ -10,7 +10,7 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
   @valid_password AccountsFixtures.valid_user_password()
   @unique_user_email AccountsFixtures.unique_user_email()
 
-  setup [:user]
+  setup [:user, :subscription]
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn, user: user} do
@@ -244,6 +244,25 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
 
       refute_redirected(lv, "/")
       assert {:ok, ^user} = Accounts.find_user(%{id: user.id})
+    end
+  end
+
+  describe "update subscriptions" do
+    test "updates a user's subscriptions", %{conn: conn, user: user, subscription: subscription} do
+      assert [^subscription] = Accounts.all_subscriptions(%{user_id: user.id})
+
+      {:ok, lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/users/settings")
+
+      assert html =~ "Update your subscriptions"
+
+      assert lv
+             |> form("#subscriptions_form", %{"event" => false})
+             |> render_submit
+
+      assert [] = Accounts.all_subscriptions(%{user_id: user.id})
     end
   end
 end

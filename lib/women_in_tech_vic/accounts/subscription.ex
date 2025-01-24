@@ -5,6 +5,7 @@ defmodule WomenInTechVic.Accounts.Subscription do
   """
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias WomenInTechVic.Accounts.User
 
@@ -48,5 +49,34 @@ defmodule WomenInTechVic.Accounts.Subscription do
     |> foreign_key_constraint(:user_id)
     |> validate_inclusion(:subscription_type, @subscription_types)
     |> unique_constraint([:user_id, :subscription_type])
+  end
+
+  @spec by_user(pos_integer()) :: Ecto.Query.t()
+  @spec by_user(Ecto.Queryable.t(), pos_integer()) :: Ecto.Query.t()
+  def by_user(query \\ Subscription, user_id) do
+    where(query, [s], s.user_id == ^user_id)
+  end
+
+  @spec by_subscription_type(subscription_type()) :: Ecto.Query.t()
+  @spec by_subscription_type(Ecto.Queryable.t(), subscription_type()) :: Ecto.Query.t()
+  def by_subscription_type(query \\ Subscription, subscription_type) do
+    where(query, [s], s.subscription_type == ^subscription_type)
+  end
+
+  @spec return_user_ids :: Ecto.Queryable.t()
+  @spec return_user_ids(Ecto.Queryable.t()) :: Ecto.Query.t()
+  def return_user_ids(query \\ Subscription) do
+    select(query, [s], s.user_id)
+  end
+
+  @spec return_subscription_types :: Ecto.Queryable.t()
+  @spec return_subscription_types(Ecto.Queryable.t()) :: Ecto.Query.t()
+  def return_subscription_types(query \\ Subscription) do
+    select(query, [s], s.subscription_type)
+  end
+
+  @spec subscription_types :: [subscription_type()]
+  def subscription_types do
+    @subscription_types
   end
 end
