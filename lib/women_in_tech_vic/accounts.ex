@@ -578,9 +578,11 @@ defmodule WomenInTechVic.Accounts do
   end
 
   @doc false
+
   @spec delete_subscription(Subscription.t()) :: change_res(Subscription.t())
-  def delete_subscription(subscription) do
-    Actions.delete(subscription)
+  @spec delete_subscription(Subscription.t(), keyword()) :: change_res(Subscription.t())
+  def delete_subscription(subscription, opts \\ []) do
+    Actions.delete(subscription, opts)
   end
 
   @spec deliver_new_event_created_notification(Event.t(), User.t()) ::
@@ -607,4 +609,41 @@ defmodule WomenInTechVic.Accounts do
 
   @spec all_subscription_types() :: [Subscription.subscription_type()]
   def all_subscription_types, do: Subscription.subscription_types()
+
+  @doc "used in the user settings form where users can change their subscriptions"
+  @spec create_subscriptions_from_settings_form(pos_integer(), [Subscription.subscription_type()]) ::
+          :ok | :error
+  def create_subscriptions_from_settings_form(user_id, subscription_types) do
+    Enum.reduce_while(subscription_types, :ok, fn subscription_type, acc ->
+      case create_subscription(%{user_id: user_id, subscription_type: subscription_type}) do
+        {:ok, _} ->
+          {:cont, acc}
+
+        {:error, error} ->
+          Logger.error(
+            "Failed to create subscription for user #{user_id} with subscription type #{subscription_type}: #{inspect(error)}"
+          )
+
+          {:halt, :error}
+      end
+    end)
+  end
+
+  @doc "used in the user settings form where users can change their subscriptions"
+  @spec delete_subscriptions_from_settings_form([Subscription.t()]) :: :ok | :error
+  def delete_subscriptions_from_settings_form(subscriptions) do
+    Enum.reduce_while(subscriptions, :ok, fn subscription, acc ->
+      case delete_subscription(subscription, stale_error_field: :id) do
+        {:ok, _} ->
+          {:cont, acc}
+
+        {:error, error} ->
+          Logger.error(
+            "Failed to delete subscription for user #{subscription.user_id} with subscription type #{subscription.subscription_type}: #{inspect(error)}"
+          )
+
+          {:halt, :error}
+      end
+    end)
+  end
 end
