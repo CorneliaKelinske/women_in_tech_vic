@@ -2,7 +2,7 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, subscription: 1]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, subscription: 1, user_2: 1]
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Support.AccountsFixtures
@@ -10,7 +10,7 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
   @valid_password AccountsFixtures.valid_user_password()
   @unique_user_email AccountsFixtures.unique_user_email()
 
-  setup [:user, :subscription]
+  setup [:user, :user_2, :subscription]
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn, user: user} do
@@ -248,7 +248,11 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
   end
 
   describe "update subscriptions" do
-    test "updates a user's subscriptions", %{conn: conn, user: user, subscription: subscription} do
+    test "removes subscriptions from user's subscriptions", %{
+      conn: conn,
+      user: user,
+      subscription: subscription
+    } do
       assert [^subscription] = Accounts.all_subscriptions(%{user_id: user.id})
 
       {:ok, lv, html} =
@@ -263,6 +267,23 @@ defmodule WomenInTechVicWeb.UserSettingsLiveTest do
              |> render_submit
 
       assert [] = Accounts.all_subscriptions(%{user_id: user.id})
+    end
+
+    test "adds subscriptions", %{conn: conn, user_2: user_2} do
+      assert [] = Accounts.all_subscriptions(%{user_id: user_2.id})
+
+      {:ok, lv, html} =
+        conn
+        |> log_in_user(user_2)
+        |> live(~p"/users/settings")
+
+      assert html =~ "Update your subscriptions"
+
+      assert lv
+             |> form("#subscriptions_form", %{"event" => true})
+             |> render_submit
+
+      assert [:event] = Accounts.find_user_subscription_types(user_2.id)
     end
   end
 end

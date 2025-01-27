@@ -273,18 +273,17 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
 
   def handle_event("update_subscriptions", params, socket) do
     user_subscriptions = MapSet.new(socket.assigns.user_subscription_types)
-    # MORE TESTS WILL BE ADDED IN NEXT ITERATION
-    # coveralls-ignore-start
-    # Convert submitted params into a MapSet of selected subscriptions
+
     submitted_subscriptions =
       params
       |> Stream.filter(fn {_, value} -> value === "true" end)
       |> Stream.map(fn {key, _} -> String.to_existing_atom(key) end)
       |> MapSet.new()
 
-    # Determine which subscriptions need to be added and removed
     to_add =
-      MapSet.difference(submitted_subscriptions, user_subscriptions)
+      submitted_subscriptions
+      |> MapSet.difference(user_subscriptions)
+      |> MapSet.to_list()
 
     to_remove =
       user_subscriptions
@@ -293,31 +292,24 @@ defmodule WomenInTechVicWeb.UserSettingsLive do
         &Enum.filter(socket.assigns.user_subscriptions, fn x -> x.subscription_type in &1 end)
       )
 
-    # Perform database updates
-    if MapSet.size(to_add) > 0 do
-      Enum.each(
-        to_add,
-        &Accounts.create_subscription(%{
-          user_id: socket.assigns.current_user.id,
-          subscription_type: &1
-        })
-      )
+    with :ok <-
+           Accounts.create_subscriptions_from_settings_form(
+             socket.assigns.current_user.id,
+             to_add
+           ),
+         :ok <- Accounts.delete_subscriptions_from_settings_form(to_remove) do
+      {:noreply,
+       socket
+       |> assign_user_subscriptions_and_types(socket.assigns.current_user.id)
+       |> assign(:subscriptions_form, subscriptions_form_params())
+       |> put_flash(:info, "Subscriptions updated!")}
+    else
+      _ ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Something went wrong! Please try again!")
+         |> assign(:subscriptions_form, subscriptions_form_params())}
     end
-
-    if length(to_remove) > 0 do
-      Enum.each(
-        to_remove,
-        &Accounts.delete_subscription(&1)
-      )
-    end
-
-    {:noreply,
-     socket
-     |> assign_user_subscriptions_and_types(socket.assigns.current_user.id)
-     |> assign(:subscriptions_form, subscriptions_form_params())
-     |> put_flash(:info, "Subscriptions updated!")}
-
-    # coveralls-ignore-stop
   end
 
   defp assign_user_subscriptions_and_types(socket, user_id) do

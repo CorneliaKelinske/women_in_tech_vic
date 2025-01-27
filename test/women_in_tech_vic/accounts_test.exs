@@ -1,5 +1,6 @@
 defmodule WomenInTechVic.AccountsTest do
   use WomenInTechVic.DataCase
+  import ExUnit.CaptureLog
 
   import WomenInTechVic.Support.Factory, only: [build: 1]
 
@@ -903,6 +904,57 @@ defmodule WomenInTechVic.AccountsTest do
       subscription_type = subscription.subscription_type
 
       assert [^user_id] = Accounts.find_subscription_type_users(subscription_type)
+    end
+  end
+
+  describe "create_subscriptions_from_settings_form/2 " do
+    test "creates subscriptions for a user", %{user_2: user_2} do
+      assert [] = Accounts.find_user_subscription_types(user_2.id)
+
+      assert :ok ===
+               Accounts.create_subscriptions_from_settings_form(user_2.id, [:event])
+
+      assert [:event] = Accounts.find_user_subscription_types(user_2.id)
+    end
+
+    test "returns :error when invalid data is passed in", %{user: user} do
+      log =
+        capture_log(fn ->
+          assert :error === Accounts.create_subscriptions_from_settings_form(user.id, [:invalid])
+        end)
+
+      assert log =~
+               "Failed to create subscription for user #{user.id} with subscription type invalid:"
+    end
+  end
+
+  describe "delete_subscriptions_from_settings_form/2 " do
+    test "deletes subscriptions for a user", %{user: user, subscription: subscription} do
+      assert {:ok, ^subscription} =
+               Accounts.find_subscription(%{
+                 user_id: user.id,
+                 subscription_type: subscription.subscription_type
+               })
+
+      assert :ok ===
+               Accounts.delete_subscriptions_from_settings_form([subscription])
+
+      assert [] = Accounts.find_user_subscription_types(user.id)
+    end
+
+    test "returns :error when invalid data is passed in", %{
+      user: user,
+      subscription: subscription
+    } do
+      subscription = Map.put(subscription, :id, subscription.id + 11)
+
+      log =
+        capture_log(fn ->
+          assert :error === Accounts.delete_subscriptions_from_settings_form([subscription])
+        end)
+
+      assert log =~
+               "Failed to delete subscription for user #{user.id} with subscription type event:"
     end
   end
 end
