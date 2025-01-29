@@ -599,8 +599,8 @@ defmodule WomenInTechVic.Accounts do
     |> Actions.all()
   end
 
-  @spec find_subscription_type_users(Subscription.subscription_type()) :: [pos_integer()]
-  def find_subscription_type_users(subscription_type) do
+  @spec find_subscribers(Subscription.subscription_type()) :: [pos_integer()]
+  def find_subscribers(subscription_type) do
     Subscription
     |> Subscription.by_subscription_type(subscription_type)
     |> Subscription.return_user_ids()

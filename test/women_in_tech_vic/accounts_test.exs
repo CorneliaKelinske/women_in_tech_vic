@@ -903,7 +903,7 @@ defmodule WomenInTechVic.AccountsTest do
       user_id = user.id
       subscription_type = subscription.subscription_type
 
-      assert [^user_id] = Accounts.find_subscription_type_users(subscription_type)
+      assert [^user_id] = Accounts.find_subscribers(subscription_type)
     end
   end
 

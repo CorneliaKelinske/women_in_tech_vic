@@ -118,7 +118,7 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
     A new Women in Tech Victorian event has been posted.
     Here is the event info:
 
-    #{event.title} on #{event.scheduled_at} at #{event.location}.
+    #{event.title} on #{event.scheduled_at} at #{event.address}.
 
     Visit the website for more details and to RSVP.
 
