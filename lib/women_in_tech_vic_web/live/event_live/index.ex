@@ -3,10 +3,12 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
   import WomenInTechVicWeb.CustomComponents, only: [event_display: 1, title_banner: 1]
 
+  alias WomenInTechVic.Accounts
   alias WomenInTechVic.{Content, Utils}
   alias WomenInTechVic.Content.Event
 
   @title "Upcoming Events"
+  @subscription_type :event
 
   @impl true
   def mount(_params, _session, socket) do
@@ -35,7 +37,14 @@ defmodule WomenInTechVicWeb.EventLive.Index do
       })
 
     case Content.create_event(event_params) do
-      {:ok, %Event{}} ->
+      {:ok, %Event{} = event} ->
+        @subscription_type
+        |> Accounts.find_subscribers()
+        |> then(&Accounts.all_users(%{id: &1}))
+        |> Enum.each(
+          &Accounts.deliver_new_event_created_notification(prep_event_for_display(event), &1)
+        )
+
         {:noreply,
          socket
          |> put_flash(:info, "Created event")
