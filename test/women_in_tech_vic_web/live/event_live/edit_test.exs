@@ -2,13 +2,14 @@ defmodule WomenInTechVicWeb.EventLive.EditTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1]
+  import Swoosh.TestAssertions, only: [assert_email_sent: 0]
+  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1, subscription: 1]
   import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1]
 
   alias WomenInTechVic.Content
   alias WomenInTechVic.Content.Event
 
-  setup [:user, :user_2, :online_event]
+  setup [:user, :user_2, :online_event, :subscription]
 
   describe "Edit page" do
     test "renders page with event form to logged in user", %{
@@ -58,7 +59,7 @@ defmodule WomenInTechVicWeb.EventLive.EditTest do
       assert %{"error" => "Access denied."} = flash
     end
 
-    test "admin user can edit an event", %{
+    test "admin user can edit an event and subscribers get notified", %{
       conn: conn,
       user: user,
       online_event: online_event
@@ -77,6 +78,7 @@ defmodule WomenInTechVicWeb.EventLive.EditTest do
              |> render_submit()
 
       assert {:ok, %Event{title: "updated title"}} = Content.find_event(%{id: online_event.id})
+      assert_email_sent()
     end
   end
 end

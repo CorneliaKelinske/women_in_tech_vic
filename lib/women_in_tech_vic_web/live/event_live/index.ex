@@ -39,10 +39,9 @@ defmodule WomenInTechVicWeb.EventLive.Index do
     case Content.create_event(event_params) do
       {:ok, %Event{} = event} ->
         @subscription_type
-        |> Accounts.find_subscribers()
-        |> then(&Accounts.all_users(%{id: &1}))
+        |> get_subscribers()
         |> Enum.each(
-          &Accounts.deliver_new_event_created_notification(prep_event_for_display(event), &1)
+          &Accounts.deliver_event_update_notification(prep_event_for_display(event), &1, :create)
         )
 
         {:noreply,
@@ -59,8 +58,14 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
   @impl true
   def handle_event("delete_event", %{"id" => event_id}, socket) do
+    event = Enum.find(socket.assigns.events, &(&1.id === String.to_integer(event_id)))
+
     case Content.delete_event_by_admin(String.to_integer(event_id), socket.assigns.current_user) do
       {:ok, %Event{}} ->
+        @subscription_type
+        |> get_subscribers()
+        |> Enum.each(&Accounts.deliver_event_update_notification(event, &1, :delete))
+
         {:noreply, assign_events(socket)}
 
       _ ->
@@ -91,5 +96,11 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
   defp assign_event_form(socket, changeset) do
     assign(socket, :new_event_form, to_form(changeset))
+  end
+
+  defp get_subscribers(subscription_type) do
+    subscription_type
+    |> Accounts.find_subscribers()
+    |> then(&Accounts.all_users(%{id: &1}))
   end
 end

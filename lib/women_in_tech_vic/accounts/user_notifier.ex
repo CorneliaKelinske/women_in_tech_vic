@@ -7,6 +7,7 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
   alias WomenInTechVic.Mailer
 
   @type swoosh_return :: {:ok, Swoosh.Email.t()} | {:error, any()}
+  @type event_action :: :create | :update | :delete
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
@@ -123,6 +124,44 @@ defmodule WomenInTechVic.Accounts.UserNotifier do
     Visit the website for more details and to RSVP.
 
     We hope to see you there!
+
+    ==============================
+    """)
+  end
+
+  @spec deliver_event_update_notification(Event.t(), User.t(), event_action()) :: swoosh_return()
+  def deliver_event_update_notification(event, user, action) when action in [:create, :update] do
+    deliver(user.email, "Event #{to_string(action)}d", """
+    ==============================
+
+    Hi #{user.first_name},
+
+    A Women in Tech Victorian event has been #{to_string(action)}d.
+    Here is the event info:
+
+    #{event.title} on #{event.scheduled_at} at #{event.address}.
+
+    Visit the website for more details and to RSVP.
+
+    We hope to see you there!
+
+    ==============================
+    """)
+  end
+
+  def deliver_event_update_notification(event, user, :delete) do
+    deliver(user.email, "Event deleted", """
+    ==============================
+
+    Hi #{user.first_name},
+
+    Unfortunately the following Women in Tech Victoria event has been cancelled:
+
+    #{event.title} on #{event.scheduled_at} at #{event.address}.
+
+    Visit the website to find other events.
+
+    We hope to see you soon!
 
     ==============================
     """)

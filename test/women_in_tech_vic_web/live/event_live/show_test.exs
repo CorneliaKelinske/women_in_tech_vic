@@ -2,14 +2,18 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
   use WomenInTechVicWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
-  import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1, profile: 1]
+  import Swoosh.TestAssertions, only: [assert_email_sent: 0]
+
+  import WomenInTechVic.Support.AccountsTestSetup,
+    only: [user: 1, user_2: 1, profile: 1, subscription: 1]
+
   import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1, in_person_event: 1]
 
   alias WomenInTechVic.Accounts
   alias WomenInTechVic.Content
   alias WomenInTechVic.Content.Event
 
-  setup [:user, :user_2, :online_event, :in_person_event, :profile]
+  setup [:user, :user_2, :online_event, :in_person_event, :profile, :subscription]
 
   describe "Show page" do
     test "renders a page with event info", %{conn: conn, user: user, online_event: online_event} do
@@ -213,11 +217,12 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
       assert {:ok, ^online_event} = Content.find_event(%{id: online_event.id})
     end
 
-    test "shows delete and edit button to admin and admin can delete events", %{
-      conn: conn,
-      user: user,
-      online_event: online_event
-    } do
+    test "shows delete and edit button to admin, admin can delete events and subscribers are notified",
+         %{
+           conn: conn,
+           user: user,
+           online_event: online_event
+         } do
       assert {:ok, ^online_event} = Content.find_event(%{id: online_event.id})
 
       {:ok, lv, html} =
@@ -232,6 +237,8 @@ defmodule WomenInTechVicWeb.EventLive.ShowTest do
       lv
       |> element("button[phx-click=delete_event][phx-value-id='#{online_event.id}']")
       |> render_click()
+
+      assert_email_sent()
 
       assert {
                :error,
