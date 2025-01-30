@@ -115,7 +115,7 @@ defmodule WomenInTechVic.Accounts do
   end
 
   @doc false
-  @spec all_users(map()) :: [User.t()]
+  @spec all_users(map) :: [User.t()]
   def all_users(params) do
     Actions.all(User, params)
   end
@@ -585,10 +585,10 @@ defmodule WomenInTechVic.Accounts do
     Actions.delete(subscription, opts)
   end
 
-  @spec deliver_new_event_created_notification(Event.t(), User.t()) ::
+  @spec deliver_event_update_notification(Event.t(), User.t(), UserNotifier.event_action()) ::
           UserNotifier.swoosh_return()
-  def deliver_new_event_created_notification(event, user) do
-    UserNotifier.deliver_new_event_created_notification(event, user)
+  def deliver_event_update_notification(event, user, action) do
+    UserNotifier.deliver_event_update_notification(event, user, action)
   end
 
   @spec find_user_subscription_types(pos_integer()) :: [Subscription.subscription_type()]

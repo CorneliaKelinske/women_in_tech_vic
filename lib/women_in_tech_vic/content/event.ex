@@ -13,7 +13,7 @@ defmodule WomenInTechVic.Content.Event do
   @type t :: %__MODULE__{
           id: pos_integer() | nil,
           title: String.t() | nil,
-          scheduled_at: DateTime.t() | nil,
+          scheduled_at: DateTime.t() | nil | String.t(),
           online: boolean() | nil,
           address: String.t() | nil,
           description: String.t() | nil,

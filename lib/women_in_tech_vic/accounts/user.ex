@@ -18,9 +18,9 @@ defmodule WomenInTechVic.Accounts.User do
           confirmed_at: DateTime | nil,
           updated_at: DateTime.t() | nil,
           inserted_at: DateTime.t() | nil,
-          user_tokens: [UserToken.t()] | Ecto.Association.NotLoaded.t(),
-          events: [Event.t()] | Ecto.Association.NotLoaded.t(),
-          attending_events: [Event.t()] | Ecto.Association.NotLoaded.t(),
+          user_tokens: [UserToken.t()] | Ecto.Association.NotLoaded.t() | nil,
+          events: [Event.t()] | Ecto.Association.NotLoaded.t() | nil,
+          attending_events: [Event.t()] | Ecto.Association.NotLoaded.t() | nil,
           profile: Profile.t() | Ecto.Association.NotLoaded.t() | nil
         }
   @type role :: :admin | :member
