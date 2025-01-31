@@ -40,9 +40,8 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
     case Content.create_event(event_params) do
       {:ok, %Event{} = event} ->
-        @subscription_type
-        |> get_subscribers()
-        |> Enum.each(
+        Enum.each(
+          socket.assigns.subscribers,
           &Accounts.deliver_event_update_notification(prep_event_for_display(event), &1, :create)
         )
 
@@ -64,9 +63,10 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
     case Content.delete_event_by_admin(String.to_integer(event_id), socket.assigns.current_user) do
       {:ok, %Event{}} ->
-        @subscription_type
-        |> get_subscribers()
-        |> Enum.each(&Accounts.deliver_event_update_notification(event, &1, :delete))
+        Enum.each(
+          socket.assigns.subscribers,
+          &Accounts.deliver_event_update_notification(event, &1, :delete)
+        )
 
         {:noreply, assign_events(socket)}
 
@@ -115,12 +115,6 @@ defmodule WomenInTechVicWeb.EventLive.Index do
   end
 
   defp assign_subscribers(socket) do
-    assign(socket, :subscribers, get_subscribers(@subscription_type))
-  end
-
-  defp get_subscribers(subscription_type) do
-    subscription_type
-    |> Accounts.find_subscribers()
-    |> then(&Accounts.all_users(%{id: &1}))
+    assign(socket, :subscribers, Accounts.get_subscribers(@subscription_type))
   end
 end

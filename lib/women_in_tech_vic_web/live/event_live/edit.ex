@@ -51,7 +51,7 @@ defmodule WomenInTechVicWeb.EventLive.Edit do
     case Content.update_event(socket.assigns.event, event_params) do
       {:ok, %Event{} = event} ->
         @subscription_type
-        |> get_subscribers()
+        |> Accounts.get_subscribers()
         |> Enum.each(
           &Accounts.deliver_event_update_notification(prep_event_for_display(event), &1, :update)
         )
@@ -75,12 +75,6 @@ defmodule WomenInTechVicWeb.EventLive.Edit do
 
   defp shift_to_pacific(%Event{scheduled_at: scheduled_at} = event) do
     Map.put(event, :scheduled_at, Utils.utc_timestamp_to_pacific!(scheduled_at))
-  end
-
-  defp get_subscribers(subscription_type) do
-    subscription_type
-    |> Accounts.find_subscribers()
-    |> then(&Accounts.all_users(%{id: &1}))
   end
 
   defp prep_event_for_display(%Event{scheduled_at: scheduled_at} = event) do

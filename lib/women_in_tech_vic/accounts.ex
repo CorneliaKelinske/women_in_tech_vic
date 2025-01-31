@@ -599,8 +599,8 @@ defmodule WomenInTechVic.Accounts do
     |> Actions.all()
   end
 
-  @spec find_subscribers(Subscription.subscription_type()) :: [pos_integer()]
-  def find_subscribers(subscription_type) do
+  @spec find_subscriber_ids(Subscription.subscription_type()) :: [pos_integer()]
+  def find_subscriber_ids(subscription_type) do
     Subscription
     |> Subscription.by_subscription_type(subscription_type)
     |> Subscription.return_user_ids()
@@ -645,5 +645,12 @@ defmodule WomenInTechVic.Accounts do
           {:halt, :error}
       end
     end)
+  end
+
+  @spec get_subscribers(Subscription.subscription_type()) :: [User.t()]
+  def get_subscribers(subscription_type) do
+    subscription_type
+    |> find_subscriber_ids()
+    |> then(&all_users(%{id: &1}))
   end
 end
