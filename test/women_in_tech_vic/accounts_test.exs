@@ -903,7 +903,7 @@ defmodule WomenInTechVic.AccountsTest do
       user_id = user.id
       subscription_type = subscription.subscription_type
 
-      assert [^user_id] = Accounts.find_subscribers(subscription_type)
+      assert [^user_id] = Accounts.find_subscriber_ids(subscription_type)
     end
   end
 
@@ -955,6 +955,15 @@ defmodule WomenInTechVic.AccountsTest do
 
       assert log =~
                "Failed to delete subscription for user #{user.id} with subscription type event:"
+    end
+  end
+
+  describe "get_subscribers/2" do
+    test "returns a list of subscribers for a given subscription type", %{
+      user: user,
+      subscription: subscription
+    } do
+      assert [^user] = Accounts.get_subscribers(subscription.subscription_type)
     end
   end
 end

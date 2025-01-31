@@ -63,7 +63,7 @@ defmodule WomenInTechVicWeb.EventLive.Show do
     case Content.delete_event_by_admin(String.to_integer(event_id), socket.assigns.current_user) do
       {:ok, %Event{}} ->
         @subscription_type
-        |> get_subscribers()
+        |> Accounts.get_subscribers()
         |> Enum.each(
           &Accounts.deliver_event_update_notification(socket.assigns.event, &1, :delete)
         )
@@ -102,11 +102,5 @@ defmodule WomenInTechVicWeb.EventLive.Show do
 
   defp assign_google_calendar_url(socket, event) do
     assign(socket, :google_calendar_url, CalendarHelper.google_calendar_url(event))
-  end
-
-  defp get_subscribers(subscription_type) do
-    subscription_type
-    |> Accounts.find_subscribers()
-    |> then(&Accounts.all_users(%{id: &1}))
   end
 end
