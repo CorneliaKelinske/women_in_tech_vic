@@ -6,6 +6,7 @@ defmodule WomenInTechVic.EventLive.IndexTest do
   import WomenInTechVic.Support.AccountsTestSetup, only: [user: 1, user_2: 1, subscription: 1]
   import WomenInTechVic.Support.ContentTestSetup, only: [online_event: 1]
 
+  alias WomenInTechVic.Accounts
   alias WomenInTechVic.Content
 
   setup [:user, :user_2, :online_event, :subscription]
@@ -47,6 +48,37 @@ defmodule WomenInTechVic.EventLive.IndexTest do
 
       assert html =~ "Upcoming Events"
       refute html =~ "Create Event"
+    end
+
+    test "does not show the Subscribe button to subscribers", %{conn: conn, user: user} do
+      {:ok, _lv, html} =
+        conn
+        |> log_in_user(user)
+        |> live(~p"/events")
+
+      assert html =~ "Upcoming Events"
+      refute html =~ "Subscribe"
+    end
+
+    test "non-subscribers can use the Subscribe button to subscribe to event updates", %{
+      conn: conn,
+      user_2: user_2
+    } do
+      assert [] = Accounts.find_user_subscription_types(user_2.id)
+
+      {:ok, lv, html} =
+        conn
+        |> log_in_user(user_2)
+        |> live(~p"/events")
+
+      assert html =~ "Upcoming Events"
+      assert html =~ "Subscribe"
+
+      lv
+      |> element("button[id='subscribe']")
+      |> render_click()
+
+      assert [:event] = Accounts.find_user_subscription_types(user_2.id)
     end
 
     test "non_admin user would not be able to use the button to delete an event", %{
