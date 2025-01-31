@@ -560,13 +560,13 @@ defmodule WomenInTechVic.Accounts do
   # SUBSCRIPTIONS
 
   @doc false
-  @spec create_subscription(map) :: change_res(Profile.t())
+  @spec create_subscription(map) :: change_res(Subscription.t())
   def create_subscription(params) do
     Actions.create(Subscription, params)
   end
 
   @doc false
-  @spec find_subscription(map) :: ErrorMessage.t_res(Profile.t())
+  @spec find_subscription(map) :: ErrorMessage.t_res(Subscription.t())
   def find_subscription(params) do
     Actions.find(Subscription, params)
   end

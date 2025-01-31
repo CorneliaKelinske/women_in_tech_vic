@@ -9,6 +9,15 @@
     <span>Home</span>
   </.link>
   <section class="flex-grow flex flex-col justify-center items-center px-6 pt-20 lg:pt-0 lg:px-8">
+    <button
+      :if={@current_user not in @subscribers}
+      phx-click="subscribe"
+      id="subscribe"
+      class="px-6 py-2 mb-8 bg-purple-700 text-white rounded-lg hover:bg-purple-800"
+    >
+      <p class="text-lg font-semibold tracking-wider">Subscribe</p>
+      <p class="text-xs">to receive event updates by email</p>
+    </button>
     <%= if @events === [] do %>
       <p class="text-5xl text-gray-200 text-center mb-16">No event scheduled</p>
     <% else %>

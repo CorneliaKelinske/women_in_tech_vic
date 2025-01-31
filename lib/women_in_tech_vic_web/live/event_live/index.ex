@@ -4,6 +4,7 @@ defmodule WomenInTechVicWeb.EventLive.Index do
   import WomenInTechVicWeb.CustomComponents, only: [event_display: 1, title_banner: 1]
 
   alias WomenInTechVic.Accounts
+  alias WomenInTechVic.Accounts.Subscription
   alias WomenInTechVic.{Content, Utils}
   alias WomenInTechVic.Content.Event
 
@@ -19,7 +20,8 @@ defmodule WomenInTechVicWeb.EventLive.Index do
      |> assign_title(@title)
      |> assign_timezone(timezone)
      |> assign_event_form(Content.event_changeset(%Event{}))
-     |> assign_events()}
+     |> assign_events()
+     |> assign_subscribers()}
   end
 
   # coveralls-ignore-start
@@ -73,6 +75,20 @@ defmodule WomenInTechVicWeb.EventLive.Index do
     end
   end
 
+  @impl true
+  def handle_event("subscribe", _, socket) do
+    case Accounts.create_subscription(%{
+           user_id: socket.assigns.current_user.id,
+           subscription_type: @subscription_type
+         }) do
+      {:ok, %Subscription{}} ->
+        {:noreply, put_flash(socket, :info, "Subscribed to event updates")}
+
+      {:error, _} ->
+        {:noreply, put_flash(socket, :error, "Could not subscribe to event updates")}
+    end
+  end
+
   defp assign_title(socket, title), do: assign(socket, title: title)
 
   defp assign_timezone(socket, timezone), do: assign(socket, timezone: timezone)
@@ -96,6 +112,10 @@ defmodule WomenInTechVicWeb.EventLive.Index do
 
   defp assign_event_form(socket, changeset) do
     assign(socket, :new_event_form, to_form(changeset))
+  end
+
+  defp assign_subscribers(socket) do
+    assign(socket, :subscribers, get_subscribers(@subscription_type))
   end
 
   defp get_subscribers(subscription_type) do
