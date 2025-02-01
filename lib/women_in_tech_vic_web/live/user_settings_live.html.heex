@@ -34,7 +34,7 @@
             type="checkbox"
             name={to_string(subscription)}
             value={subscription in @user_subscription_types}
-            label={subscription |> to_string() |> String.capitalize()}
+            label={(subscription |> to_string() |> String.capitalize()) <> " updates"}
             phx-hook="SubscriptionChangeHook"
           />
         <% end %>
