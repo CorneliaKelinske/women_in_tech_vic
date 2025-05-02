@@ -69,7 +69,7 @@ defmodule WomenInTechVic.MixProject do
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.3.0", runtime: Mix.env() == :dev},
-      {:swoosh, "~> 1.18.0"},
+      {:swoosh, "~> 1.19.0"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
