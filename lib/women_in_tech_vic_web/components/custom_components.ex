@@ -87,7 +87,7 @@ defmodule WomenInTechVicWeb.CustomComponents do
   defp online_event_link(assigns) do
     ~H"""
     <.link
-      href={@event.address}
+      href={{:safe, URI.encode(@event.address)}}
       class="text-purple-700 hover:underline hover:text-blue-800"
       target="_blank"
       rel="noopener noreferrer"
