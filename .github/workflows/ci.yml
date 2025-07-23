@@ -5,57 +5,69 @@ jobs:
   credo:
     name: Credo
     runs-on: ubuntu-latest
-    services:
-      db:
-        image: postgres:16.3
-        ports: ['5432:5432']
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        env:
-          POSTGRES_PASSWORD: postgres
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v4
+      - uses: actions/checkout@v4
+      
+      - name: Cache deps and build
+        uses: actions/cache@v4
         with:
           path: |
             deps
             _build
-          key: ${{ runner.os }}-credo-${{ hashFiles('**/mix.lock') }}
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-credo-
+            ${{ runner.os }}-mix-
+      
       - uses: erlef/setup-beam@v1
         with:
-          otp-version: 27.0
-          elixir-version: 1.17
-      - run: mix deps.get
-      - run: mix credo --strict  
+          version-file: .tool-versions
+          version-type: strict
+      
+      - name: Get and compile dependencies
+        run: |
+          mix deps.get
+          mix deps.compile
+      
+      - run: mix credo --strict
 
   dialyzer:
     name: Dialyzer
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v4
+      - uses: actions/checkout@v4
+      
+      - name: Cache deps and build
+        uses: actions/cache@v4
         with:
           path: |
             deps
             _build
-            dialyzer
-          key: ${{ runner.os }}-dialyzer-${{ hashFiles('**/mix.lock') }}
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-dialyzer-
+            ${{ runner.os }}-mix-
+      
+      - name: Cache PLT
+        uses: actions/cache@v4
+        with:
+          path: priv/plts
+          key: ${{ runner.os }}-plt-${{ hashFiles('**/mix.lock') }}-otp27-elixir1.17
+          restore-keys: |
+            ${{ runner.os }}-plt-
+      
       - uses: erlef/setup-beam@v1
         with:
           otp-version: 27.0
           elixir-version: 1.17
-      - run: mix deps.get
+      
+      - name: Get and compile dependencies
+        run: |
+          mix deps.get
+          mix deps.compile
+      
       - run: mix dialyzer
 
-  coveralls:
-    name: Coveralls
+  test:
+    name: Test & Coverage
     runs-on: ubuntu-latest
     services:
       db:
@@ -69,29 +81,37 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v4
+      - uses: actions/checkout@v4
+      
+      - name: Cache deps and build
+        uses: actions/cache@v4
         with:
           path: |
             deps
             _build
-          key: ${{ runner.os }}-coveralls-${{ hashFiles('**/mix.lock') }}
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-coveralls-
+            ${{ runner.os }}-mix-
+      
       - uses: erlef/setup-beam@v1
         with:
           otp-version: 27.0
           elixir-version: 1.17
+      
       - name: Install ImageMagick
         run: sudo apt-get update && sudo apt-get install -y imagemagick
-
-      - run: mix deps.get
+      
+      - name: Get and compile dependencies
+        run: |
+          mix deps.get
+          mix deps.compile
+      
       - run: mix coveralls.json
+      
       - name: Upload to codecov.io
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v4
         with:
-         token: ${{ secrets.CODECOV_TOKEN }}
-
+          token: ${{ secrets.CODECOV_TOKEN }}
   
 
 
