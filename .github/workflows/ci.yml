@@ -30,6 +30,9 @@ jobs:
       
       - run: mix credo --strict
 
+      - name: Check unused dependencies
+        run: mix deps.unlock --check-unused
+
   dialyzer:
     name: Dialyzer
     runs-on: ubuntu-latest
