@@ -57,7 +57,7 @@ defmodule WomenInTechVic.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 1.0.0-rc.1", override: true},
+      {:phoenix_live_view, "~> 1.1.1", override: true},
       {:heroicons,
        github: "tailwindlabs/heroicons",
        tag: "v2.2.0",
