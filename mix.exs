@@ -83,6 +83,7 @@ defmodule WomenInTechVic.MixProject do
       {:tzdata, "~> 1.1"},
       {:ex_robo_cop, "~> 0.1.6"},
       {:mogrify, "~> 0.9.3"},
+      {:lazy_html, ">= 0.1.0", only: :test},
 
       # Tooling
       {:ex_check, "~> 0.16", only: :test, runtime: false},
