@@ -87,7 +87,7 @@ defmodule WomenInTechVicWeb.UserRegistrationLiveTest do
 
       {:ok, _login_live, login_html} =
         lv
-        |> element(~s|main a:fl-contains("Log in")|)
+        |> element(~s|main a|, "Log in")
         |> render_click()
         |> follow_redirect(conn, ~p"/users/log_in")
 
