@@ -7,10 +7,10 @@ defmodule WomenInTechVic.Accounts do
   require Logger
 
   alias EctoShorts.Actions
-  alias WomenInTechVic.Config
-  alias WomenInTechVic.Repo
   alias WomenInTechVic.Accounts.{Profile, Subscription, User, UserNotifier, UserToken}
+  alias WomenInTechVic.Config
   alias WomenInTechVic.Content.Event
+  alias WomenInTechVic.Repo
 
   @type change_res(type) :: ErrorMessage.t_res(type) | {:error, Ecto.Changeset.t()}
 

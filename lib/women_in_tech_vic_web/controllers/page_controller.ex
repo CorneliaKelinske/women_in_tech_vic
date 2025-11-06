@@ -1,8 +1,8 @@
 defmodule WomenInTechVicWeb.PageController do
   use WomenInTechVicWeb, :controller
 
-  alias WomenInTechVic.Content.Event
   alias WomenInTechVic.{Content, Utils}
+  alias WomenInTechVic.Content.Event
 
   def home(conn, _params) do
     event =
