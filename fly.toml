@@ -4,7 +4,7 @@
 #
 
 app = 'women-in-tech-vic'
-primary_region = 'sea'
+primary_region = 'sjc'
 kill_signal = 'SIGTERM'
 
 [build]
